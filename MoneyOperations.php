@@ -1,44 +1,46 @@
 <?php
-
 /**
- * Zawiera f-cje do operacji na pieniÄ…dzach
+ * MoneyOperations
  *
- * @author lwinnicki
+ * Zawiera f-cje do operacji na pieni¹dzach
  *
+ * @category	Mkphp
+ * @package	MoneyOperations
+ * @author      lwinnicki
  */
 class MoneyOperations {
 
     /**
-     * SÅ‚owny zapis kwot - tablica z wyrazami
+     * S³owny zapis kwot - tablica z wyrazami
      */
     private static $_words = array(
         'minus',
-        array('zero', 'jeden', 'dwa', 'trzy', 'cztery', 'piÄ™Ä‡', 'szeÅ›Ä‡', 'siedem', 'osiem', 'dziewiÄ™Ä‡'),
-        array('dziesiÄ™Ä‡', 'jedenaÅ›cie', 'dwanaÅ›cie', 'trzynaÅ›cie', 'czternaÅ›cie', 'piÄ™tnaÅ›cie', 'szesnaÅ›cie', 'siedemnaÅ›cie', 'osiemnaÅ›cie', 'dziewiÄ™tnaÅ›cie'),
-        array('dziesiÄ™Ä‡', 'dwadzieÅ›cia', 'trzydzieÅ›ci', 'czterdzieÅ›ci', 'piÄ™Ä‡dziesiÄ…t', 'szeÅ›Ä‡dziesiÄ…t', 'siedemdziesiÄ…t', 'osiemdziesiÄ…t', 'dziewiÄ™Ä‡dziesiÄ…t'),
-        array('sto', 'dwieÅ›cie', 'trzysta', 'czterysta', 'piÄ™Ä‡set', 'szeÅ›Ä‡set', 'siedemset', 'osiemset', 'dziewiÄ™Ä‡set'),
-        array('tysiÄ…c', 'tysiÄ…ce', 'tysiÄ™cy'),
-        array('milion', 'miliony', 'milionÃ³w'),
-        array('miliard', 'miliardy', 'miliardÃ³w'),
-        array('bilion', 'biliony', 'bilionÃ³w'),
-        array('biliard', 'biliardy', 'biliardÃ³w'),
-        array('trylion', 'tryliony', 'trylionÃ³w'),
-        array('tryliard', 'tryliardy', 'tryliardÃ³w'),
-        array('kwadrylion', 'kwadryliony', 'kwadrylionÃ³w'),
-        array('kwintylion', 'kwintyliony', 'kwintylionÃ³w'),
-        array('sekstylion', 'sekstyliony', 'sekstylionÃ³w'),
-        array('septylion', 'septyliony', 'septylionÃ³w'),
-        array('oktylion', 'oktyliony', 'oktylionÃ³w'),
-        array('nonylion', 'nonyliony', 'nonylionÃ³w'),
-        array('decylion', 'decyliony', 'decylionÃ³w')
+        array('zero', 'jeden', 'dwa', 'trzy', 'cztery', 'piêæ', 'szeœæ', 'siedem', 'osiem', 'dziewiêæ'),
+        array('dziesiêæ', 'jedenaœcie', 'dwanaœcie', 'trzynaœcie', 'czternaœcie', 'piêtnaœcie', 'szesnaœcie', 'siedemnaœcie', 'osiemnaœcie', 'dziewiêtnaœcie'),
+        array('dziesiêæ', 'dwadzieœcia', 'trzydzieœci', 'czterdzieœci', 'piêædziesi¹t', 'szeœædziesi¹t', 'siedemdziesi¹t', 'osiemdziesi¹t', 'dziewiêædziesi¹t'),
+        array('sto', 'dwieœcie', 'trzysta', 'czterysta', 'piêæset', 'szeœæset', 'siedemset', 'osiemset', 'dziewiêæset'),
+        array('tysi¹c', 'tysi¹ce', 'tysiêcy'),
+        array('milion', 'miliony', 'milionów'),
+        array('miliard', 'miliardy', 'miliardów'),
+        array('bilion', 'biliony', 'bilionów'),
+        array('biliard', 'biliardy', 'biliardów'),
+        array('trylion', 'tryliony', 'trylionów'),
+        array('tryliard', 'tryliardy', 'tryliardów'),
+        array('kwadrylion', 'kwadryliony', 'kwadrylionów'),
+        array('kwintylion', 'kwintyliony', 'kwintylionów'),
+        array('sekstylion', 'sekstyliony', 'sekstylionów'),
+        array('septylion', 'septyliony', 'septylionów'),
+        array('oktylion', 'oktyliony', 'oktylionów'),
+        array('nonylion', 'nonyliony', 'nonylionów'),
+        array('decylion', 'decyliony', 'decylionów')
     );
 
     /**
-     * Wylicza wartoÅ›Ä‡ brutto
+     * Wylicza wartoœæ brutto
      *
-     * @param float $netto		- wartoÅ›Ä‡ netto
-     * @param float $tax		- procentowa wartoÅ›Ä‡ podatku
-     * @param float $quantity	- iloÅ›Ä‡
+     * @param float $netto		- wartoœæ netto
+     * @param float $tax		- procentowa wartoœæ podatku
+     * @param float $quantity	- iloœæ
      * @return float
      */
     public static function calculateBrutto($netto, $tax, $quantity=1) {
@@ -52,11 +54,11 @@ class MoneyOperations {
     }
 
     /**
-     * Odmiana sÅ‚owa dla podanej liczby, np. ciastko/ciastka/ciastek
+     * Odmiana s³owa dla podanej liczby, np. ciastko/ciastka/ciastek
      *
-     * PrzykÅ‚ad uÅ¼ycia:
-     *  echo '16 '.MoneyOperations::varietyVerbal(array('punkt','punkty','punktÃ³w'), 16);
-     *  // Wynik: "16 punktÃ³w"
+     * Przyk³ad u¿ycia:
+     *  echo '16 '.MoneyOperations::varietyVerbal(array('punkt','punkty','punktów'), 16);
+     *  // Wynik: "16 punktów"
      *  echo '103 '.MoneyOperations::varietyVerbal(array('ciastko','ciastka','ciastek'), 103);
      *  // Wynik: "103 ciastka"
      *
@@ -75,8 +77,8 @@ class MoneyOperations {
     }
 
     /**
-     * Odmiana wartoÅ›ci liczbowej trzycyfrowej (mniejszej niÅ¼ 1000) na jej sÅ‚ownÄ… postaÄ‡.
-     * Wykorzystywane gÅ‚Ã³wnie w metodzie verbal()
+     * Odmiana wartoœci liczbowej trzycyfrowej (mniejszej ni¿ 1000) na jej s³own¹ postaæ.
+     * Wykorzystywane g³ównie w metodzie verbal()
      *
      * @param Integer $number
      * @return String
@@ -113,19 +115,19 @@ class MoneyOperations {
     }
 
     /**
-     * GÅ‚Ã³wna metoda zamieniajÄ…ca dowolnÄ… liczbÄ™ na jej postaÄ‡ sÅ‚ownÄ….
+     * G³ówna metoda zamieniaj¹ca dowoln¹ liczbê na jej postaæ s³own¹.
      *
-     * PrzykÅ‚ad uÅ¼ycia:
+     * Przyk³ad u¿ycia:
      *  echo MoneyOperations::verbal(103);
      *  // Wynik: "sto trzy"
      *  echo MoneyOperations::verbal('12345');
-     *  // Wynik: "dwanaÅ›cie tysiÄ™cy trzysta czterdzieÅ›ci piÄ™Ä‡"
+     *  // Wynik: "dwanaœcie tysiêcy trzysta czterdzieœci piêæ"
      *  echo MoneyOperations::verbal('123456789');
-     *  // Wynik: "sto dwadzieÅ›cia trzy miliony czterysta piÄ™Ä‡dziesiÄ…t szeÅ›Ä‡ tysiÄ™cy siedemset osiemdziesiÄ…t dziewiÄ™Ä‡"
+     *  // Wynik: "sto dwadzieœcia trzy miliony czterysta piêædziesi¹t szeœæ tysiêcy siedemset osiemdziesi¹t dziewiêæ"
      *
-     * @param Mixed $_number (zarÃ³wno Integer jak i String)
-     * @param Boolean $fractionNumeric - w przypadku wystÄ…pienia wartoÅ›ci po przecinku (grosze) wyÅ›wietli podsumowanie
-     *  numeryczne 'xx/100' (true) lub sÅ‚owne 'dwanaÅ›cie groszy' (false)
+     * @param Mixed $_number (zarówno Integer jak i String)
+     * @param Boolean $fractionNumeric - w przypadku wyst¹pienia wartoœci po przecinku (grosze) wyœwietli podsumowanie
+     *  numeryczne 'xx/100' (true) lub s³owne 'dwanaœcie groszy' (false)
      * @return String
      */
     public static function verbal($number, $fractionNumeric=false) {
@@ -160,7 +162,7 @@ class MoneyOperations {
             }
         }
 
-        $txt .= self::varietyVerbal(array('zÅ‚oty', 'zÅ‚ote', 'zÅ‚otych'), $tmpNumber) . ' ';
+        $txt .= self::varietyVerbal(array('z³oty', 'z³ote', 'z³otych'), $tmpNumber) . ' ';
         $txt .= 'i ' . ( $fractionNumeric ? $fraction . '/100 ' : self::_lessVariety($fraction) . ' ' ) . self::varietyVerbal(array('grosz', 'grosze', 'groszy'), $fraction) . ' ';
 
         return trim($txt);

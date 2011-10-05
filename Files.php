@@ -1,11 +1,13 @@
 <?php
-
 /**
+ * Files
  *
  * Klasa do obsługi plików/katalogów
  * Bazowane na zalacznik_helper z DOcFlow
- * @author bskrzypkowiak
  *
+ * @category	Mkphp
+ * @package	Files
+ * @author	bskrzypkowiak
  */
 class Files {
 
@@ -137,7 +139,7 @@ class Files {
      * @param array $sfile_array (tablica z plikami - sesyjna)
      * @param string form_uid (uid formularza)
      */
-    function isFileNameDuplicated($name, $create_date, $directory, $sfile_array, $form_uid) {
+    function isFileNameDuplicated($name, $create_date, $directory, array $sfile_array, $form_uid) {
 
         $file = $directory . $this->parseCreatedateToPath($create_date) . $form_uid . DIRECTORY_SEPARATOR . $name;
         if (is_file($file)) {

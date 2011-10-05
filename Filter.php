@@ -1,14 +1,16 @@
 <?php
-
 /**
- * Klasa: Filter
+ * Filter
  *
  * Filtrowanie danych
+ *
+ * @category	Mkphp
+ * @package	Filter
  */
 class Filter {
 
     /**
-     * Przekształca wybrane wartości pól w tablicy na wielkie litery
+     * Przeksztalca wybrane wartosci pól w tablicy na wielkie litery
      *
      * @param string field
      * @param string word
@@ -38,7 +40,7 @@ class Filter {
      *
      * @return float
      */
-    public static function getFloatFromStringArgument($argName, $args) {
+    public static function getFloatFromStringArgument($argName, array $args) {
         if (array_key_exists($argName, $args)) {
             return (float) str_replace(array(' ', '.', ',', ',-'), array('', '', '.', ''), $args[$argName]);
         } else {
@@ -118,7 +120,7 @@ class Filter {
      * @param mixed $defaultValue = ''
      * @return string
      */
-    public static function stringValue($argName, $args, $defaultValue='') {
+    public static function stringValue($argName, array $args, $defaultValue='') {
         return Validator::stringArgument($argName, $args) ? $args[$argName] : $defaultValue;
     }
 
@@ -134,7 +136,7 @@ class Filter {
      * @param boolean $canBeZero = false
      * @return integer
      */
-    public static function integerValue($argName, $args, $defaultValue=0, $canBeZero=false) {
+    public static function integerValue($argName, array $args, $defaultValue=0, $canBeZero=false) {
         return Validator::integerArgument($argName, $args, $canBeZero) ? (int) $args[$argName] : $defaultValue;
     }
     
@@ -149,7 +151,7 @@ class Filter {
      * @param mixed $defaultValue = 0
      * @return float
      */
-    public static function floatValue($argName, $args, $defaultValue=0) {
+    public static function floatValue($argName, array $args, $defaultValue=0) {
         return Validator::isNumeric($argName, $args) ? (float) $args[$argName] : $defaultValue;
     }
 
@@ -164,7 +166,7 @@ class Filter {
      * @param mixed $defaultValue = array()
      * @return array
      */
-    public static function jsonValue($argName, $args, $defaultValue=array()) {
+    public static function jsonValue($argName, array $args, $defaultValue=array()) {
         return Validator::isDefined($argName, $args) ?
                 ( ($args[$argName][0] == '{') ? json_decode($args[$argName], true) : $args[$argName] ) : $defaultValue;
     }

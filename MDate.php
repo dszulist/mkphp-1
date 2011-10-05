@@ -1,20 +1,24 @@
 <?php
-
 /**
+ * MDate
+ *
  * Klasa posiada metody do pracy z datami
  *
+ * @category	Mkphp
+ * @package	MDate
  */
 class MDate {
 
     /**
-     * Funkcja zwraca datę w takim formacie jaki sie poda w parametrze $format. Zwraca
-     * polskie nazwy miesięcy i dni.  
+     * Funkcja zwraca date w takim formacie jaki sie poda w parametrze $format. Zwraca
+     * polskie nazwy miesiecy i dni.  
      * 
      * @param string $format - Format daty jaki chcemy otrzymać. Dodatkowe parametry:
-     * 	l - zwraca polską nazwę tygodnia
-     * 	F - zwraca polską nazwe miesiąca
-     * 	f - zwraca polską nazwę miesiąca w przypadku Dopełniacz
+     * 	l - zwraca polska nazwe tygodnia
+     * 	F - zwraca polska nazwe miesiaca
+     * 	f - zwraca polska nazwe miesiaca w przypadku Dopelniacz
      * @param string/timestamp $timestamp - timestamp, bądź data w formacie Y-m-d lub Y-m-d H:i:s
+     * 
      * @return string
      */
     static function date($format, $timestamp) {
@@ -47,6 +51,7 @@ class MDate {
 
     /**
      * Sprawdza czy data jest w formacie Y-m-d lub Y-m-d H:i:s
+     * 
      * @param string $date
      * @return bool
      */

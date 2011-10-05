@@ -1,12 +1,13 @@
 <?php
-
 /**
- * Klasa: Validator
+ * Validator
  *
  * Weryfikacja danych
  *
- * @todo przerobiÄ‡ chociaÅ¼ czeÅ›Ä‡ na uÅ¼ycie Klas z Zend_Validator
- *
+ * @todo przerobiæ chociaÅ¼ czeœæ na u¿ycie Klas z Zend_Validator
+ * 
+ * @category	Mkphp
+ * @package	Validator
  */
 class Validator {
 

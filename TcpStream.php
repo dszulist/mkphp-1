@@ -1,14 +1,19 @@
 <?php
-
 /**
- * Klasa do obs艂gi tcp jako plik贸w
+ * TcpStream
+ *
+ * Klasa do obs砱i tcp jako plik體
  * pomaga przy sprawdzaniu file_exist etc.
  * na podstawie: http://www.php.net/manual/en/streamwrapper.url-stat.php
+ *
+ * @category	Mkphp
+ * @package	TcpStream
+ * @author	bskrzypkowiak
  */
 Class TcpStream {
 
     /**
-     * Sprawdzanie protoko艂u
+     * Sprawdzanie protoko硊
      * 
      * @param String $path
      * @param Integer $flags
@@ -17,7 +22,7 @@ Class TcpStream {
     public static function url_stat($path, $flags) {
 
         if (!stream_socket_client($path, $errno, $errstr, 10)) {
-            echo "Brak po艂膮czenia: \r\n$path \r\n $errstr";
+            echo "Brak po彻czenia: \r\n$path \r\n $errstr";
             return false;
         }
 
@@ -25,7 +30,7 @@ Class TcpStream {
     }
 
     /**
-     * Przy pr贸bie utworzenia pliku dla "tcp" nic nie tw贸rz i zwr贸膰 true
+     * Przy pr骲ie utworzenia pliku dla "tcp" nic nie tw髍z i zwr箧 true
      * 
      * @param String $path
      * @param Integer $mode
