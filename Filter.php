@@ -77,7 +77,6 @@ class Filter {
 		if (!is_numeric($amount)) {
 			return $amount;
 		}
-
 		$amount = number_format($amount, 2, ',', ' ');
 
 		if( $withCurrency ) {
