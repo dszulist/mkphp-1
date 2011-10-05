@@ -19,6 +19,7 @@ Class TcpStream {
             echo "Brak połączenia: \r\n$path \r\n $errstr";
             return false;
         }
+        
         return true;
     }
 	
