@@ -1,15 +1,14 @@
 <?php
 
-class mkphp_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum
-{
+class mkphp_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum {
+
     /**
      * Sets default option values for this instance
      *
      * @param  boolean $allowWhiteSpace
      * @return void
      */
-    public function __construct($allowWhiteSpace = false)
-    {
+    public function __construct($allowWhiteSpace = false) {
         parent::__construct($allowWhiteSpace);
     }
 
@@ -21,15 +20,14 @@ class mkphp_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum
      * @param  string $value
      * @return string
      */
-    public function filter($value)
-    {
+    public function filter($value) {
         $whiteSpace = $this->allowWhiteSpace ? '\s' : '';
         if (!self::$_unicodeEnabled) {
             // POSIX named classes are not supported, use alternative a-zA-Z0-9 match
             $pattern = '/[^a-zA-Z0-9_' . $whiteSpace . ']/';
         } else if (self::$_meansEnglishAlphabet) {
             //The Alphabet means english alphabet.
-            $pattern = '/[^a-zA-Z0-9_'  . $whiteSpace . ']/u';
+            $pattern = '/[^a-zA-Z0-9_' . $whiteSpace . ']/u';
         } else {
             //The Alphabet means each language's alphabet.
             $pattern = '/[^\p{L}\p{N}_' . $whiteSpace . ']/u';
@@ -37,4 +35,5 @@ class mkphp_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum
 
         return preg_replace($pattern, '', (string) $value);
     }
+
 }
