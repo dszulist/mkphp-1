@@ -78,7 +78,7 @@ class MK_Db_PDO_Singleton {
 			}
 			catch(PDOException $e) {
 				$debugMsg = $e->getMessage()."\n<pre>".str_replace(DB_PASS, '*HIDDEN*', $e->getTraceAsString())."</pre>";
-				Mk_GetDBErrors($debugMsg, $e->getFile(), strval($e->getLine()));
+				MK_Error::getDataBase($debugMsg, $e->getFile(), strval($e->getLine()));
 
 				$retArray =  array(
 					'success'	=> false,
@@ -89,13 +89,13 @@ class MK_Db_PDO_Singleton {
 					$retArray['debug'] = $debugMsg;
 				}
 				
-				if(isAjaxExecution(true)) {
+				if(MK::isAjaxExecution(true)) {
 					die(json_encode($retArray));
 				}
 				
 				echo $retArray['message'].PHP_EOL;
 				
-				if (MK_isDebugEnabled()) {
+				if (MK::isDebugEnabled()) {
 					echo $retArray['debug'].PHP_EOL;
 				}
 				die();

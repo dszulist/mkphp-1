@@ -1,15 +1,14 @@
 <?php
 /**
- * Files
+ * MK_Files
  *
  * Klasa do obsługi plików/katalogów
  * Bazowane na zalacznik_helper z DOcFlow
  *
- * @category	Mkphp
- * @package	Files
- * @author	bskrzypkowiak
+ * @category MK
+ * @package	MK_Files
  */
-class Files {
+class MK_Files {
 
     /**
      * metoda, ktora zwraca dzien, miesiac lub rok

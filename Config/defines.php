@@ -29,3 +29,28 @@ define('DEFAULT_SORT_COLUMN',		null);
 
 // cachowanie wsdl'i
 define('WSDL_CACHE_ENABLE',			false);
+
+// Konfigruacja zgaszania błędów
+define('ERROR_JS_ENABLED',			true);
+
+
+/**
+ * Stałe wymagane aby niektóre czesci MKPhp działały:
+ * 
+ *  define('DIR_SESSION',		'');
+ *  define('SESSION_SAVE_HANDLER,'');
+ *  define('DB_HOST', 			'');
+ *  define('DB_PORT', 			'');
+ *  define('DB_USER', 			'');
+ *  define('DB_PASS', 			'');
+ *  define('DB_NAME', 			''); 
+ *  define('DB_DEBUG', 			''); 
+ * 
+ */
+
+
+
+
+ 
+
+

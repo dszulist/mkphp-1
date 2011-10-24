@@ -1,8 +1,11 @@
 <?php
 /**
+ * MK_Exception
  *
  * Obsługa wyjątków dla JSON-a
  *
+ * @category MK
+ * @package	MK_Exception
  */
 class MK_Exception extends Exception {
 
@@ -11,8 +14,8 @@ class MK_Exception extends Exception {
 	 * Ignorowanie określonych klas z metodami
 	 */
 	private static $_traceIgnore = array(
-		'MK_ErrorHandler',
-		'MK_kShutdownFunction'
+		'MK_Error::handler',
+		'MK::shutdownFunction'
 	);
 
 

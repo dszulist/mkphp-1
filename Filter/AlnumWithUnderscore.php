@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 
+ */
 class MK_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum {
 
     /**

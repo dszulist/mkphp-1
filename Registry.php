@@ -13,21 +13,25 @@ class MK_Registry extends ArrayObject
 {
 	private static $_registry = null;
 
-
+	/**
+	 *
+	 * @param array $array
+	 * @param type $flags 
+	 */
 	public function __construct(array $array = array(), $flags = parent::ARRAY_AS_PROPS) {
 		parent::__construct($array, $flags);
 	}
 
 
 	/**
-	 *
-	 * Zwraca instancję rejestru
+	 * Zwraca instancję reestru
+	 * 
+	 * @return MK_Registry
 	 */
 	public static function getInstance() {
 		if (self::$_registry === null) {
 			self::setInstance(new MK_Registry());
 		}
-
 		return self::$_registry;
 	}
 
@@ -60,7 +64,6 @@ class MK_Registry extends ArrayObject
 		if (!$instance->offsetExists($index)) {
 			throw new MK_Exception('Nie istnieje wartość dla klucza ' . $index);
 		}
-
 		return $instance->offsetGet($index);
 	}
 
