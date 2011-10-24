@@ -1,6 +1,6 @@
 <?php
 
-class mkphp_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum {
+class MK_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum {
 
     /**
      * Sets default option values for this instance
