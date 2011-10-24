@@ -1,16 +1,16 @@
 <?php
 /**
- * TcpStream
+ * MK_Stream_Tcp
  *
  * Klasa do obsłgi tcp jako plików
  * pomaga przy sprawdzaniu file_exist etc.
  * na podstawie: http://www.php.net/manual/en/streamwrapper.url-stat.php
  *
- * @category	MK
- * @package	TcpStream
+ * @category MK
+ * @package	MK_Stream_Tcp
  * @author	bskrzypkowiak
  */
-Class TcpStream {
+Class MK_Stream_Tcp {
 
     /**
      * Sprawdzanie protokołu
@@ -30,7 +30,7 @@ Class TcpStream {
     }
 
     /**
-     * Przy pr�bie utworzenia pliku dla "tcp" nic nie twórz i zwróć true
+     * Przy próbie utworzenia pliku dla "tcp" nic nie twórz i zwróć true
      * 
      * @param String $path
      * @param Integer $mode
