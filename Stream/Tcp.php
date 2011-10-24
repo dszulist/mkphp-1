@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MK_Stream_Tcp
  *
@@ -6,39 +7,39 @@
  * pomaga przy sprawdzaniu file_exist etc.
  * na podstawie: http://www.php.net/manual/en/streamwrapper.url-stat.php
  *
- * @category MK
+ * @category MK_Steam
  * @package	MK_Stream_Tcp
  * @author	bskrzypkowiak
  */
 Class MK_Stream_Tcp {
 
-    /**
-     * Sprawdzanie protokołu
-     * 
-     * @param String $path
-     * @param Integer $flags
-     * @return Boolean
-     */
-    public static function url_stat($path, $flags) {
+	/**
+	 * Sprawdzanie protokołu
+	 * 
+	 * @param String $path
+	 * @param Integer $flags
+	 * @return Boolean
+	 */
+	public static function url_stat($path, $flags) {
 
-        if (!stream_socket_client($path, $errno, $errstr, 10)) {
-            echo "Brak połączenia: \r\n$path \r\n $errstr";
-            return false;
-        }
+		if (!stream_socket_client($path, $errno, $errstr, 10)) {
+			echo "Brak połączenia: \r\n$path \r\n $errstr";
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * Przy próbie utworzenia pliku dla "tcp" nic nie twórz i zwróć true
-     * 
-     * @param String $path
-     * @param Integer $mode
-     * @param Integer $options
-     * @return Boolean 
-     */
-    public static function mkdir($path, $mode, $options) {
-        return true;
-    }
+	/**
+	 * Przy próbie utworzenia pliku dla "tcp" nic nie twórz i zwróć true
+	 * 
+	 * @param String $path
+	 * @param Integer $mode
+	 * @param Integer $options
+	 * @return Boolean 
+	 */
+	public static function mkdir($path, $mode, $options) {
+		return true;
+	}
 
 }

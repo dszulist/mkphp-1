@@ -9,8 +9,8 @@
  * @package	MK_Registry
  * @author lwinnicki
  */
-class MK_Registry extends ArrayObject
-{
+class MK_Registry extends ArrayObject {
+
 	private static $_registry = null;
 
 	/**
@@ -21,7 +21,6 @@ class MK_Registry extends ArrayObject
 	public function __construct(array $array = array(), $flags = parent::ARRAY_AS_PROPS) {
 		parent::__construct($array, $flags);
 	}
-
 
 	/**
 	 * Zwraca instancję reestru
@@ -35,7 +34,6 @@ class MK_Registry extends ArrayObject
 		return self::$_registry;
 	}
 
-
 	/**
 	 * Tworzy instancję Rejestru
 	 *
@@ -48,7 +46,6 @@ class MK_Registry extends ArrayObject
 		}
 		self::$_registry = $registry;
 	}
-
 
 	/**
 	 * Zwraca wartość, o podanej nazwie, zapisaną w rejestrze.
@@ -67,7 +64,6 @@ class MK_Registry extends ArrayObject
 		return $instance->offsetGet($index);
 	}
 
-
 	/**
 	 * Wstawia podaną wartość do rejestru o podanym kluczu
 	 *
@@ -78,7 +74,6 @@ class MK_Registry extends ArrayObject
 		$instance = self::getInstance();
 		$instance->offsetSet($index, $value);
 	}
-
 
 	/**
 	 * Sprawdza czy istnieje wartość o podanym indeksie
@@ -92,7 +87,6 @@ class MK_Registry extends ArrayObject
 		}
 		return self::$_registry->offsetExists($index);
 	}
-
 
 	/**
 	 * (non-PHPdoc)

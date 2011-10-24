@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MK_Exception
  *
@@ -9,7 +10,6 @@
  */
 class MK_Exception extends Exception {
 
-
 	/**
 	 * Ignorowanie określonych klas z metodami
 	 */
@@ -17,7 +17,6 @@ class MK_Exception extends Exception {
 		'MK_Error::handler',
 		'MK::shutdownFunction'
 	);
-
 
 	/**
 	 *
@@ -27,10 +26,9 @@ class MK_Exception extends Exception {
 	 * @param array $arr
 	 * @return string
 	 */
-	private function _getValue( $name , $arr ){
+	private function _getValue($name, $arr) {
 		return isset($arr[$name]) ? $arr[$name] : '';
 	}
-
 
 	/**
 	 *
@@ -38,10 +36,10 @@ class MK_Exception extends Exception {
 	 *
 	 * @param string $dbError	- raport błędu bazy danych
 	 */
-	public function getExtendedMessage( $dbError='' ) {
+	public function getExtendedMessage($dbError='') {
 		$msg = '';
 
-		if( !empty($dbError) ) {
+		if (!empty($dbError)) {
 			$msg .= '<br /><b>Komunikat bazy:</b> ' . $dbError;
 		}
 
@@ -50,27 +48,29 @@ class MK_Exception extends Exception {
 		$msg .= '<br /><b>#' . $traceKey++ . '</b> ' . $this->getFile() . '(' . $this->getLine() . ')';
 
 		// Odwrócenie kolejności czytania tablicy ze śladami
-		$traceArray = array_reverse($this->getTrace(),true);
+		$traceArray = array_reverse($this->getTrace(), true);
 
-		foreach($traceArray as $trace) {
+		foreach ($traceArray as $trace) {
 			// Połączenie klasy,typu,metody
-			$classTypeFunction = $this->_getValue('class',$trace) . $this->_getValue('type',$trace) . $this->_getValue('function',$trace);
+			$classTypeFunction = $this->_getValue('class', $trace) . $this->_getValue('type', $trace) . $this->_getValue('function', $trace);
 
 			// Ignorowanie klas z metodami (self::$_traceIgnore)
-			if( in_array($classTypeFunction, self::$_traceIgnore) ) continue;
+			if (in_array($classTypeFunction, self::$_traceIgnore))
+				continue;
 
 			// Śledzenie pliku, wraz z wywoływaną klasą, metodą i argumentami:
-			$msg .= '<br /><b>#' . $traceKey++ . '</b> ' . $this->_getValue('file',$trace) . '(' . $this->_getValue('line',$trace) . '): <b>' . $classTypeFunction . '(</b>';
+			$msg .= '<br /><b>#' . $traceKey++ . '</b> ' . $this->_getValue('file', $trace) . '(' . $this->_getValue('line', $trace) . '): <b>' . $classTypeFunction . '(</b>';
 
 			// Odczytanie argumentów
-			if( isset($trace['args']) && count($trace['args']) > 0 ) {
-				foreach($trace['args'] as $argsKey=>$argsValue) {
-					$msg .= ($argsKey?' <b>,</b> ':' ');
-					$msg .= '<pre>'.print_r($argsValue,true).'</pre>';
+			if (isset($trace['args']) && count($trace['args']) > 0) {
+				foreach ($trace['args'] as $argsKey => $argsValue) {
+					$msg .= ($argsKey ? ' <b>,</b> ' : ' ');
+					$msg .= '<pre>' . print_r($argsValue, true) . '</pre>';
 				}
 			}
 			$msg .= ' <b>)</b>';
 		}
 		return $msg;
 	}
+
 }

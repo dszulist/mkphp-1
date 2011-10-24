@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MK_Db_PDO_Singleton
  *
@@ -10,40 +11,38 @@
  * @throws		MK_Db_Exception
  */
 class MK_Db_PDO_Singleton {
-
 	CONST MESSAGE_ERROR_LOG = 'Błąd przy tworzenia logów w rejestrze zdarzeń';
 	CONST MESSAGE_ERROR_RESULTS = 'Błąd przy wysyłaniu zapytania do bazy danych';
 	CONST MESSAGE_ERROR_SEQUENCE = 'Nieprawidłowa wartość sekwencji - operacja przerwana';
 
 	CONST MESSAGE_SUCCESS_SAVE = 'Pomyślnie zapisano zmiany';
 	CONST MESSAGE_SUCCESS_DELETE = 'Pomyślnie usunięto rekord';
-	
-	
-   /**
-	* Instance of singleton class (in our case it’s the database connection)
-	*
-	* @access private
-	* @var object
-	* @static
-	*/
-	static $singleton;
 
 
 	/**
-	*
-	* Singleton pattern for database connection
-	*
-	* @return PDO
-	* @access public
-	* @static
-	*/
+	 * Instance of singleton class (in our case it’s the database connection)
+	 *
+	 * @access private
+	 * @var object
+	 * @static
+	 */
+	static $singleton;
+
+	/**
+	 *
+	 * Singleton pattern for database connection
+	 *
+	 * @return PDO
+	 * @access public
+	 * @static
+	 */
 	static public function getInstance() {
 		$connectStatus = true;
 
-		if(!is_object(self::$singleton)) {
+		if (!is_object(self::$singleton)) {
 
 			// Przygotowanie połączenia
-			$dsn = 'pgsql:host='.DB_HOST.';port='.DB_PORT.';dbname='.DB_NAME;
+			$dsn = 'pgsql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME;
 
 			try {
 
@@ -74,29 +73,27 @@ class MK_Db_PDO_Singleton {
 
 				///@TODO ogarnąć DEBUG
 				//self::$singleton->debugDumpParams(DB_DEBUG);
-
-			}
-			catch(PDOException $e) {
-				$debugMsg = $e->getMessage()."\n<pre>".str_replace(DB_PASS, '*HIDDEN*', $e->getTraceAsString())."</pre>";
+			} catch (PDOException $e) {
+				$debugMsg = $e->getMessage() . "\n<pre>" . str_replace(DB_PASS, '*HIDDEN*', $e->getTraceAsString()) . "</pre>";
 				MK_Error::getDataBase($debugMsg, $e->getFile(), strval($e->getLine()));
 
-				$retArray =  array(
-					'success'	=> false,
-					'message'	=> self::MESSAGE_ERROR_RESULTS
+				$retArray = array(
+					'success' => false,
+					'message' => self::MESSAGE_ERROR_RESULTS
 				);
 
 				if (DEVELOPER === true) {
 					$retArray['debug'] = $debugMsg;
 				}
-				
-				if(MK::isAjaxExecution(true)) {
+
+				if (MK::isAjaxExecution(true)) {
 					die(json_encode($retArray));
 				}
-				
-				echo $retArray['message'].PHP_EOL;
-				
+
+				echo $retArray['message'] . PHP_EOL;
+
 				if (MK::isDebugEnabled()) {
-					echo $retArray['debug'].PHP_EOL;
+					echo $retArray['debug'] . PHP_EOL;
 				}
 				die();
 			}

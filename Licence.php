@@ -14,6 +14,10 @@ class MK_Licence {
 
 	/**
 	 * Sprawdanie licencji
+	 * 
+	 * @param String $licence
+	 * @param String $statusInconsistencyLicenseKey
+	 * @return type 
 	 */
 	function verify($licence, $statusInconsistencyLicenseKey) {
 
@@ -32,6 +36,8 @@ class MK_Licence {
 	/**
 	 * Sprawdzanie czy jest aktywne wsparcie techniczne, oraz czy jest poprawna sygnatura licencji
 	 *
+	 * @param String $taskListPathFile
+	 * @param String $licence 
 	 * @throws MK_Exception
 	 */
 	function canUpgrade($taskListPathFile, $licence) {
@@ -62,7 +68,7 @@ class MK_Licence {
 	/**
 	 * Sprawdza popeawność sygnatury licencji
 	 *
-	 * @param String $spirbLicence
+	 * @param String $licence
 	 * @return Boolean
 	 */
 	function isValidSignature($licence) {
