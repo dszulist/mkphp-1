@@ -9,12 +9,16 @@ MK::checkApplicationState();
 
 // wylaczenie cachowania wsdl'a
 ini_set("soap.wsdl_cache_enabled", WSDL_CACHE_ENABLE);
+
 // ustawienie strefy czasowej
 date_default_timezone_set(TIMEZONE);
+
 // do polskich nazw dat w kalendarzu
 setlocale(LC_TIME, LOCALE_TIME);
+
 // do "." w liczbach, a nie ","
 setlocale(LC_NUMERIC, LOCALE_NUMERIC);
+
 // rejestracja wrapperów
 stream_wrapper_register("tcp", "MK_Stream_Tcp");
 
@@ -25,7 +29,7 @@ if (MK::isDebugEnabled()) {
 	//@TODO sprawdzic ten klucz sesji i obsłużyć
 	$_SESSION['sql_last_time'] = microtime(true);
 }
-// #EO Debugging
+
 // #ErrorHandling
 $isCLI = MK::isCLIExecution(true, empty($argv) ? array() : $argv);
 error_reporting(DEVELOPER || $isCLI ? (E_ALL | E_STRICT) : '');
@@ -44,7 +48,7 @@ if ($isCLI === true) {
 if (ERROR_JS_ENABLED) {
 	MK_Error::getJavaScript();
 }
-// #EO ErrorHandling
+
 // #SessionHandling
 ini_set('session.entropy_length', 16);
 ini_set('session.entropy_file', '/dev/urandom');
@@ -54,4 +58,3 @@ ini_set('session.save_handler', SESSION_SAVE_HANDLER);
 
 session_save_path(DIR_SESSION);
 session_set_cookie_params(0, COOKIES_PATH);
-// #EO SessionHandling

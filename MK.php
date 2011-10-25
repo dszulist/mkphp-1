@@ -53,6 +53,7 @@ class MK {
 	 * @return Boolean
 	 */
 	public static function executeCLICommand(array $argv=array()) {
+		//@TODO kontroller console z MK
 		$consoleController = new ConsoleController();
 		$opts = getopt('m::');
 
