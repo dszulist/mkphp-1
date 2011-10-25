@@ -20,7 +20,7 @@ class MK_Error {
 	 * @param String	 $file
 	 * @param Integer 	 $line
 	 * @param Array 	 $errcontext
-	 * 
+	 *
 	 * @return Boolean
 	 */
 	public static function handler($type, $message="", $file="", $line="", array $errcontext=array()) {
@@ -73,7 +73,7 @@ class MK_Error {
 
 		$userLogin = 'Brak informacji';
 		$userId = 'Brak informacji';
-		//@TODO - ugryźć jako parametruyzacja czy cos :)		
+		//@TODO - ugryźć jako parametruyzacja czy cos :)
 		//	if(!UserSingleton::getInstance()->isLogged()) {
 		//		$userLogin = 'Brak informacji';
 		//		$userId = 'Brak informacji';
@@ -163,4 +163,3 @@ class MK_Error {
 	}
 
 }
-

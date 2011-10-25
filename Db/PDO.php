@@ -401,7 +401,7 @@ class MK_Db_PDO {
 		if ($commit && $this->_transOk) {
 			if(!$this->db->commit()) {
 				$this->_transOk = false;
-				throw new MK_Db_Exception('transakcja nie powiodła się');
+				throw new MK_Db_Exception('Transakcja nie powiodła się');
 			}
 		}
 		else {
