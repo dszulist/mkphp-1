@@ -46,7 +46,6 @@ class MK_Error {
 				. 'From: ' . PHP_ERROR_EMAIL_ADDRESS . "\n";
 
 		if (DEVELOPER === true) {
-			require_once MK_PATH . DIRECTORY_SEPARATOR . 'Exception.php';
 			throw new MK_Exception($email);
 		} else {
 			//error_log($email, 1, PHP_ERROR_EMAIL_ADDRESS, $headers);
