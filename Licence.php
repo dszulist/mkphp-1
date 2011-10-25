@@ -14,20 +14,19 @@ class MK_Licence {
 
 	/**
 	 * Sprawdanie licencji
-	 * 
+	 *
 	 * @param String $licence
 	 * @param String $statusInconsistencyLicenseKey
-	 * @return type 
+	 * @return type
 	 */
 	function verify($licence, $statusInconsistencyLicenseKey) {
-
 		if (DEVELOPER === true) {
 			return true;
 		}
 
 		$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
 
-		if (!$this->isValidSignature($spirbLicence)
+		if (!$this->isValidSignature($licence)
 				|| ( $statusInconsistencyLicenseKey == 'stop_application' && strtotime($expireDate) < strtotime(date('Y-m-d')))) {
 			throw new MK_Exception('Błąd krytyczny. Niezgodna sygnatura licencji! <br/> Skontaktuj się z administratorem.');
 		}
@@ -37,11 +36,10 @@ class MK_Licence {
 	 * Sprawdzanie czy jest aktywne wsparcie techniczne, oraz czy jest poprawna sygnatura licencji
 	 *
 	 * @param String $taskListPathFile
-	 * @param String $licence 
+	 * @param String $licence
 	 * @throws MK_Exception
 	 */
 	function canUpgrade($taskListPathFile, $licence) {
-
 		if (!empty($taskListPathFile)) {
 
 			if ($this->isSupportActive($licence)) {
@@ -72,7 +70,6 @@ class MK_Licence {
 	 * @return Boolean
 	 */
 	function isValidSignature($licence) {
-
 		$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
 		//20121231.md5($expireDate . ' ' . exec('hostname') . ' ' . SITE_PATH);
 		$validLicence = str_replace('-', '', $expireDate) . md5($expireDate . ' ' . exec('hostname') . ' ' . SITE_PATH);
