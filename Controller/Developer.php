@@ -20,7 +20,7 @@ class MK_Controller_Developer {
 		$msg = '';
 		if (array_key_exists('APP_DEBUG', $_SESSION) && $_SESSION['APP_DEBUG'] === true) {
 			unset($_SESSION['APP_DEBUG']);
-			setcookie('XDEBUG_SESSION', '', time() - 24 * 3600, COOKIES_PATH);
+			setcookie('XDEBUG_SESSION', '', time() - 86400, COOKIES_PATH);
 			$msg = 'Wyłączono';
 		} else {
 			$_SESSION['APP_DEBUG'] = true;
