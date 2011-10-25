@@ -31,7 +31,7 @@ if (MK::isDebugEnabled()) {
 }
 
 // #ErrorHandling
-$isCLI = MK::isCLIExecution(true, empty($argv) ? array() : $argv);
+$isCLI = MK::isCLIExecution(false, empty($argv) ? array() : $argv);
 error_reporting(DEVELOPER || $isCLI ? (E_ALL | E_STRICT) : '');
 ini_set('display_errors', DEVELOPER || $isCLI ? 'on' : 'off');
 
