@@ -13,13 +13,14 @@ class MK_Db_PDO {
 
 	CONST ERROR_LOG = 'error_log';
 	CONST ERROR_RESULTS = 'error_results';
-	
+
 	CONST MESSAGE_ERROR_LOG = 'Błąd przy tworzenia logów w rejestrze zdarzeń';
 	CONST MESSAGE_ERROR_RESULTS = 'Błąd przy wysyłaniu zapytania do bazy danych';
 	CONST MESSAGE_ERROR_SEQUENCE = 'Nieprawidłowa wartość sekwencji - operacja przerwana';
 
 	CONST MESSAGE_SUCCESS_SAVE = 'Pomyślnie zapisano zmiany';
 	CONST MESSAGE_SUCCESS_DELETE = 'Pomyślnie usunięto rekord';
+	
 	/**
 	 * Informuje ile transakcji jest otwartych
 	 *
