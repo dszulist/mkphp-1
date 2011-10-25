@@ -46,7 +46,7 @@ class MK_Error {
 				. 'From: ' . PHP_ERROR_EMAIL_ADDRESS . "\n";
 
 		if (DEVELOPER === true) {
-			throw new MK_Exception($email);
+			exit($email);
 		} else {
 			//error_log($email, 1, PHP_ERROR_EMAIL_ADDRESS, $headers);
 			mail(PHP_ERROR_EMAIL_ADDRESS, $subject, $email, $headers);
@@ -54,7 +54,7 @@ class MK_Error {
 
 		// Tutaj zwracamy informacje dla uzytkownika - w tym przypadku wyrzucamy wyjatek ktory zwróci jsona z informacja o obedzie ktora zostanie wyswietlana uzytkownikowi w postaci okna z błędem
 		if (($type !== E_NOTICE) && ($type < 2048)) {
-			throw new MK_Exception('Błąd! Prosze spróbować jeszcze raz.');
+			exit('Błąd! Prosze spróbować jeszcze raz.');
 		}
 
 		return false;
