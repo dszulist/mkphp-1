@@ -20,7 +20,7 @@ class MK_Db_PDO {
 
 	CONST MESSAGE_SUCCESS_SAVE = 'Pomyślnie zapisano zmiany';
 	CONST MESSAGE_SUCCESS_DELETE = 'Pomyślnie usunięto rekord';
-	
+
 	/**
 	 * Informuje ile transakcji jest otwartych
 	 *
@@ -1021,6 +1021,9 @@ class MK_Db_PDO {
 	 * @param Array $params - parametry zapytania (dane)
 	 */
 	public function fireBugSqlDump($dumpName, $sql="", array $params=array(), $execTime=0) {
+		if( defined('STDIN') ) {
+			return;
+		}
 		if (DEVELOPER === true || ( isset($_SESSION['APP_DEBUG']) && $_SESSION['APP_DEBUG'] === true )) {
 			// Odczytanie klasy i metody, w której wyświetlony zostanie komunikat
 			$className = get_class($this);
@@ -1053,18 +1056,18 @@ class MK_Db_PDO {
 				// Debugowanie dodatkowych informacji (utworzenie połączenia, otwarcie/zamknięcie transakcji)
 				if (DB_DEBUG) {
 					FB::info((object) array(
-								'OPERATION' => $dumpName,
-								'BACKTRACE' => $traceArr
-							), "INFO ({$sqlTime} [+{$sqlTimeDiff}]) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
+						'OPERATION' => $dumpName,
+						'BACKTRACE' => $traceArr
+					), "INFO ({$sqlTime} [+{$sqlTimeDiff}]) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
 				}
 			} else {
 				FB::warn((object) array(
-							'OPERATION' => $dumpName,
-							'SQL+PARAMS' => $this->_sqlFormat($this->_prepareFullQuery($sql, $params)),
-							'SQL' => "\n" . $sql . "\n",
-							'PARAMS' => $params,
-							'BACKTRACE' => $traceArr
-						), "SQL ({$sqlTime} [+{$sqlTimeDiff}ms] {{$execTime}ms}) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
+					'OPERATION' => $dumpName,
+					'SQL+PARAMS' => $this->_sqlFormat($this->_prepareFullQuery($sql, $params)),
+					'SQL' => "\n" . $sql . "\n",
+					'PARAMS' => $params,
+					'BACKTRACE' => $traceArr
+				), "SQL ({$sqlTime} [+{$sqlTimeDiff}ms] {{$execTime}ms}) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
 			}
 		}
 	}
