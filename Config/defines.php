@@ -18,7 +18,7 @@ define('FILE_APP_LOCK',				'under_construction.txt');
 define('FILE_MTM',					'/var/lib/mtm/task.list');
 define('FILE_MTM_LOCK',				'/tmp/mtm_task.lock');
 
-//	Sciezki do aplikacji zewnetrznych 
+//	Sciezki do aplikacji zewnetrznych
 define('EXEC_MINIFY',				'/opt/yuicompressor-2.4.6/build/yuicompressor-2.4.6.jar');
 
 //	Domyślna konfiguracja systemu
@@ -36,21 +36,14 @@ define('ERROR_JS_ENABLED',			true);
 
 /**
  * Stałe wymagane aby niektóre czesci MKPhp działały:
- * 
+ *
  *  define('DIR_SESSION',		'');
  *  define('SESSION_SAVE_HANDLER,'');
  *  define('DB_HOST', 			'');
  *  define('DB_PORT', 			'');
  *  define('DB_USER', 			'');
  *  define('DB_PASS', 			'');
- *  define('DB_NAME', 			''); 
- *  define('DB_DEBUG', 			''); 
- * 
+ *  define('DB_NAME', 			'');
+ *  define('DB_DEBUG', 			'');
+ *
  */
-
-
-
-
- 
-
-
