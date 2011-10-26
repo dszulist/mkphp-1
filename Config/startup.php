@@ -23,7 +23,7 @@ setlocale(LC_NUMERIC, LOCALE_NUMERIC);
 stream_wrapper_register("tcp", "MK_Stream_Tcp");
 
 // #Debuging
-if (MK::isDebugEnabled()) {
+if (MK::isDebugEnabled() && !defined('STDIN')) {
 	require ('libs/FirePHPCore/FirePHP.class.php');
 	require ('libs/FirePHPCore/fb.php');
 	//@TODO sprawdzic ten klucz sesji i obsłużyć
