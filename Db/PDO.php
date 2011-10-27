@@ -40,7 +40,6 @@ class MK_Db_PDO {
 	protected $db = null;
 
 	public function __construct(){
-		$this->_prepareSortParam();
 		// Uruchomienie licznika uruchamiania zapytania SQL
 		$timeStart = microtime(true);
 
@@ -719,6 +718,7 @@ class MK_Db_PDO {
 		// Sprawdzenie pierwszego elementu tablicy
 		// Pobranie z rejestru, jeśli jest pusty
 		if( $sortArray[0] === false ) {
+			$this->_prepareSortParam();
 			$sortArray[0] = MK_Registry::get('sort');
 			if( empty($sortArray[0]) ) {
 				return '';
