@@ -9,8 +9,8 @@ define('LOCALE_TIME',				'pl_PL.UTF-8');
 define('LOCALE_NUMERIC',			'en_US');
 define('TIMEZONE',					'Europe/Warsaw');
 define('HEADER',					'Content-Type: text/html; charset=utf-8');
-define('PHP_ERROR_EMAIL_ADDRESS',	'error@madkom.pl');
-define('SQL_ERROR_EMAIL_ADDRESS',	'error@madkom.pl');
+define('PHP_ERROR_EMAIL_ADDRESS',	defined('APP_PHP_ERROR_EMAIL_ADDRESS') ? APP_PHP_ERROR_EMAIL_ADDRESS : 'error@madkom.pl');
+define('SQL_ERROR_EMAIL_ADDRESS',	defined('APP_SQL_ERROR_EMAIL_ADDRESS') ? APP_SQL_ERROR_EMAIL_ADDRESS : 'error@madkom.pl');
 define('COOKIES_PATH',				dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
 
 //	Ścieżki do plików wykorzystywanych przez aplikacjie

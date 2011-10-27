@@ -11,8 +11,8 @@ class MK {
 
 	/**
 	 * Autoloader dla MKPhp
-	 * 
-	 * @param String $className 
+	 *
+	 * @param String $className
 	 * @return Boolean
 	 */
 	public static function _autoload($className) {
@@ -26,8 +26,8 @@ class MK {
 
 	/**
 	 * Sprawdza czy w aplikacji jest włączone "debugowanie"
-	 * 
-	 * @return Boolean 
+	 *
+	 * @return Boolean
 	 */
 	public static function isDebugEnabled() {
 		return (DEVELOPER === true || (isset($_SESSION['APP_DEBUG']) && $_SESSION['APP_DEBUG'] === true));
@@ -40,9 +40,7 @@ class MK {
 	public static function shutdownFunction() {
 		$error = error_get_last();
 		if (!empty($error)) {
-			MK_Error::handler(
-					isset($error['type']) ? $error['type'] : null, isset($error['message']) ? $error['message'] : null, isset($error['file']) ? $error['file'] : null, isset($error['line']) ? $error['line'] : null
-			);
+			MK_Error::handler(isset($error['type']) ? $error['type'] : null, isset($error['message']) ? $error['message'] : null, isset($error['file']) ? $error['file'] : null, isset($error['line']) ? $error['line'] : null);
 		}
 	}
 
@@ -139,4 +137,3 @@ class MK {
 	}
 
 }
-
