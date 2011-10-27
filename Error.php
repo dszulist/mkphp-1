@@ -113,7 +113,7 @@ class MK_Error {
 		if (isset($_SERVER["REQUEST_URI"])) {
 			$email .= '<tr><td><strong>REQUEST_URI:</strong></td><td>' . $_SERVER["REQUEST_URI"] . '</td></tr>';
 		}
-		if(defined('SITE_PATH')) {
+		if (defined('SITE_PATH')) {
 			$email .= '<tr><td><strong>SITE_PATH:</strong></td><td>' . SITE_PATH . '</td></tr>';
 		}
 		if (isset($_SERVER["HTTP_USER_AGENT"])) {
@@ -164,7 +164,7 @@ class MK_Error {
 				. 'From: ' . PHP_ERROR_EMAIL_ADDRESS . "\n"
 				. 'Reply-To: ' . PHP_ERROR_EMAIL_ADDRESS . "\n";
 
-		if (DEVELOPER === true) {
+		if (DEVELOPER !== true) {
 			return $email;
 		}
 
@@ -204,9 +204,12 @@ class MK_Error {
 				. 'From: ' . SQL_ERROR_EMAIL_ADDRESS . "\n"
 				. 'Reply-To: ' . SQL_ERROR_EMAIL_ADDRESS . "\n";
 
-		if (DEVELOPER !== true) {
-			mail(SQL_ERROR_EMAIL_ADDRESS, $subject, $email, $headers);
+		if (DEVELOPER === true) {
+			return $email;
 		}
+
+		mail(SQL_ERROR_EMAIL_ADDRESS, $subject, $email, $headers);
+		return false;
 	}
 
 	/**
@@ -230,9 +233,12 @@ class MK_Error {
 					. 'From: ' . PHP_ERROR_EMAIL_ADDRESS . "\n"
 					. 'Reply-To: ' . PHP_ERROR_EMAIL_ADDRESS . "\n";
 
-			if (DEVELOPER !== true) {
-				mail(PHP_ERROR_EMAIL_ADDRESS, $subject, $email, $headers);
+			if (DEVELOPER === true) {
+				return $email;
 			}
+
+			mail(PHP_ERROR_EMAIL_ADDRESS, $subject, $email, $headers);
+			return false;
 		}
 	}
 
