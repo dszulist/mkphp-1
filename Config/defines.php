@@ -1,6 +1,6 @@
 <?php
 
-define('DEVELOPER',					false);
+define('DEVELOPER',					true);
 define('MK_PATH',					realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
 
 define('DEFAULT_LANG',				'pl');
@@ -45,5 +45,7 @@ define('ERROR_JS_ENABLED',			true);
  *  define('DB_PASS', 			'');
  *  define('DB_NAME', 			'');
  *  define('DB_DEBUG', 			'');
+ *  define('APP_PHP_ERROR_EMAIL_ADDRESS',	'');
+ *  define('APP_SQL_ERROR_EMAIL_ADDRESS',	'');
  *
  */
