@@ -395,18 +395,30 @@ class MK_Db_PDO {
 	 */
 	public function transComplete( $commit = true ) {
 		$this->fireBugSqlDump("transComplete");
+
 		if ($this->_transCounter > 1) {
+			// Transakcja jest w innej transakcji, zamykanie bloku transakcji
 			$this->_transCounter--;
 			return true;
 		}
-		if( $this->_transCounter == 1 ) {
+		else if( $this->_transCounter == 1 ) {
+			// Transakcja jest do zamknięcia
 			$tableLogsDb = new TableLogsDb();
 			$tableLogsDb->closeConnectionForTableLog();
+			$this->_transCounter = 0;
 		}
-		$this->_transCounter = 0;
+		else if( $this->_transCounter == 0 ) {
+			// Transakcja nie była uruchomiona
+			return false;
+		}
+		else {
+			// Do takiego błędu nie powinno w ogóle dojść, ale należałoby się przed tym zabezpieczyć...
+			throw new MK_Db_Exception('Transakcja wywołała niespodziewany błąd. Poinformuj administratora systemu.');
+		}
+
 		/**
-		 *   true  - COMMIT
-	 	 *   false - ROLLBACK
+		 * true  - COMMIT
+	 	 * false - ROLLBACK
 		 */
 		if ($commit && $this->_transOk) {
 			if(!$this->db->commit()) {
@@ -426,10 +438,11 @@ class MK_Db_PDO {
 	/**
 	 * Zablokowanie COMMIT dla danej transakcji.
 	 * Ustawienie $this->_transOK = false
-	 * DB->CompleteTrans() cofnie wszystkie transakcje.
+	 * Cofnięcie całej transakcji (wymuszenie rollBack)
 	 */
 	public function transFail() {
 		$this->_transOk = false;
+		$this->transComplete(false);
 	}
 
 
