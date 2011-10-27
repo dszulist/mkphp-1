@@ -1,16 +1,16 @@
 <?php
 
 /**
- * MK_Webservice_LiveDocX
+ * MK_Soap_Client_LiveDocX
  * 
  * Klasa do obsługi webservice LiveDOcX
  * Obsługa konwersji dokumentów z możliwością konwertowania całego katalogu
  *
- * @category	MK_Webservice
- * @package		MK_Webservice_LiveDocX
+ * @category	MK_Soap
+ * @package		MK_Soap_Client_LiveDocX
  * @author		bskrzypkowiak
  */
-class MK_Webservice_LiveDocX {
+class MK_Soap_Client_LiveDocX {
 
 	private $_sourceDirectory = '';
 	private $_destinationDirectory = '';
