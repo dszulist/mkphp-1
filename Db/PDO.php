@@ -11,13 +11,6 @@
  * @throws		MK_Db_Exception
  */
 class MK_Db_PDO {
-	CONST ERROR_LOG = 'error_log';
-	CONST ERROR_RESULTS = 'error_results';
-
-	CONST MESSAGE_ERROR_LOG = 'Błąd przy tworzenia logów w rejestrze zdarzeń';
-	CONST MESSAGE_ERROR_RESULTS = 'Błąd przy wysyłaniu zapytania do bazy danych';
-	CONST MESSAGE_ERROR_SEQUENCE = 'Nieprawidłowa wartość sekwencji - operacja przerwana';
-
 	CONST MESSAGE_SUCCESS_SAVE = 'Pomyślnie zapisano zmiany';
 	CONST MESSAGE_SUCCESS_DELETE = 'Pomyślnie usunięto rekord';
 
@@ -90,13 +83,13 @@ class MK_Db_PDO {
 		if (count($params) > 0) {
 			$pdoObj = $this->db->prepare($sql);
 			if ($pdoObj->execute($params) === false) {
-				throw new MK_Db_Exception(self::MESSAGE_ERROR_RESULTS);
+				throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 			}
 			$affectedRows = $pdoObj->rowCount();
 		} else {
 			$results = $this->db->exec($sql);
 			if ($results === false) {
-				throw new MK_Db_Exception(self::MESSAGE_ERROR_RESULTS);
+				throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 			}
 			$affectedRows = $results;
 		}
@@ -133,7 +126,7 @@ class MK_Db_PDO {
 
 		// Wykonanie zapytania SQL
 		if ($pdoObj->execute($params) === false) {
-			throw new MK_Db_Exception(self::MESSAGE_ERROR_RESULTS);
+			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 
 		// Odczytanie odpowiedzi (string)
@@ -177,7 +170,7 @@ class MK_Db_PDO {
 
 		// Wykonanie zapytania SQL
 		if ($pdoObj->execute($params) === false) {
-			throw new MK_Db_Exception(self::MESSAGE_ERROR_RESULTS);
+			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 		// Odczytanie odpowiedzi (array)
 		$resArray = $pdoObj->fetchAll(PDO::FETCH_COLUMN);
@@ -219,7 +212,7 @@ class MK_Db_PDO {
 
 		// Wykonanie zapytania SQL
 		if ($pdoObj->execute($params) === false) {
-			throw new MK_Db_Exception(self::MESSAGE_ERROR_RESULTS);
+			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 		// Odczytanie odpowiedzi (array)
 		$resArray = $pdoObj->fetch();
@@ -264,7 +257,7 @@ class MK_Db_PDO {
 
 		// Wykonanie zapytania SQL
 		if ($pdoObj->execute($params) === false) {
-			throw new MK_Db_Exception(self::MESSAGE_ERROR_RESULTS);
+			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 
 		// Odczytanie odpowiedzi (array)
@@ -311,7 +304,7 @@ class MK_Db_PDO {
 
 		// Wykonanie zapytania SQL
 		if ($pdoObj->execute() === false) {
-			throw new MK_Db_Exception(self::MESSAGE_ERROR_RESULTS);
+			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 
 		// Odczytanie odpowiedzi (array)
@@ -321,7 +314,7 @@ class MK_Db_PDO {
 		// ponieważ wartość sekwencji jest nieprawidłowa przez co dane zostałyby
 		// zapisane w bazie danych w nieodpowiedni sposób.
 		if ($resValue === false) {
-			throw new MK_Db_Exception(self::MESSAGE_ERROR_SEQUENCE);
+			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_SEQUENCE);
 		}
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a

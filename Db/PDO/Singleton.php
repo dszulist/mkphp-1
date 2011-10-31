@@ -11,13 +11,8 @@
  * @throws		MK_Db_Exception
  */
 class MK_Db_PDO_Singleton {
-	CONST MESSAGE_ERROR_LOG = 'Błąd przy tworzenia logów w rejestrze zdarzeń';
 	CONST MESSAGE_ERROR_RESULTS = 'Błąd przy wysyłaniu zapytania do bazy danych';
 	CONST MESSAGE_ERROR_SEQUENCE = 'Nieprawidłowa wartość sekwencji - operacja przerwana';
-
-	CONST MESSAGE_SUCCESS_SAVE = 'Pomyślnie zapisano zmiany';
-	CONST MESSAGE_SUCCESS_DELETE = 'Pomyślnie usunięto rekord';
-
 
 	/**
 	 * Instance of singleton class (in our case it’s the database connection)
@@ -79,7 +74,7 @@ class MK_Db_PDO_Singleton {
 
 				$retArray = array(
 					'success' => false,
-					'message' => self::MESSAGE_ERROR_RESULTS
+					'message' => MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS
 				);
 
 				if (DEVELOPER === true) {
