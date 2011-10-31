@@ -13,18 +13,18 @@ class MK_Controller_Developer {
 
 	/**
 	 * Włączaja/Wyłącza debbuging firephp oraz xdebug
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function enableDebug() {
 		$msg = '';
 		if (array_key_exists('APP_DEBUG', $_SESSION) && $_SESSION['APP_DEBUG'] === true) {
 			unset($_SESSION['APP_DEBUG']);
-			setcookie('XDEBUG_SESSION', '', time() - 86400, COOKIES_PATH);
+			MK_Cookie::clear('XDEBUG_SESSION');
 			$msg = 'Wyłączono';
 		} else {
 			$_SESSION['APP_DEBUG'] = true;
-			setcookie('XDEBUG_SESSION', 'netbeans-xdebug', 0, COOKIES_PATH);
+			MK_Cookie::set('XDEBUG_SESSION', 'netbeans-xdebug', 0);
 			$msg = 'Włączono';
 		}
 

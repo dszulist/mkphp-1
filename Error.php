@@ -322,7 +322,7 @@ EOF;
 	public static function getJavaScript() {
 		if (isset($_COOKIE['ys-javascriptErrorLog'])) {
 			$errorObject = json_decode(substr($_COOKIE['ys-javascriptErrorLog'], 2));
-			setcookie('ys-javascriptErrorLog', '', time() - 86400, COOKIES_PATH);
+			MK_Cookie::clear('ys-javascriptErrorLog');
 
 			$emailMsg = MK_Error::prepareMailMsg('JavaScript') . "\n"
 					. '<table width="100%" border="1">'
