@@ -1,5 +1,4 @@
 <?php
-
 define('DEVELOPER',					false);
 define('MK_PATH',					realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
 
@@ -11,14 +10,15 @@ define('TIMEZONE',					'Europe/Warsaw');
 define('HEADER',					'Content-Type: text/html; charset=utf-8');
 define('PHP_ERROR_EMAIL_ADDRESS',	defined('APP_PHP_ERROR_EMAIL_ADDRESS') ? APP_PHP_ERROR_EMAIL_ADDRESS : 'error@madkom.pl');
 define('SQL_ERROR_EMAIL_ADDRESS',	defined('APP_SQL_ERROR_EMAIL_ADDRESS') ? APP_SQL_ERROR_EMAIL_ADDRESS : 'error@madkom.pl');
+define('DIR_ERRORS',				defined('APP_DIR_ERRORS') ? APP_DIR_ERRORS : '/tmp/app_errors');
 define('COOKIES_PATH',				dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
 
-//	Ścieżki do plików wykorzystywanych przez aplikacjie
+//	Ścieżki do plików wykorzystywanych przez aplikacje
 define('FILE_APP_LOCK',				'under_construction.txt');
 define('FILE_MTM',					'/var/lib/mtm/task.list');
 define('FILE_MTM_LOCK',				'/tmp/mtm_task.lock');
 
-//	Sciezki do aplikacji zewnetrznych
+//	Ścieżki do aplikacji zewnetrznych
 define('EXEC_MINIFY',				'/opt/yuicompressor-2.4.6/build/yuicompressor-2.4.6.jar');
 
 //	Domyślna konfiguracja systemu
@@ -27,7 +27,7 @@ define('DEFAULT_START',				0);
 define('DEFAULT_SORT_DIRECTION',	'ASC');
 define('DEFAULT_SORT_COLUMN',		null);
 
-// cachowanie wsdl'i
+// Cacheowanie wsdl'i
 define('WSDL_CACHE_ENABLE',			false);
 
 // Konfigruacja zgaszania błędów

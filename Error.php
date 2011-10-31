@@ -11,6 +11,8 @@
  */
 class MK_Error {
 
+	private static $_mailAdmin = 'Szczegółowy komunikat został wysłany do Administratora.';
+
 	/**
 	 * Ignorowanie określonych klas z metodami
 	 */
@@ -26,6 +28,96 @@ class MK_Error {
 	 */
 	public static function setMoreTraceIgnorePath($tracePath) {
 		self::$_traceIgnorePath = array_merge(self::$_traceIgnorePath, $tracePath);
+	}
+
+	/**
+	 * Przygotowanie ścieżki do folderu z raportami błędów
+	 *
+	 * @return string
+	 */
+	private static function _saveErrorLog($type, $message) {
+		$type = strtoupper($type);
+		$errorTime = time();
+		$errorEmail = ($type == 'DB') ? SQL_ERROR_EMAIL_ADDRESS : PHP_ERROR_EMAIL_ADDRESS;
+		$errorFile = DIR_ERRORS . DIRECTORY_SEPARATOR . date('Y-m-d', $errorTime) . '_' . strtolower($type) . '.log';
+		$subject = 'ERROR ' . DB_NAME . ' (' . $type . ')' . (isset($_SERVER['HTTP_HOST']) ? ' [' . $_SERVER['HTTP_HOST'] . ']' : '');
+		$headers = 'Content-type: text/html; charset=utf-8' . "\n"
+				. 'MIME-Version: 1.0' . "\n"
+				. 'X-Mailer: PHP/' . phpversion() . "\n"
+				. 'From: ' . $errorEmail . "\n"
+				. 'Reply-To: ' . $errorEmail . "\n";
+
+		if (!file_exists($errorFile)) {
+			$errorUrl = 'http://' . $_SERVER['HTTP_HOST'] . COOKIES_PATH . DIRECTORY_SEPARATOR . '?logd=' . $errorTime . '&logt='.$type.'&logs=' . md5($_SERVER['HTTP_HOST'] . $type . $errorTime);
+			$mailMsg = "Wystąpił błąd {$type}. Raport z całego dnia dostępny pod adresem: <a href=\"{$errorUrl}\">{$errorUrl}</a>"
+					. "<hr/>Poniżej pierwszy zgłoszony raport błędu:<br/>" . $message;
+			mail($errorEmail, $subject, $mailMsg, $headers);
+		}
+
+		error_log($message.'<hr/>', 3, $errorFile);
+	}
+
+	/**
+	 * Przeglądanie raportów błędów wybranego typu
+	 *
+	 * @param integer $logDate
+	 * @param string $logType
+	 * @param string $logSecure
+	 *
+	 * @return string
+	 */
+	public static function previewLog($logDate, $logType, $logSecure) {
+		if(md5($_SERVER['HTTP_HOST'] . $logType . $logDate) !== $logSecure) {
+			throw new MK_Exception('Nieuprawniony dostęp do raportów błędów');
+		}
+
+		$errorFile = DIR_ERRORS . DIRECTORY_SEPARATOR . date('Y-m-d', $logDate) . '_' . strtolower($logType) . '.log';
+		if(!file_exists($errorFile)) {
+			throw new MK_Exception("Plik {$errorFile} nie istnieje!");
+		}
+
+		if(filesize($errorFile) > 5242880) { // 5242880 = 5MB
+			header('Content-Disposition: attachment; filename="'.basename($errorFile).'.html"');
+			$hTitle = "ERROR {$logType} - ".date("Y-m-d", $logDate);
+			echo <<<EOF
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl">
+	<head>
+	  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+	  	<title>{$hTitle}</title>
+	</head>
+<body>
+EOF;
+			readfile($errorFile);
+			echo '</body></html>';
+		}
+		else {
+			header('Content-Type: text/html; charset=utf-8');
+			readfile($errorFile);
+		}
+		die();
+	}
+
+	/**
+	 * Zwrócenie komunikatu błędu dla Exception
+	 *
+	 * @param string $msg
+	 * @param object $exceptionClass
+	 *
+	 * @return string
+	 */
+	public static function getSimpleInfo($msg, $exceptionClass=null) {
+		if (is_object($exceptionClass)) {
+			$_file = $exceptionClass->getFile();
+			$_line = strval($exceptionClass->getLine());
+			$_trace = MK_Error::getExtendedTrace($exceptionClass);
+		} else {
+			$_file = "";
+			$_line = "";
+			$_trace = "";
+		}
+		return MK_Error::handler(E_NOTICE, $msg, $_file, $_line, array(), $_trace);
 	}
 
 	/**
@@ -82,8 +174,7 @@ class MK_Error {
 	 * @param type $line
 	 * @return string
 	 */
-	public static function mail($type, $file='null', $line='null') {
-
+	public static function prepareMailMsg($type, $file='null', $line='null') {
 		$userLogin = 'Brak informacji';
 		$userId = 'Brak informacji';
 		//@TODO - ugryźć jako parametruyzacja czy cos :)
@@ -96,36 +187,36 @@ class MK_Error {
 		//		$userId = UserSingleton::getInstance()->getCurrentUserCellId(false);
 		//	}
 
-		$email = '<br/><table width="100%" border="0" cellspacing="0" cellpadding="0">'
+		$emailMsg = '<br/><table width="100%" border="0" cellspacing="0" cellpadding="0">'
 				. '<tr><td style="width:180px;"><strong>Błąd typu:</strong></td><td>(' . $type . ')</td></tr>'
 				. '<tr><td style="width:180px;"><strong>Linia:</strong></td><td>' . $line . '</td></tr>'
 				. '<tr><td style="width:180px;"><strong>Plik:</strong></td><td>' . $file . '</td></tr>';
 
 		if (isset($_SERVER["HTTP_HOST"])) {
-			$email .= '<tr><td><strong>Host:</strong></td><td>' . $_SERVER["HTTP_HOST"] . '</td></tr>';
+			$emailMsg .= '<tr><td><strong>Host:</strong></td><td>' . $_SERVER["HTTP_HOST"] . '</td></tr>';
 		}
 
-		$email .= '<tr><td><strong>Baza danych:</strong></td><td>' . DB_NAME . '</td></tr>'
+		$emailMsg .= '<tr><td><strong>Baza danych:</strong></td><td>' . DB_NAME . '</td></tr>'
 				. '<tr><td><strong>Login użytkownika:</strong></td><td>' . $userLogin . '</td></tr>'
 				. '<tr><td><strong>ID użytkownika:</strong></td><td>' . $userId . '</td></tr>'
 				. '<tr><td><strong>Data wystąpienia:</strong></td><td>' . date("Y-m-d H:i:s") . '</td></tr>';
 
 		if (isset($_SERVER["REQUEST_URI"])) {
-			$email .= '<tr><td><strong>REQUEST_URI:</strong></td><td>' . $_SERVER["REQUEST_URI"] . '</td></tr>';
+			$emailMsg .= '<tr><td><strong>REQUEST_URI:</strong></td><td>' . $_SERVER["REQUEST_URI"] . '</td></tr>';
 		}
 		if (defined('SITE_PATH')) {
-			$email .= '<tr><td><strong>SITE_PATH:</strong></td><td>' . SITE_PATH . '</td></tr>';
+			$emailMsg .= '<tr><td><strong>SITE_PATH:</strong></td><td>' . SITE_PATH . '</td></tr>';
 		}
 		if (isset($_SERVER["HTTP_USER_AGENT"])) {
-			$email .= '<tr><td><strong>HTTP_USER_AGENT:</strong></td><td>' . $_SERVER["HTTP_USER_AGENT"] . '</td></tr>';
+			$emailMsg .= '<tr><td><strong>HTTP_USER_AGENT:</strong></td><td>' . $_SERVER["HTTP_USER_AGENT"] . '</td></tr>';
 		}
 		if (isset($_SERVER["REMOTE_ADDR"])) {
-			$email .= '<tr><td><strong>REMOTE_ADDR:</strong></td><td>' . $_SERVER["REMOTE_ADDR"] . '</td></tr>';
+			$emailMsg .= '<tr><td><strong>REMOTE_ADDR:</strong></td><td>' . $_SERVER["REMOTE_ADDR"] . '</td></tr>';
 		}
 
-		$email .= '</table>';
+		$emailMsg .= '</table>';
 
-		return $email;
+		return $emailMsg;
 	}
 
 	/**
@@ -142,41 +233,32 @@ class MK_Error {
 	 * @return Boolean
 	 */
 	public static function handler($type, $message="", $file="", $line="", array $errContext=array(), $debugBacktrace="") {
-		$subject = 'ERROR ' . DB_NAME . ' (PHP)' . (isset($_SERVER['HTTP_HOST']) ? ' [' . $_SERVER['HTTP_HOST'] . ']' : '');
-
 		// W przypadku tego błędu nie logujemy ponieważ nie ma on się pojawiać
 		if ($type == 2 && preg_match('#pg_fetch_array\(\) \[[^]]+\]: Unable to jump to row [0-9]+ on PostgreSQL result index [0-9]+#i', $message)) {
 			return true;
 		}
 
-		$email = MK_Error::mail($type, $file, $line) . "\n"
+		$emailMsg = MK_Error::prepareMailMsg($type, $file, $line) . "\n"
 				. '<br/><br/><strong>Komunikat:</strong> ' . $message;
 
 		if (count($errContext) > 0) {
-			$email .= '<br/><br/><strong>Informacje szczegółowe:</strong><pre>' . print_r($errContext, true) . '</pre>';
+			$emailMsg .= '<br/><br/><strong>Informacje szczegółowe:</strong><pre>' . print_r($errContext, true) . '</pre>';
 		}
 
-		$email .= '<br/><br/><strong>Backtrace:</strong><pre>' . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . '</pre>';
+		$emailMsg .= '<br/><br/><strong>Backtrace:</strong><pre>' . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . '</pre>';
 
-		$headers = 'Content-type: text/html; charset=utf-8' . "\n"
-				. 'MIME-Version: 1.0' . "\n"
-				. 'X-Mailer: PHP/' . phpversion() . "\n"
-				. 'From: ' . PHP_ERROR_EMAIL_ADDRESS . "\n"
-				. 'Reply-To: ' . PHP_ERROR_EMAIL_ADDRESS . "\n";
-
-		if (DEVELOPER !== true) {
-			return $email;
+		if (DEVELOPER === true) {
+			return $emailMsg;
 		}
 
-		//error_log($email, 1, PHP_ERROR_EMAIL_ADDRESS, $headers);
-		mail(PHP_ERROR_EMAIL_ADDRESS, $subject, $email, $headers);
+		self::_saveErrorLog('php', $emailMsg);
 
 		// Tutaj zwracamy informacje dla uzytkownika - w tym przypadku wyrzucamy wyjatek ktory zwróci jsona z informacja o obedzie ktora zostanie wyswietlana uzytkownikowi w postaci okna z błędem
 		if (($type !== E_NOTICE) && ($type < 2048)) {
-			exit('Nieoczekiwany błąd! Szczegółowy komunikat został wysłany do Administratora.');
+			return 'Nieoczekiwany błąd! ' . self::$_mailAdmin;
 		}
 
-		return false;
+		return $message;
 	}
 
 	/**
@@ -186,11 +268,11 @@ class MK_Error {
 	 * @param string $file (default: "")
 	 * @param integer $line (default: 0)
 	 * @param string $debugBacktrace (default: "")
+	 *
+	 * @return string
 	 */
 	public static function getDataBase($message, $file="", $line=0, $debugBacktrace="") {
-		$subject = 'ERROR ' . DB_NAME . ' (DB)' . (isset($_SERVER['HTTP_HOST']) ? ' [' . $_SERVER['HTTP_HOST'] . ']' : '');
-
-		$email = MK_Error::mail('Database', $file, $line) . "\n"
+		$emailMsg = MK_Error::prepareMailMsg('Database', $file, $line) . "\n"
 				. '<table width="100%" border="1">'
 				. '<tr><td colspan="2"><strong>Message:</strong></td></tr>'
 				. '<tr><td colspan="2"><pre>' . $message . '</pre></td></tr>'
@@ -198,47 +280,38 @@ class MK_Error {
 				. '<tr><td colspan="2"><pre>' . (empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . '</pre></td></tr>'
 				. '</table>';
 
-		$headers = 'Content-type: text/html; charset=utf-8' . "\n"
-				. 'MIME-Version: 1.0' . "\n"
-				. 'X-Mailer: PHP/' . phpversion() . "\n"
-				. 'From: ' . SQL_ERROR_EMAIL_ADDRESS . "\n"
-				. 'Reply-To: ' . SQL_ERROR_EMAIL_ADDRESS . "\n";
-
 		if (DEVELOPER === true) {
-			return $email;
+			return $emailMsg;
 		}
 
-		mail(SQL_ERROR_EMAIL_ADDRESS, $subject, $email, $headers);
-		return false;
+		self::_saveErrorLog('db', $emailMsg);
+
+		return $message;
 	}
 
 	/**
 	 * Funkcja tworzy email z trescia bledu JavaScriptowego i wysyła maila w przypadku wyłączonego  'DEVELOPERA'
+	 *
+	 * @return string
 	 */
 	public static function getJavaScript() {
-		$subject = 'ERROR ' . DB_NAME . ' (JS)' . (isset($_SERVER['HTTP_HOST']) ? ' [' . $_SERVER['HTTP_HOST'] . ']' : '');
 		if (isset($_COOKIE['ys-javascriptErrorLog'])) {
 			$errorObject = json_decode(substr($_COOKIE['ys-javascriptErrorLog'], 2));
 			setcookie('ys-javascriptErrorLog', '', time() - 86400, COOKIES_PATH);
 
-			$email = MK_Error::mail('JavaScript') . "\n"
+			$emailMsg = MK_Error::prepareMailMsg('JavaScript') . "\n"
 					. '<table width="100%" border="1">'
 					. '<tr><td colspan="2"><strong>Informacje:</strong></td></tr>'
 					. '<tr><td colspan="2"><pre>' . print_r($errorObject, true) . '</pre></td></tr>'
 					. '</table>';
 
-			$headers = 'Content-type: text/html; charset=utf-8' . "\n"
-					. 'MIME-Version: 1.0' . "\n"
-					. 'X-Mailer: PHP/' . phpversion() . "\n"
-					. 'From: ' . PHP_ERROR_EMAIL_ADDRESS . "\n"
-					. 'Reply-To: ' . PHP_ERROR_EMAIL_ADDRESS . "\n";
-
 			if (DEVELOPER === true) {
-				return $email;
+				return $emailMsg;
 			}
 
-			mail(PHP_ERROR_EMAIL_ADDRESS, $subject, $email, $headers);
-			return false;
+			self::_saveErrorLog('js', $emailMsg);
+
+			return 'Błąd JavaScript. ' . self::$_mailAdmin;
 		}
 	}
 
