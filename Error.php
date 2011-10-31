@@ -100,6 +100,31 @@ EOF;
 	}
 
 	/**
+	 * Wyświetlenie tablicy i zwrócenie wyjątku MK_Exception.
+	 * Pomocne przy debugowaniu kawałka kodu źródłowego.
+	 * Wywoływanie:
+	 * 		// Wyświetlenie tablicy za pomocą var_dump()
+	 * 		MK_Error:preview( array('test'=>'ok') );
+	 * 		// Wyświetlenie tablicy za pomocą print_r()
+	 * 		MK_Error:preview( array('test'=>'ok') , false );
+	 *
+	 * @param Array $arrayValues	- Tablica wartości do wyświetlenia
+	 * @param Boolean $varDump		- (def:true) Czy wyświetlić dane przez var_dump() czy print_r()
+	 *
+	 * @throws MK_Exception
+	 */
+	public static function preview($arrayValues, $varDump=true) {
+		if ($varDump === true) {
+			ob_start();
+			var_dump($arrayValues);
+			$str = ob_get_clean();
+		} else {
+			$str = print_r($arrayValues, true);
+		}
+		throw new MK_Exception('<pre>' . $str . '</pre>');
+	}
+
+	/**
 	 * Zwrócenie komunikatu błędu dla Exception
 	 *
 	 * @param string $msg
