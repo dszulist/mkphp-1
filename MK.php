@@ -62,7 +62,11 @@ class MK {
 		if (!empty($opts)) {
 			foreach (array_keys($opts) as $opt) {
 				switch ($opt) {
-					case 'm': $consoleController->{$opts['m']}($argv);
+					case 'm':
+						if (!method_exists($consoleController, $opts['m'])) {
+							exit("Brak funkcji {$opts['m']}\n");
+						}
+						$consoleController->{$opts['m']}($argv);
 						break;
 				}
 			}
