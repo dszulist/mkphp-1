@@ -86,7 +86,7 @@ class MK_Db_PDO_Singleton {
 
 				$retArray = array(
 					'success' => false,
-					'message' => MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS
+					'message' => 'Nie udało się połączyć z bazą danych'
 				);
 
 				if (DEVELOPER === true) {
