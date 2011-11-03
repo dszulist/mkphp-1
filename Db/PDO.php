@@ -15,20 +15,21 @@ class MK_Db_PDO {
 	CONST MESSAGE_SUCCESS_DELETE = 'Pomyślnie usunięto rekord';
 
 	/**
-	 * Informuje ile transakcji jest otwartych
+	 * Singleton połączenia z bazą danych (MK_Db_PDO_Singleton)
 	 *
-	 * @var integer
+	 * @access protected
+	 * @var object
 	 */
-	private $_transCounter = 0;
+	protected $db = null;
 
 	/**
-	 * Flaga oznaczająca czy transakcja ma być zamknięta(commit) czy cofnięta (rollback)
+	 * Ignorowane klasy w debug_backtrace dla SQL-i [fireBugSqlDump()]
+	 * Można rozszerzyć w dowolnym momencie poprzez setMoreSqlIgnoreClass()
 	 *
-	 * @var type
+	 * @access private
+	 * @var array
 	 */
-	private $_transOk = false;
 	private $_sqlIgnoreClass = array('MK_Db_PDO');
-	protected $db = null;
 
 	public function __construct() {
 		// Uruchomienie licznika uruchamiania zapytania SQL
@@ -343,21 +344,24 @@ class MK_Db_PDO {
 	 */
 	public function transStart() {
 		$this->fireBugSqlDump("transStart");
-		if ($this->_transCounter > 0) {
-			$this->_transCounter++;
+		if (MK_Db_PDO_Singleton::transCount() > 0) {
+			MK_Db_PDO_Singleton::transCount(1);
 			return true;
 		}
-		$this->_transOk = true;
+
 		/**
 		 *   true  - transakcja została utworzona
 		 *   false - baza danych nie obsługuje transakcji
 		 */
+		MK_Db_PDO_Singleton::transOk(false);
 		$transOk = $this->db->beginTransaction();
 		if (!$transOk) {
 			throw new MK_Db_Exception('Baza danych nie obsługuje transakcji');
 		}
 
-		$this->_transCounter = 1;
+		MK_Db_PDO_Singleton::transOk(true);
+		MK_Db_PDO_Singleton::transCount(1, true);
+
 		return $transOk;
 	}
 
@@ -373,17 +377,18 @@ class MK_Db_PDO {
 	 */
 	public function transComplete($commit = true) {
 		$this->fireBugSqlDump("transComplete(" . ($commit ? 'true' : 'false') . ")");
+		$_transCount = MK_Db_PDO_Singleton::transCount();
 
-		if ($this->_transCounter > 1) {
+		if ($_transCount > 1) {
 			// Transakcja jest w innej transakcji, zamykanie bloku transakcji
-			$this->_transCounter--;
+			MK_Db_PDO_Singleton::transCount(-1);
 			return true;
-		} else if ($this->_transCounter == 1) {
+		} else if ($_transCount == 1) {
 			// Transakcja jest do zamknięcia
 			$tableLogsDb = new TableLogsDb();
 			$tableLogsDb->closeConnectionForTableLog();
-			$this->_transCounter = 0;
-		} else if ($this->_transCounter == 0) {
+			MK_Db_PDO_Singleton::transCount(0, true);
+		} else if ($_transCount == 0) {
 			// Transakcja nie była uruchomiona
 			return false;
 		} else {
@@ -395,26 +400,26 @@ class MK_Db_PDO {
 		 * true  - COMMIT
 		 * false - ROLLBACK
 		 */
-		if ($commit && $this->_transOk) {
+		if ($commit && MK_Db_PDO_Singleton::transOk()) {
 			if (!$this->db->commit()) {
-				$this->_transOk = false;
+				MK_Db_PDO_Singleton::transOk(false);
 				throw new MK_Db_Exception('Transakcja nie powiodła się');
 			}
 		} else {
-			$this->_transOk = false;
+			MK_Db_PDO_Singleton::transOk(false);
 			$this->db->rollBack();
 		}
 
-		return $this->_transOk;
+		return MK_Db_PDO_Singleton::transOk();
 	}
 
 	/**
 	 * Zablokowanie COMMIT dla danej transakcji.
-	 * Ustawienie $this->_transOK = false
+	 * Ustawienie transakcji na fail
 	 * Cofnięcie całej transakcji (wymuszenie rollBack)
 	 */
 	public function transFail() {
-		$this->_transOk = false;
+		MK_Db_PDO_Singleton::transOk(false);
 		$this->transComplete(false);
 	}
 
