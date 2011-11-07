@@ -71,6 +71,9 @@ class MK_Filter {
 	 * @return string
 	 */
 	public static function getCurrency($amount, $withCurrency=true) {
+		if (empty($amount)) {
+			$amount = 0;
+		}
 		if (!is_numeric($amount)) {
 			return $amount;
 		}
