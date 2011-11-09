@@ -1,51 +1,59 @@
 <?php
-define('DEVELOPER',					false);
-define('MK_PATH',					realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
+// Ścieżka do biblioteki MK(php)
+define('MK_PATH',		realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
 
-define('DEFAULT_LANG',				'pl');
-define('LANG',						'pl');
-define('LOCALE_TIME',				'pl_PL.UTF-8');
-define('LOCALE_NUMERIC',			'en_US');
-define('TIMEZONE',					'Europe/Warsaw');
-define('HEADER',					'Content-Type: text/html; charset=utf-8');
-define('PHP_ERROR_EMAIL_ADDRESS',	defined('APP_PHP_ERROR_EMAIL_ADDRESS') ? APP_PHP_ERROR_EMAIL_ADDRESS : 'error@madkom.pl');
-define('SQL_ERROR_EMAIL_ADDRESS',	defined('APP_SQL_ERROR_EMAIL_ADDRESS') ? APP_SQL_ERROR_EMAIL_ADDRESS : 'error@madkom.pl');
-define('DIR_ERRORS',				defined('APP_DIR_ERRORS') ? APP_DIR_ERRORS : '/tmp/app_errors');
-define('COOKIES_PATH',				dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
+// Konfiguracja startowa aplikacji
+define('MK_LANG',			'pl');
+define('MK_DEFAULT_LANG',	'pl');
+define('MK_LOCALE_TIME',	'pl_PL.UTF-8');
+define('MK_LOCALE_NUMERIC',	'en_US');
+define('MK_TIMEZONE',		'Europe/Warsaw');
+define('MK_HTML_HEADER',	'Content-Type: text/html; charset=utf-8');
+define('MK_COOKIES_PATH',	dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
+define('MK_IS_CLI',			defined('STDIN') ? true : false);
 
-//	Ścieżki do plików wykorzystywanych przez aplikacje
-define('FILE_APP_LOCK',				'under_construction.txt');
-define('FILE_MTM',					'/var/lib/mtm/task.list');
-define('FILE_MTM_LOCK',				'/tmp/mtm_task.lock');
+// Konfigruacja zgłaszania i zapisywania błędów
+define('MK_DIR_ERRORS',			defined('DIR_ERRORS') ? DIR_ERRORS : '/tmp/mk_errors');
+define('MK_DEVELOPER',			defined('APP_DEVELOPER') ? APP_DEVELOPER : false);
+define('MK_ERROR_JS_ENABLED',	defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
+define('MK_DEBUG_FIREPHP',		isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI ? true : false);
 
-//	Ścieżki do aplikacji zewnetrznych
-define('EXEC_MINIFY',				'/opt/yuicompressor-2.4.6/build/yuicompressor-2.4.6.jar');
+// Ścieżki do plików wykorzystywanych przez aplikację
+define('APP_FILE_LOCK',		'under_construction.txt');
+define('MTM_FILE_LIST',		'/var/lib/mtm/task.list');
+define('MTM_FILE_LOG',		'/var/log/mtm/mtm.log');
+define('MTM_FILE_LOCK',		'/tmp/mtm_task.lock');
 
-//	Domyślna konfiguracja systemu
-define('DEFAULT_LIMIT',				40);
-define('DEFAULT_START',				0);
-define('DEFAULT_SORT_DIRECTION',	'ASC');
-define('DEFAULT_SORT_COLUMN',		null);
+// Ścieżki do aplikacji zewnętrznych
+define('EXEC_MINIFY',		'/opt/yuicompressor-2.4.6/build/yuicompressor-2.4.6.jar');
+
+// Domyślna konfiguracja systemu
+define('DB_DEFAULT_LIMIT',			40);
+define('DB_DEFAULT_START',			0);
+define('DB_DEFAULT_SORT_DIRECTION',	'ASC');
+define('DB_DEFAULT_SORT_COLUMN',	null);
 
 // Cacheowanie wsdl'i
 define('WSDL_CACHE_ENABLE',			false);
 
-// Konfigruacja zgaszania błędów
-define('ERROR_JS_ENABLED',			true);
-
 
 /**
- * Stałe wymagane aby niektóre czesci MKPhp działały:
+ * Stałe wymagane, aby niektóre części MK(php) działały:
+ *	define('SESSION_SAVE_HANDLER,	'files');		// Sesje zapisywane w plikach
+ *	//define('SESSION_SAVE_HANDLER,	'memcache');	// Sesje zapisywane w pamięci
+ *	define('DIR_ERRORS',			APP_PATH.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.'errors');
+ *	define('DIR_SESSION',			APP_PATH.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.'session');			// dla SESSION_SAVE_HANDLER = 'files'
+ *	//define('DIR_SESSION',			'tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15');	// dla SESSION_SAVE_HANDLER = 'memcache'
+ *	define('APP_NAME',		'');	// Nazwa aplikacji
+ *	define('DB_HOST',		'');	// Baza danych: hostname
+ *	define('DB_PORT',		'');	// Baza danych: port
+ *	define('DB_USER',		'');	// Baza danych: użytkownik
+ *	define('DB_PASS',		'');	// Baza danych: hasło
+ *	define('DB_NAME',		'');	// Baza danych: nazwa
+ *	define('DB_DEBUG',		'');	// Baza danych: Czy debugować zapytania SQL?
  *
- *  define('DIR_SESSION',		'');
- *  define('SESSION_SAVE_HANDLER,'');
- *  define('DB_HOST', 			'');
- *  define('DB_PORT', 			'');
- *  define('DB_USER', 			'');
- *  define('DB_PASS', 			'');
- *  define('DB_NAME', 			'');
- *  define('DB_DEBUG', 			'');
- *  define('APP_PHP_ERROR_EMAIL_ADDRESS',	'');
- *  define('APP_SQL_ERROR_EMAIL_ADDRESS',	'');
+ * Stałe pomocnicze:
+ *	define('APP_DEVELOPER',			false);
+ *	define('APP_ERROR_JS_ENABLED',	true);
  *
  */
