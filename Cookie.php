@@ -56,7 +56,7 @@ class MK_Cookie {
 	 * @param intger $time (default: 0)
 	 */
 	public static function set($name, $value='', $time=0) {
-		setcookie($name, $value, $time, COOKIES_PATH);
+		setcookie($name, $value, $time, MK_COOKIES_PATH);
 	}
 
 	/**
@@ -67,7 +67,7 @@ class MK_Cookie {
 	 */
 	public static function clear($name, $timeDiff=86400) {
 		if (isset($_COOKIE[$name])) {
-			setcookie($name, '', time() - $timeDiff, COOKIES_PATH); // 86400 = 24 * 60 * 60 (24h)
+			setcookie($name, '', time() - $timeDiff, MK_COOKIES_PATH); // 86400 = 24 * 60 * 60 (24h)
 		}
 	}
 

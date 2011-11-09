@@ -89,7 +89,7 @@ class MK_Db_PDO_Singleton {
 					'message' => 'Nie udało się połączyć z bazą danych'
 				);
 
-				if (DEVELOPER === true) {
+				if (MK_DEVELOPER === true) {
 					$retArray['debug'] = $debugMsg;
 				}
 
@@ -99,7 +99,7 @@ class MK_Db_PDO_Singleton {
 
 				echo $retArray['message'] . PHP_EOL;
 
-				if (MK::isDebugEnabled()) {
+				if (MK_DEVELOPER) {
 					echo $retArray['debug'] . PHP_EOL;
 				}
 				die();

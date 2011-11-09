@@ -25,15 +25,6 @@ class MK {
 	}
 
 	/**
-	 * Sprawdza czy w aplikacji jest włączone "debugowanie"
-	 *
-	 * @return Boolean
-	 */
-	public static function isDebugEnabled() {
-		return (DEVELOPER === true || (isset($_SESSION['APP_DEBUG']) && $_SESSION['APP_DEBUG'] === true));
-	}
-
-	/**
 	 * Funkcja wywoływana na zakończenie skryptu PHP
 	 * w przypadku gdy skrypt kończy się błędem uruchamia funkcje powiadamiajaca o błędzie
 	 */
@@ -50,7 +41,10 @@ class MK {
 	 * @param Array		$argv - (default:array())Tablica z parametrami przekazanymi w lini polecen
 	 * @return Boolean
 	 */
-	public static function executeCLICommand(array $argv=array()) {
+	public static function executeCLICommand(array $argv) {
+		if (empty($argv)) {
+			return;
+		}
 		//@TODO kontroller console z MK
 		$consoleController = new ConsoleController();
 		$opts = getopt('m::');
@@ -71,25 +65,6 @@ class MK {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Sprawdza czy skrypt jest wywolany z lini polecen.
-	 * W przypadku wywolania z lini polecen zwraca true w przeciwnym wypadku false
-	 * Jeżeli podamy w parametrze wywołania funkcji true to zostanie uruchomiony kontroler linii polecen
-	 *
-	 * @param Boolean	$executeCmd - (default:false) czy uruchomić kontroler lini polecen
-	 * @param Array		$argv - (default:array()) Tablica z parametrami przekazanymi w lini polecen
-	 * @return Boolean
-	 */
-	public static function isCLIExecution($executeCmd=false, array $argv=array()) {
-		if (defined("STDIN")) {
-			if ($executeCmd === true) {
-				self::executeCLICommand($argv);
-			}
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -115,8 +90,8 @@ class MK {
 	 *  Sprawdza czy istnieje plik blokujacy uzycie aplikacji
 	 */
 	public static function checkApplicationState() {
-		if (file_exists(FILE_APP_LOCK)) {
-			if (strpos(file_get_contents(FILE_APP_LOCK), 'upgrade') !== false) {
+		if (file_exists(APP_FILE_LOCK)) {
+			if (strpos(file_get_contents(APP_FILE_LOCK), 'upgrade') !== false) {
 
 				if (self::isAjaxExecution(true)) {
 					echo '{"success":false,"msg":"<b>Przerwa techniczna.</b><br />Proszę spróbować za 10 minut.<br />Proszę nie wyłączać i nie restartować serwera."}';

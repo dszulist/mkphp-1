@@ -27,7 +27,7 @@ class MK_Exception extends Exception {
 		$_trace = MK_Error::getExtendedTrace($this);
 
 		$mkDb = new MK_Db_PDO();
-		if(is_object($mkDb)) {
+		if (is_object($mkDb)) {
 			$mkDb->transFail();
 			$dbError = $mkDb->getErrorMsg();
 			if (empty($dbError)) {
@@ -37,13 +37,13 @@ class MK_Exception extends Exception {
 			}
 		}
 
-		$retArray['debug'] = (DEVELOPER === true) ? $debugMsg : '';
+		$retArray['debug'] = (MK_DEVELOPER === true) ? $debugMsg : '';
 
 		if (MK::isAjaxExecution(true)) {
 			return json_encode($retArray);
 		}
 
-		return $retArray[ (DEVELOPER === true) ? 'debug' : 'message' ];
+		return $retArray[(MK_DEVELOPER === true) ? 'debug' : 'message'];
 	}
 
 }

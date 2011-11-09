@@ -20,7 +20,7 @@ class MK_Licence {
 	 * @return type
 	 */
 	function verify($licence, $statusInconsistencyLicenseKey) {
-		if (DEVELOPER === true) {
+		if (MK_DEVELOPER === true) {
 			return true;
 		}
 
@@ -71,8 +71,8 @@ class MK_Licence {
 	 */
 	function isValidSignature($licence) {
 		$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
-		//20121231.md5($expireDate . ' ' . exec('hostname') . ' ' . SITE_PATH);
-		$validLicence = str_replace('-', '', $expireDate) . md5($expireDate . ' ' . exec('hostname') . ' ' . SITE_PATH);
+		//20121231.md5($expireDate . ' ' . exec('hostname') . ' ' . APP_PATH);
+		$validLicence = str_replace('-', '', $expireDate) . md5($expireDate . ' ' . exec('hostname') . ' ' . APP_PATH);
 
 		return ((strlen($licence) == 40 && strcmp($validLicence, $licence) == 0));
 	}

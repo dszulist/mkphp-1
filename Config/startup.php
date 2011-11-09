@@ -11,31 +11,30 @@ MK::checkApplicationState();
 ini_set("soap.wsdl_cache_enabled", WSDL_CACHE_ENABLE);
 
 // ustawienie strefy czasowej
-date_default_timezone_set(TIMEZONE);
+date_default_timezone_set(MK_TIMEZONE);
 
 // do polskich nazw dat w kalendarzu
-setlocale(LC_TIME, LOCALE_TIME);
+setlocale(LC_TIME, MK_LOCALE_TIME);
 
 // do "." w liczbach, a nie ","
-setlocale(LC_NUMERIC, LOCALE_NUMERIC);
+setlocale(LC_NUMERIC, MK_LOCALE_NUMERIC);
 
 // rejestracja wrapperów
 stream_wrapper_register("tcp", "MK_Stream_Tcp");
 
 // #Debuging
-if (MK::isDebugEnabled() && !defined('STDIN')) {
-	require ('libs/FirePHPCore/FirePHP.class.php');
-	require ('libs/FirePHPCore/fb.php');
+if (MK_DEBUG_FIREPHP) {
+	require (DIR_LIBS . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
+	require (DIR_LIBS . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
 	//@TODO sprawdzic ten klucz sesji i obsłużyć
 	$_SESSION['sql_last_time'] = microtime(true);
 }
 
 // #ErrorHandling
-$isCLI = MK::isCLIExecution(false, empty($argv) ? array() : $argv);
-error_reporting(DEVELOPER || $isCLI ? (E_ALL | E_STRICT) : '');
-ini_set('display_errors', DEVELOPER || $isCLI ? 'on' : 'off');
+error_reporting(MK_DEVELOPER || MK_IS_CLI ? (E_ALL | E_STRICT) : '');
+ini_set('display_errors', MK_DEVELOPER || MK_IS_CLI ? 'on' : 'off');
 
-if ($isCLI === true) {
+if (MK_IS_CLI === true) {
 	set_time_limit(0);
 	//resetowanie maski uprawnien
 	umask(0);
@@ -45,7 +44,7 @@ if ($isCLI === true) {
 	register_shutdown_function('MK::shutdownFunction');
 }
 
-if (ERROR_JS_ENABLED) {
+if (MK_ERROR_JS_ENABLED) {
 	MK_Error::getJavaScript();
 }
 
@@ -57,4 +56,4 @@ ini_set('session.hash_bits_per_character', 6);
 ini_set('session.save_handler', SESSION_SAVE_HANDLER);
 
 session_save_path(DIR_SESSION);
-session_set_cookie_params(0, COOKIES_PATH);
+session_set_cookie_params(0, MK_COOKIES_PATH);

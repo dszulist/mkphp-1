@@ -48,13 +48,13 @@ class MK_Error {
 				. 'Reply-To: ' . $errorEmail . "\n";
 
 		if (!file_exists($errorFile)) {
-			$errorUrl = 'http://' . $_SERVER['HTTP_HOST'] . COOKIES_PATH . DIRECTORY_SEPARATOR . '?logd=' . $errorTime . '&logt='.$type.'&logs=' . md5($_SERVER['HTTP_HOST'] . $type . $errorTime);
+			$errorUrl = 'http://' . $_SERVER['HTTP_HOST'] . MK_COOKIES_PATH . DIRECTORY_SEPARATOR . '?logd=' . $errorTime . '&logt=' . $type . '&logs=' . md5($_SERVER['HTTP_HOST'] . $type . $errorTime);
 			$mailMsg = "Wystąpił błąd {$type}. Raport z całego dnia dostępny pod adresem: <a href=\"{$errorUrl}\">{$errorUrl}</a>"
 					. "<hr/>Poniżej pierwszy zgłoszony raport błędu:<br/>" . $message;
 			mail($errorEmail, $subject, $mailMsg, $headers);
 		}
 
-		error_log($message.'<hr/>', 3, $errorFile);
+		error_log($message . '<hr/>', 3, $errorFile);
 	}
 
 	/**
@@ -67,18 +67,18 @@ class MK_Error {
 	 * @return string
 	 */
 	public static function previewLog($logDate, $logType, $logSecure) {
-		if(md5($_SERVER['HTTP_HOST'] . $logType . $logDate) !== $logSecure) {
+		if (md5($_SERVER['HTTP_HOST'] . $logType . $logDate) !== $logSecure) {
 			throw new MK_Exception('Nieuprawniony dostęp do raportów błędów');
 		}
 
 		$errorFile = DIR_ERRORS . DIRECTORY_SEPARATOR . date('Y-m-d', $logDate) . '_' . strtolower($logType) . '.log';
-		if(!file_exists($errorFile)) {
+		if (!file_exists($errorFile)) {
 			throw new MK_Exception("Plik {$errorFile} nie istnieje!");
 		}
 
-		if(filesize($errorFile) > 5242880) { // 5242880 = 5MB
-			header('Content-Disposition: attachment; filename="'.basename($errorFile).'.html"');
-			$hTitle = "ERROR {$logType} - ".date("Y-m-d", $logDate);
+		if (filesize($errorFile) > 5242880) { // 5242880 = 5MB
+			header('Content-Disposition: attachment; filename="' . basename($errorFile) . '.html"');
+			$hTitle = "ERROR {$logType} - " . date("Y-m-d", $logDate);
 			echo <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl">
@@ -91,8 +91,7 @@ class MK_Error {
 EOF;
 			readfile($errorFile);
 			echo '</body></html>';
-		}
-		else {
+		} else {
 			header('Content-Type: text/html; charset=utf-8');
 			readfile($errorFile);
 		}
@@ -229,8 +228,8 @@ EOF;
 		if (isset($_SERVER["REQUEST_URI"])) {
 			$emailMsg .= '<tr><td><strong>REQUEST_URI:</strong></td><td>' . $_SERVER["REQUEST_URI"] . '</td></tr>';
 		}
-		if (defined('SITE_PATH')) {
-			$emailMsg .= '<tr><td><strong>SITE_PATH:</strong></td><td>' . SITE_PATH . '</td></tr>';
+		if (defined('APP_PATH')) {
+			$emailMsg .= '<tr><td><strong>APP_PATH:</strong></td><td>' . APP_PATH . '</td></tr>';
 		}
 		if (isset($_SERVER["HTTP_USER_AGENT"])) {
 			$emailMsg .= '<tr><td><strong>HTTP_USER_AGENT:</strong></td><td>' . $_SERVER["HTTP_USER_AGENT"] . '</td></tr>';
@@ -272,7 +271,7 @@ EOF;
 
 		$emailMsg .= '<br/><br/><strong>Backtrace:</strong><pre>' . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . '</pre>';
 
-		if (DEVELOPER === true) {
+		if (MK_DEVELOPER === true) {
 			return $emailMsg;
 		}
 
@@ -287,7 +286,7 @@ EOF;
 	}
 
 	/**
-	 * Funkcja tworzy e-mail z treścią błędu bazy danych i wysyła w przypadku wyłączonego DEVELOPER-a
+	 * Funkcja tworzy e-mail z treścią błędu bazy danych i wysyła w przypadku wyłączonego MK_DEVELOPER-a
 	 *
 	 * @param string $debugMsg
 	 * @param string $file (default: "")
@@ -305,7 +304,7 @@ EOF;
 				. '<tr><td colspan="2"><pre>' . (empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . '</pre></td></tr>'
 				. '</table>';
 
-		if (DEVELOPER === true) {
+		if (MK_DEVELOPER === true) {
 			return $emailMsg;
 		}
 
@@ -315,7 +314,7 @@ EOF;
 	}
 
 	/**
-	 * Funkcja tworzy email z trescia bledu JavaScriptowego i wysyła maila w przypadku wyłączonego  'DEVELOPERA'
+	 * Funkcja tworzy email z trescia bledu JavaScriptowego i wysyła maila w przypadku wyłączonego  'MK_DEVELOPERA'
 	 *
 	 * @return string
 	 */
@@ -330,7 +329,7 @@ EOF;
 					. '<tr><td colspan="2"><pre>' . print_r($errorObject, true) . '</pre></td></tr>'
 					. '</table>';
 
-			if (DEVELOPER === true) {
+			if (MK_DEVELOPER === true) {
 				return $emailMsg;
 			}
 

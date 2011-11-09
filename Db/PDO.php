@@ -987,10 +987,7 @@ class MK_Db_PDO {
 	 * @param Array $params - parametry zapytania (dane)
 	 */
 	public function fireBugSqlDump($dumpName, $sql="", array $params=array(), $execTime=0) {
-		if (defined('STDIN')) {
-			return;
-		}
-		if (DEVELOPER === true || ( isset($_SESSION['APP_DEBUG']) && $_SESSION['APP_DEBUG'] === true )) {
+		if (MK_DEBUG_FIREPHP) {
 			// Odczytanie klasy i metody, w której wyświetlony zostanie komunikat
 			$className = get_class($this);
 			$methodName = '';
@@ -1005,7 +1002,7 @@ class MK_Db_PDO {
 				if (count($traceArr) == 0) {
 					$className = $trace['class'];
 					$methodName = isset($trace['function']) ? $trace['function'] : '';
-					$filePath = isset($trace['file']) ? str_replace(SITE_PATH, '', $trace['file']) : '';
+					$filePath = isset($trace['file']) ? str_replace(APP_PATH, '', $trace['file']) : '';
 					$lineNumber = isset($trace['line']) ? $trace['line'] : -1;
 				}
 				if (isset($trace['object'])) {
