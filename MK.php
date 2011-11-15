@@ -49,7 +49,7 @@ class MK {
 		$consoleController = new ConsoleController();
 		$opts = getopt('m::');
 
-		if (count($argv) > 2) {
+		if (count($argv) >= 2) {
 			$argv = array_slice($argv, 2);
 		}
 

@@ -23,6 +23,7 @@ class MK_Controller_Console {
 	 */
 	private function _setServerVariables() {
 		putenv("REMOTE_ADDR=$this->_remoteAddress");
+		$_SERVER['HTTP_HOST'] = exec('hostname');
 		$_SERVER['SERVER_ADDR'] = 'localhost';
 		$_SERVER['REMOTE_ADDR'] = $this->_remoteAddress;
 		$_SERVER['HTTP_USER_AGENT'] = 'madkom_console';
@@ -34,7 +35,7 @@ class MK_Controller_Console {
 	 *
 	 * 	php index.php -mappinfo
 	 */
-	public function appinfo($die=true) {
+	public function appinfo(array $argv) {
 		echo "APP=" . APP_NAME . PHP_EOL;
 		echo "DATABASE=" . DB_NAME . PHP_EOL;
 		echo "PASS=" . DB_PASS . PHP_EOL;
@@ -43,9 +44,17 @@ class MK_Controller_Console {
 		echo "PORT=" . DB_PORT . PHP_EOL;
 		$db = new MK_Db_PDO();
 		echo "VERSION=" . $db->GetOne('SELECT get_app_version()') . PHP_EOL;
-		if ($die) {
-			die();
-		}
+		exit();
+	}
+
+	/**
+	 * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
+	 *
+	 * 	php index.php -mapplogs
+	 */
+	public function applogs(array $argv) {
+		$logs = new MK_Logs(APP_PATH);
+		$logs->sendPackage();
 	}
 
 }
