@@ -13,7 +13,6 @@ define('MK_COOKIES_PATH',	dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['
 define('MK_IS_CLI',			defined('STDIN') ? true : false);
 
 // Konfigruacja zgłaszania i zapisywania błędów
-define('MK_DIR_ERRORS',			defined('DIR_ERRORS') ? DIR_ERRORS : '/tmp/mk_errors');
 define('MK_DEVELOPER',			defined('APP_DEVELOPER') ? APP_DEVELOPER : false);
 define('MK_ERROR_JS_ENABLED',	defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
 define('MK_DEBUG_FIREPHP',		isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI ? true : false);
@@ -41,7 +40,6 @@ define('WSDL_CACHE_ENABLE',			false);
  * Stałe wymagane, aby niektóre części MK(php) działały:
  *	define('SESSION_SAVE_HANDLER,	'files');		// Sesje zapisywane w plikach
  *	//define('SESSION_SAVE_HANDLER,	'memcache');	// Sesje zapisywane w pamięci
- *	define('DIR_ERRORS',			APP_PATH.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.'errors');
  *	define('DIR_SESSION',			APP_PATH.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.'session');			// dla SESSION_SAVE_HANDLER = 'files'
  *	//define('DIR_SESSION',			'tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15');	// dla SESSION_SAVE_HANDLER = 'memcache'
  *	define('APP_NAME',		'');	// Nazwa aplikacji
