@@ -12,11 +12,9 @@ class MK_Exception extends Exception {
 
 	/**
 	 * Rozbudowany raport błędu w htmlu. Powiadomienie o błędzie wysłane na e-mail.
-	 *
-	 * @param array $errContext Dodatkowe informacji o błędzie, jeżeli są potrzebne do przekazania
 	 * @return string
 	 */
-	public function getExtendedMessage($errContext=array()) {
+	public function getExtendedMessage() {
 		$retArray = array(
 			'success' => false,
 			'message' => $this->getMessage()
@@ -31,9 +29,9 @@ class MK_Exception extends Exception {
 			$mkDb->transFail();
 			$dbError = $mkDb->getErrorMsg();
 			if (empty($dbError)) {
-				$debugMsg = MK_Error::handler(E_NOTICE, $retArray['message'], $_file, $_line, $errContext, $_trace);
+				$debugMsg = MK_Error::fromException($retArray['message'], $_file, $_line, $_trace);
 			} else {
-				$debugMsg = MK_Error::getDataBase($dbError, $_file, $_line, $_trace);
+				$debugMsg = MK_Error::fromDataBase($dbError, $_file, $_line, $_trace);
 			}
 		}
 

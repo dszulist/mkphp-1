@@ -48,7 +48,7 @@ class MK_Error {
 			$_line = "";
 			$_trace = "";
 		}
-		return self::handler(E_NOTICE, $msg, $_file, $_line, array(), $_trace);
+		return self::fromException($msg, $_file, $_line, $_trace);
 	}
 
 	/**
@@ -98,11 +98,11 @@ class MK_Error {
 	}
 
 	/**
-	 * Tworzy czesc tresci maila z błędem wspólna dla błędów php/js/sql
+	 * Tworzy szczegółowe informacje dla raportu błędu
 	 *
 	 * @param type $type
-	 * @param type $file
-	 * @param type $line
+	 * @param type $file (default: "(null)")
+	 * @param type $line (default: "(null)")
 	 * @return string
 	 */
 	private static function _prepareMessage($type, $file='(null)', $line='(null)') {
@@ -149,14 +149,14 @@ class MK_Error {
 	}
 
 	/**
-	 * Obsługa błędów PHP - przechwytuje błąd i wysyła wiadomość o błędzie na email
+	 * Obsługa błędów PHP. Zapisywanie informacji do pliku.
 	 *
 	 * @param Integer	 $type
-	 * @param String	 $message
-	 * @param String	 $file
-	 * @param Integer 	 $line
-	 * @param Array 	 $errContext
-	 * @param String     $debugBacktrace
+	 * @param String	 $message (default: "")
+	 * @param String	 $file (default: "")
+	 * @param Integer 	 $line (default: "")
+	 * @param Array 	 $errContext (default: array())
+	 * @param String     $debugBacktrace (default: "")
 	 *
 	 * @return Boolean
 	 */
@@ -188,16 +188,40 @@ class MK_Error {
 	}
 
 	/**
-	 * Funkcja tworzy e-mail z treścią błędu bazy danych i wysyła w przypadku wyłączonego MK_DEVELOPER-a
+	 * Obsługa błędów zwróconych przez aplikację. Zapisywanie informacji do pliku.
 	 *
-	 * @param string $debugMsg
-	 * @param string $file (default: "")
-	 * @param integer $line (default: 0)
-	 * @param string $debugBacktrace (default: "")
+	 * @param String	 $message (default: "")
+	 * @param String	 $file (default: "")
+	 * @param Integer 	 $line (default: "")
+	 * @param String     $debugBacktrace (default: "")
+	 *
+	 * @return Boolean
+	 */
+	public static function fromException($message="", $file="", $line="", $debugBacktrace="") {
+		$devMessage = self::_prepareMessage('exception', $file, $line) . "Komunikat błędu:\n " . $message . "\n\n";
+		$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
+
+		if (MK_DEVELOPER === true) {
+			return $devMessage;
+		}
+
+		$logs = new MK_Logs(APP_PATH);
+		$logs->saveToFile('exception', $devMessage);
+
+		return $message;
+	}
+
+	/**
+	 * Obsługa błędów w bazie danych. Zapisywanie informacji do pliku.
+	 *
+	 * @param string   $message
+	 * @param string   $file (default: "")
+	 * @param integer  $line (default: 0)
+	 * @param string   $debugBacktrace (default: "")
 	 *
 	 * @return string
 	 */
-	public static function getDataBase($message, $file="", $line=0, $debugBacktrace="") {
+	public static function fromDataBase($message="", $file="", $line=0, $debugBacktrace="") {
 		$devMessage = self::_prepareMessage('database', $file, $line) . "Komunikat błędu:\n " . $message . "\n\n"
 				. "Backtrace:\n" . (empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
@@ -212,11 +236,11 @@ class MK_Error {
 	}
 
 	/**
-	 * Funkcja tworzy email z trescia bledu JavaScriptowego i wysyła maila w przypadku wyłączonego  'MK_DEVELOPERA'
+	 * Obsługa błędu JavaScript odczytanego z ciastka. Zapisywanie informacji do pliku.
 	 *
 	 * @return string
 	 */
-	public static function getJavaScript() {
+	public static function fromJavaScript() {
 		if (isset($_COOKIE['ys-javascriptErrorLog'])) {
 			MK_Cookie::clear('ys-javascriptErrorLog');
 			$errorObject = json_decode(substr($_COOKIE['ys-javascriptErrorLog'], 2));

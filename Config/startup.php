@@ -45,7 +45,7 @@ if (MK_IS_CLI === true) {
 }
 
 if (MK_ERROR_JS_ENABLED) {
-	MK_Error::getJavaScript();
+	MK_Error::fromJavaScript();
 }
 
 // #SessionHandling

@@ -82,7 +82,7 @@ class MK_Db_PDO_Singleton {
 				//self::$_singleton->debugDumpParams(DB_DEBUG);
 			} catch (PDOException $e) {
 				$debugMsg = $e->getMessage() . "\n" . str_replace(DB_PASS, '*HIDDEN*', $e->getTraceAsString());
-				MK_Error::getDataBase($debugMsg, $e->getFile(), strval($e->getLine()));
+				MK_Error::fromDataBase($debugMsg, $e->getFile(), strval($e->getLine()));
 
 				$retArray = array(
 					'success' => false,
