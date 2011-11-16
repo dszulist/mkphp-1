@@ -59,6 +59,6 @@ session_save_path(DIR_SESSION);
 session_set_cookie_params(0, MK_COOKIES_PATH);
 
 // Uruchomienie kontrollera konsoli jezeli wywołanie jest z konsoli
-if (MK_IS_CLI) {
-	MK::executeCLICommand($argv);
+if (MK_IS_CLI) {    
+    MK::executeCLICommand($argv);
 }
