@@ -33,7 +33,9 @@ class MK_AppInfo {
 				chdir($dirPath);
 			}
 		}
-		$appInfo = self::_parseIni(shell_exec('php5 index.php -mappinfo'));
+		$command = shell_exec('php5 index.php -mappinfo');
+		$appInfo = self::_parseIni($command); // Na potrzeby logs.madkom.pl (PHP4)
+//		$appInfo = parse_ini_string($command);
 		if ($changeDir) {
 			chdir($currentDir);
 		}
@@ -42,6 +44,8 @@ class MK_AppInfo {
 
 	/**
 	 * Parsowanie pliku INI ze string-a.
+	 * Na potrzeby logs.madkom.pl (PHP4) skopiowane z http://www.php.net/manual/en/function.parse-ini-string.php#97621
+	 * Po aktualizacji do PHP5 można usunąć i wykorzystać parse_ini_string()
 	 *
 	 * @param string $string
 	 * @return array
