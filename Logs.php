@@ -119,6 +119,8 @@ class MK_Logs {
 
 	/**
 	 * Usunięcie wysłanych plików z logami, archiwum zip oraz lock-a
+	 * 
+	 * @param boolean $delLogs
 	 */
 	private function _clearFiles($delLogs=true) {
 		if( $delLogs) {
