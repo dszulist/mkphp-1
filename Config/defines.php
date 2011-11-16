@@ -10,7 +10,7 @@ define('MK_LOCALE_NUMERIC',	'en_US');
 define('MK_TIMEZONE',		'Europe/Warsaw');
 define('MK_HTML_HEADER',	'Content-Type: text/html; charset=utf-8');
 define('MK_COOKIES_PATH',	dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
-define('MK_IS_CLI',			defined('STDIN') ? true : false);
+define('MK_IS_CLI',			defined('STDIN'));
 
 // Konfigruacja zgłaszania i zapisywania błędów
 define('MK_DEVELOPER',			defined('APP_DEVELOPER') ? APP_DEVELOPER : false);
