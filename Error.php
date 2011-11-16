@@ -141,7 +141,7 @@ class MK_Error {
 				. " USER_AGENT:\t{$_SERVER['HTTP_USER_AGENT']}\n";
 
 		if (defined('APP_PATH')) {
-			$devMessage .= " APP_PATH:\t\t" . APP_PATH . "\n"
+			$devMessage .= " APP_PATH:\t" . APP_PATH . "\n"
 					. " COOKIES_PATH:\t" . MK_COOKIES_PATH . "\n";
 		}
 
