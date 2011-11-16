@@ -54,8 +54,7 @@ class MK_Controller_Console {
 	 */
 	public function applogs(array $argv) {
 		$logs = new MK_Logs(APP_PATH);
-		$logs->sendPackage();
-		exit();
+		exit($logs->sendPackage() ? 'true' : 'false');
 	}
 
 }
