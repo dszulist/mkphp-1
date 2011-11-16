@@ -45,8 +45,19 @@ class MK {
 		if (empty($argv)) {
 			return;
 		}
-		//@TODO kontroller console z MK
-		$consoleController = new ConsoleController();
+		
+                $consoleController = ucfirst(APP_NAME).'_Controller_Console';
+                
+                if(class_exists($consoleController)){
+                    $consoleController = new $consoleController();    
+                }
+                elseif(class_exists('ConsoleController')){
+                    $consoleController = new ConsoleController();    
+                }
+                else{
+                    $consoleController = new MK_Controller_Console();
+                }
+		
 		$opts = getopt('m::');
 
 		if (count($argv) >= 2) {
