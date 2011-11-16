@@ -6,8 +6,8 @@
  * Klasa do obsługi wywoływania aplikacji z lini polecen (CLI)
  *
  * @category	MK_Controller
- * @package		MK_Controller_Console
- * @author		bskrzypkowiak
+ * @package     MK_Controller_Console
+ * @author	bskrzypkowiak
  */
 class MK_Controller_Console {
 
@@ -36,12 +36,13 @@ class MK_Controller_Console {
 	 * 	php index.php -mappinfo
 	 */
 	public function appinfo(array $argv) {
-		echo "APP=" . APP_NAME . PHP_EOL;
-		echo "DATABASE=" . DB_NAME . PHP_EOL;
-		echo "PASS=" . DB_PASS . PHP_EOL;
-		echo "USER=" . DB_USER . PHP_EOL;
-		echo "DBHOST=" . DB_HOST . PHP_EOL;
-		echo "PORT=" . DB_PORT . PHP_EOL;
+                echo "APP=" . strtolower(APP_NAME) . PHP_EOL
+                    ."DATABASE=" . DB_NAME . PHP_EOL
+                    ."PASS=" . DB_PASS . PHP_EOL
+                    ."USER=" . DB_USER . PHP_EOL
+                    ."DBHOST=" . DB_HOST . PHP_EOL
+                    ."PORT=" . DB_PORT . PHP_EOL;
+
 		$db = new MK_Db_PDO();
 		echo "VERSION=" . $db->GetOne('SELECT get_app_version()') . PHP_EOL;
 		exit();
