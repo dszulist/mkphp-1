@@ -31,7 +31,7 @@ class MK_Logs {
 	public function __construct($appPath, $debug=false) {
 		$this->_debug = $debug;
 
-		$this->_debug('Ustawienie ścieżki do aplikacji');
+		$this->_debug('Ustawienie ścieżki do aplikacji: ' . $appPath);
 		$this->_appPath = realpath($appPath);
 		$this->_dirErrors = $this->_appPath . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . 'errors';
 		$this->_dirErrorsUpload = $this->_dirErrors . DIRECTORY_SEPARATOR . 'upload';
@@ -81,9 +81,11 @@ class MK_Logs {
 	 */
 	private function _prepareLogFiles() {
 		// Odczytanie listy aktualnych plików z raportami błędów i przeniesienie ich do folderu "upload"
-		$this->_debug('Odczytanie listy aktualnych plików z raportami błędów');
-		$filePaths = glob($this->_dirErrors . DIRECTORY_SEPARATOR . '*.log');
-		if (count($filePaths) > 0) {
+		$logsPath = $this->_dirErrors . DIRECTORY_SEPARATOR . '*.log';
+		$filePaths = glob($logsPath);
+		$filePathCount = count($filePaths);
+		$this->_debug('Odczytanie listy aktualnych plików z raportami błędów (count: ' . $filePathCount . ')');
+		if ($filePathCount > 0) {
 			// Sprawdzenie czy wszystkie wysyłane pliki istnieją
 			foreach ($filePaths as $filePathSrc) {
 				if (!file_exists($filePathSrc)) {
@@ -117,9 +119,10 @@ class MK_Logs {
 	 * @return string
 	 */
 	private function _prepareZipFile() {
-		$fileUploadPaths = glob($this->_dirErrorsUpload . DIRECTORY_SEPARATOR . '*.log');
+		$logsPath = $this->_dirErrorsUpload . DIRECTORY_SEPARATOR . '*.log';
+		$fileUploadPaths = glob($logsPath);
 		if (count($fileUploadPaths) == 0) {
-			$this->_debug('Brak plików *.log do wysłania');
+			$this->_debug('Brak plików ' . $logsPath . ' do wysłania');
 			$this->_debug('Usuwam lock: ' . $this->_fileReportLock);
 			unlink($this->_fileReportLock);
 			return true;
@@ -132,7 +135,7 @@ class MK_Logs {
 			return false;
 		}
 		foreach ($fileUploadPaths as $filePath) {
-			$this->_debug('Dodawanie do archiwum pliku: ' . $filePath);
+			$this->_debug('Dodawanie pliku do archiwum: ' . $filePath . ' [' . filesize($filePath) . ' B]');
 			$zip->addFile($filePath, basename($filePath));
 		}
 		$zip->close();
@@ -152,8 +155,9 @@ class MK_Logs {
 	 */
 	private function _clearFiles($delLogs=true) {
 		if ($delLogs) {
-			$this->_debug('Usuwam pliki *.log');
-			$fileUploadPaths = glob($this->_dirErrorsUpload . DIRECTORY_SEPARATOR . '*.log');
+			$logsPath = $this->_dirErrorsUpload . DIRECTORY_SEPARATOR . '*.log';
+			$this->_debug('Usuwam pliki: ' . $logsPath);
+			$fileUploadPaths = glob($logsPath);
 			foreach ($fileUploadPaths as $filePath) {
 				if (file_exists($filePath)) {
 					unlink($filePath);
