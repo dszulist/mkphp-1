@@ -143,7 +143,7 @@ class MK_Logs {
 			$this->_debug('Niespodziewany błąd. Nie udało się utworzyć archiwum: ' . $this->_fileReportZip);
 			return false;
 		}
-		$this->_debug('Utworzono archiwum ZIP: ' . $this->_fileReportZip);
+		$this->_debug('Utworzono archiwum ZIP: ' . $this->_fileReportZip . ' [' . filesize($this->_fileReportZip) . ' B]');
 
 		return true;
 	}
@@ -179,6 +179,7 @@ class MK_Logs {
 	 *
 	 */
 	private function _sendRequest() {
+		$this->_debug('Odczytanie informacji o aplikacji (appinfo)');
 		$appInfo = MK_AppInfo::load($this->_appPath);
 		$postData = array(
 			'hostname' => exec('hostname'),
@@ -191,20 +192,22 @@ class MK_Logs {
 		if ($zipFileSize >= 10485760) { // 10MB = 10*1024*1024
 			$newReportZip = $this->_dirErrorsUpload . DIRECTORY_SEPARATOR . date('Ymd-His') . '_overweight_report.zip';
 			$newReportLog = $this->_fileReportZip . ' => ' . $newReportZip;
+			$this->_debug($newReportLog);
 			rename($this->_fileReportZip, $newReportZip);
 			$this->_clearFiles();
 			$this->saveToFile('overweight', $newReportLog);
-			return 'Rozmiar pliku przekroczył 10MB!';
+			return 'Rozmiar pliku ' . $this->_fileReportZip . ' przekroczył 10MB !';
 		} else {
 			$postData['archive'] = "@" . $this->_fileReportZip;
 		}
 
+		$this->_debug('Inicjowanie połączenia z logs.madkom.pl');
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->_reportUrl);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-//		curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 600);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -219,6 +222,7 @@ class MK_Logs {
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 		$results = curl_exec($ch);
 		curl_close($ch);
+		$this->_debug('Zamknięcie połączenia z logs.madkom.pl');
 
 		return $results;
 	}
