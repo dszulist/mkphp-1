@@ -55,24 +55,36 @@ class MK {
 			$consoleController = new MK_Controller_Console();
 		}
 
-		$opts = getopt('m::');
-
 		if (count($argv) >= 2) {
-			$argv = array_slice($argv, 2);
+			$optArgv = array_slice($argv, 2);
 		}
 
-		if (!empty($opts)) {
-			foreach (array_keys($opts) as $opt) {
-				switch ($opt) {
-					case 'm':
-						if (!method_exists($consoleController, $opts['m'])) {
-							exit("Brak funkcji {$opts['m']}\n");
+		$optArray = getopt('m::');
+		if (empty($optArray)) {
+			exit('Nieprawidłowe parametry w trybie konsolowym' . PHP_EOL);
+		}
+
+		foreach ($optArray as $optKey => $optValue) {
+			switch ($optKey) {
+				case 'm':
+					if (is_array($optValue)) {
+						foreach ($optValue as $value) {
+
+							if (!method_exists($consoleController, $value)) {
+								exit("Brak funkcji {$value}\n");
+							}
+							$consoleController->{$value}($optArgv);
 						}
-						$consoleController->{$opts['m']}($argv);
-						break;
-				}
+					} else {
+						if (!method_exists($consoleController, $optValue)) {
+							exit("Brak funkcji {$optValue}\n");
+						}
+						$consoleController->{$optValue}($optArgv);
+					}
+					break;
 			}
 		}
+		exit;
 	}
 
 	/**
