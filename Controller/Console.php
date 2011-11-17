@@ -54,7 +54,8 @@ class MK_Controller_Console {
 	 * 	php index.php -mapplogs
 	 */
 	public function applogs(array $argv) {
-		$logs = new MK_Logs(APP_PATH);
+		$debug = (isset($argv[0]) && $argv[0] == 'true') ? true : false;
+		$logs = new MK_Logs(APP_PATH, $debug);
 		exit($logs->sendPackage() ? 'true' : 'false');
 	}
 

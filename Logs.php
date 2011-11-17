@@ -18,6 +18,7 @@ class MK_Logs {
 	private $_dirErrorsUpload;
 	private $_fileReportZip;
 	private $_fileReportLock;
+	private $_debug = false;
 	private $_sendDelay = 0;
 	private $_reportUrl = 'https://logs.madkom.pl/report.php';
 	private $_reportAuth = 'aplikacja:Cziayu48B';
@@ -27,7 +28,10 @@ class MK_Logs {
 	 *
 	 * @param string $appPath
 	 */
-	public function __construct($appPath) {
+	public function __construct($appPath, $debug=false) {
+		$this->_debug = $debug;
+
+		$this->_debug('Ustawienie ścieżki do aplikacji');
 		$this->_appPath = realpath($appPath);
 		$this->_dirErrors = $this->_appPath . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . 'errors';
 		$this->_dirErrorsUpload = $this->_dirErrors . DIRECTORY_SEPARATOR . 'upload';
@@ -35,9 +39,11 @@ class MK_Logs {
 		$this->_fileReportZip = $this->_dirErrorsUpload . DIRECTORY_SEPARATOR . 'report.zip';
 
 		// Sprawdzenie struktury katalogów raportów błędów
+		$this->_debug('Przygotowanie struktury katalogów');
 		if (!file_exists($this->_dirErrorsUpload) || !is_dir($this->_dirErrorsUpload)) {
 			if (!@mkdir($this->_dirErrorsUpload, 0775, true)) {
-				die('Nie można utworzyć katalogu do przechowania raportów błędów do uploadu');
+				$this->_debug('Nie można utworzyć katalogu do przechowania raportów błędów do uploadu', true);
+				exit;
 			}
 		}
 	}
@@ -56,6 +62,53 @@ class MK_Logs {
 	}
 
 	/**
+	 * Debugowanie (wiadomość)
+	 *
+	 * @param string $message
+	 * @param boolean $force (default:false)
+	 */
+	private function _debug($message, $force=false) {
+		if ($force === true || $this->_debug === true) {
+			echo '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
+		}
+	}
+
+	/**
+	 * Przygotowanie plików z raportami błędów do wysłania.
+	 * Przeniesienie w/w plików do folderu "upload" lub dopisanie do nich zawartości.
+	 *
+	 * @return boolean
+	 */
+	private function _prepareLogFiles() {
+		// Odczytanie listy aktualnych plików z raportami błędów i przeniesienie ich do folderu "upload"
+		$this->_debug('Odczytanie listy aktualnych plików z raportami błędów');
+		$filePaths = glob($this->_dirErrors . DIRECTORY_SEPARATOR . '*.log');
+		if (count($filePaths) > 0) {
+			// Sprawdzenie czy wszystkie wysyłane pliki istnieją
+			foreach ($filePaths as $filePathSrc) {
+				if (!file_exists($filePathSrc)) {
+					$this->_debug('Plik nie istnieje - ' . $filePathSrc);
+					return false;
+				}
+				$filePathDest = $this->_dirErrorsUpload . DIRECTORY_SEPARATOR . basename($filePathSrc);
+				if (file_exists($filePathDest)) {
+					if (!file_put_contents($filePathDest, file_get_contents($filePathSrc), FILE_APPEND)) {
+						$this->_debug('Nie udało się przenieść zawartości pliku: ' . $filePathSrc);
+						return false;
+					}
+					unlink($filePathSrc);
+				} else {
+					if (!rename($filePathSrc, $filePathDest)) {
+						$this->_debug('Nie udało się przenieść pliku: ' . $filePathSrc);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Przygotowanie plików z raportami błędów do wysłania.
 	 * Przeniesienie w/w plików do folderu "upload" lub dopisanie do nich zawartości.
 	 * Odczytanie listy plików do wysłania i spakowania ich do ZIP-a.
@@ -64,66 +117,42 @@ class MK_Logs {
 	 * @return string
 	 */
 	private function _prepareZipFile() {
-		// Odczytanie listy aktualnych plików z raportami błędów i przeniesienie ich do folderu "upload"
-		$filePaths = glob($this->_dirErrors . DIRECTORY_SEPARATOR . '*.log');
-		if (count($filePaths) > 0) {
-			// Sprawdzenie czy wszystkie wysyłane pliki istnieją
-			foreach ($filePaths as $filePathSrc) {
-				if (!file_exists($filePathSrc)) {
-					return $this->sendPackageFailure('Plik nie istnieje - ' . $filePathSrc);
-				}
-				$filePathDest = $this->_dirErrorsUpload . DIRECTORY_SEPARATOR . basename($filePathSrc);
-				if (file_exists($filePathDest)) {
-					if (!file_put_contents($filePathDest, file_get_contents($filePathSrc), FILE_APPEND)) {
-						return $this->sendPackageFailure('Nie udało się przenieść zawartości pliku: ' . $filePathSrc);
-					}
-					unlink($filePathSrc);
-				} else {
-					if (!rename($filePathSrc, $filePathDest)) {
-						return $this->sendPackageFailure('Nie udało się przenieść pliku: ' . $filePathSrc);
-					}
-				}
-			}
-		}
-
-		// Odczytanie listy plików do wysłania
 		$fileUploadPaths = glob($this->_dirErrorsUpload . DIRECTORY_SEPARATOR . '*.log');
 		if (count($fileUploadPaths) == 0) {
+			$this->_debug('Brak plików *.log do wysłania');
+			$this->_debug('Usuwam lock: ' . $this->_fileReportLock);
+			unlink($this->_fileReportLock);
 			return true;
 		}
 
 		// Spakowanie plików do wysłania
 		$zip = new ZipArchive();
 		if ($zip->open($this->_fileReportZip, ZIPARCHIVE::OVERWRITE) !== true) {
-			return $this->sendPackageFailure('Nie udało się utworzyć archiwum: ' . $this->_fileReportZip);
+			$this->_debug('Nie udało się utworzyć archiwum: ' . $this->_fileReportZip);
+			return false;
 		}
 		foreach ($fileUploadPaths as $filePath) {
+			$this->_debug('Dodawanie do archiwum pliku: ' . $filePath);
 			$zip->addFile($filePath, basename($filePath));
 		}
 		$zip->close();
 		if (!file_exists($this->_fileReportZip)) {
-			return $this->sendPackageFailure('Niespodziewany błąd. Nie udało się utworzyć archiwum: ' . $this->_fileReportZip);
+			$this->_debug('Niespodziewany błąd. Nie udało się utworzyć archiwum: ' . $this->_fileReportZip);
+			return false;
 		}
-	}
+		$this->_debug('Utworzono archiwum ZIP: ' . $this->_fileReportZip);
 
-	/**
-	 * Usunięcie lock-a i wyświetlenie komunikatu błędu
-	 *
-	 * @param string $message
-	 */
-	public function sendPackageFailure($message, $delLogs=false) {
-		$this->_clearFiles($delLogs);
-		echo $message . PHP_EOL;
-		return false;
+		return true;
 	}
 
 	/**
 	 * Usunięcie wysłanych plików z logami, archiwum zip oraz lock-a
-	 * 
+	 *
 	 * @param boolean $delLogs
 	 */
 	private function _clearFiles($delLogs=true) {
-		if( $delLogs) {
+		if ($delLogs) {
+			$this->_debug('Usuwam pliki *.log');
 			$fileUploadPaths = glob($this->_dirErrorsUpload . DIRECTORY_SEPARATOR . '*.log');
 			foreach ($fileUploadPaths as $filePath) {
 				if (file_exists($filePath)) {
@@ -132,9 +161,11 @@ class MK_Logs {
 			}
 		}
 		if (file_exists($this->_fileReportZip)) {
+			$this->_debug('Usuwam archiwum: ' . $this->_fileReportZip);
 			unlink($this->_fileReportZip);
 		}
 		if (file_exists($this->_fileReportLock)) {
+			$this->_debug('Usuwam lock: ' . $this->_fileReportLock);
 			unlink($this->_fileReportLock);
 		}
 	}
@@ -154,8 +185,8 @@ class MK_Logs {
 
 		$zipFileSize = filesize($this->_fileReportZip);
 		if ($zipFileSize >= 10485760) { // 10MB = 10*1024*1024
-			$newReportZip = $this->_dirErrorsUpload . DIRECTORY_SEPARATOR . date('Ymd-His').'_overweight_report.zip';
-			$newReportLog = $this->_fileReportZip.' => '.$newReportZip;
+			$newReportZip = $this->_dirErrorsUpload . DIRECTORY_SEPARATOR . date('Ymd-His') . '_overweight_report.zip';
+			$newReportLog = $this->_fileReportZip . ' => ' . $newReportZip;
 			rename($this->_fileReportZip, $newReportZip);
 			$this->_clearFiles();
 			$this->saveToFile('overweight', $newReportLog);
@@ -207,27 +238,41 @@ class MK_Logs {
 	 */
 	public function sendPackage() {
 		if (file_exists($this->_fileReportLock)) {
-			return $this->sendPackageFailure('Istnieje lock');
+			// Sprawdzenie czy lock istnieje dłużej jak 24h = 60*60*24 = 86400
+			if (time() - filemtime($this->_fileReportLock) > 86400) {
+				$this->_debug('Lock istnieje dłużej jak 24h. Usuwam i próbuję wysłać paczkę');
+				unlink($this->_fileReportLock);
+			} else {
+				$this->_debug('Istnieje lock: ' . $this->_fileReportLock);
+				return false;
+			}
 		}
 
-		if( $this->_prepareZipFile() ) {
+		$this->_debug('Utworzenie lock-a: ' . $this->_fileReportLock);
+		file_put_contents($this->_fileReportLock, date('Y-m-d H:i:s') . ' :: ' . $this->_fileReportZip);
+
+		// Sprawdzenie czy uda się przygotować pliki do wysłania
+		if (!$this->_prepareLogFiles() || !$this->_prepareZipFile()) {
+			return false;
+		}
+
+		// Brak plików do wysłania, lock nie istnieje
+		if (!file_exists($this->_fileReportLock)) {
 			return true;
 		}
 
-		file_put_contents($this->_fileReportLock, date('Y-m-d H:i:s') . ' :: ' . $this->_fileReportZip);
-		if (!file_exists($this->_fileReportLock)) {
-			return $this->sendPackageFailure('Nie udało się utworzyć lock-a');
-		}
-
 		if ($this->_sendDelay > 0) {
+			$this->_debug('Usypiam skrypt na okres ' . $this->_sendDelay . 's');
 			sleep($this->_sendDelay);
 		}
 
 		$results = $this->_sendRequest();
+		$this->_debug('Odpowiedź serwera: ' . PHP_EOL . $results);
 		if ($results !== 'true') {
-			return $this->sendPackageFailure($results);
+			return false;
 		}
 
+		$this->_debug('Udało się wysłać paczkę');
 		$this->_clearFiles();
 		return true;
 	}
