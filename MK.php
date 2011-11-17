@@ -45,19 +45,16 @@ class MK {
 		if (empty($argv)) {
 			return;
 		}
-		
-                $consoleController = ucfirst(APP_NAME).'_Controller_Console';
-                
-                if(class_exists($consoleController)){
-                    $consoleController = new $consoleController();    
-                }
-                elseif(class_exists('ConsoleController')){
-                    $consoleController = new ConsoleController();    
-                }
-                else{
-                    $consoleController = new MK_Controller_Console();
-                }
-		
+
+		$consoleController = ucfirst(APP_NAME) . '_Controller_Console';
+		if (class_exists($consoleController)) {
+			$consoleController = new $consoleController();
+		} elseif (class_exists('ConsoleController')) {
+			$consoleController = new ConsoleController();
+		} else {
+			$consoleController = new MK_Controller_Console();
+		}
+
 		$opts = getopt('m::');
 
 		if (count($argv) >= 2) {
