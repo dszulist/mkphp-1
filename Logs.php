@@ -261,6 +261,8 @@ class MK_Logs {
 
 		// Sprawdzenie czy uda się przygotować pliki do wysłania
 		if (!$this->_prepareLogFiles() || !$this->_prepareZipFile()) {
+			$this->_debug('Usuwam lock: ' . $this->_fileReportLock);
+			unlink($this->_fileReportLock);
 			return false;
 		}
 
