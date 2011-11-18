@@ -55,8 +55,8 @@ session_start();
 
 // #Debuging
 if (MK_DEBUG_FIREPHP) {
-	require (DIR_LIBS . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
-	require (DIR_LIBS . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
+	require (DIR_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
+	require (DIR_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
 	//@TODO sprawdzic ten klucz sesji i obsłużyć
 	$_SESSION['sql_last_time'] = microtime(true);
 }
