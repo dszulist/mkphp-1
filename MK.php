@@ -61,7 +61,7 @@ class MK {
 
 		$optArray = getopt('m::');
 		if (empty($optArray)) {
-			exit('Nieprawidłowe parametry w trybie konsolowym' . PHP_EOL);
+			return;
 		}
 
 		foreach ($optArray as $optKey => $optValue) {
