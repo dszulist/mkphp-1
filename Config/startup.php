@@ -22,14 +22,6 @@ setlocale(LC_NUMERIC, MK_LOCALE_NUMERIC);
 // rejestracja wrapperów
 stream_wrapper_register("tcp", "MK_Stream_Tcp");
 
-// #Debuging
-if (MK_DEBUG_FIREPHP) {
-	require (DIR_LIBS . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
-	require (DIR_LIBS . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
-	//@TODO sprawdzic ten klucz sesji i obsłużyć
-	$_SESSION['sql_last_time'] = microtime(true);
-}
-
 // #ErrorHandling
 error_reporting(MK_DEVELOPER || MK_IS_CLI ? (E_ALL | E_STRICT) : '');
 ini_set('display_errors', MK_DEVELOPER || MK_IS_CLI ? 'on' : 'off');
@@ -58,7 +50,18 @@ ini_set('session.save_handler', SESSION_SAVE_HANDLER);
 session_save_path(DIR_SESSION);
 session_set_cookie_params(0, MK_COOKIES_PATH);
 
+// Uruchomienie sesji
+session_start();
+
+// #Debuging
+if (MK_DEBUG_FIREPHP) {
+	require (DIR_LIBS . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
+	require (DIR_LIBS . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
+	//@TODO sprawdzic ten klucz sesji i obsłużyć
+	$_SESSION['sql_last_time'] = microtime(true);
+}
+
 // Uruchomienie kontrollera konsoli jezeli wywołanie jest z konsoli
-if (MK_IS_CLI) {    
+if (MK_IS_CLI) {
     MK::executeCLICommand($argv);
 }
