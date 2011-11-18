@@ -35,7 +35,7 @@ class MK_Exception extends Exception {
 			}
 		}
 
-		$retArray['debug'] = (MK_DEVELOPER === true) ? $debugMsg : '';
+		$retArray['debug'] = (MK_DEVELOPER === true) ? '<pre>' . $debugMsg . '</pre>' : '';
 
 		if (MK::isAjaxExecution(true)) {
 			return json_encode($retArray);
