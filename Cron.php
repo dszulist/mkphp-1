@@ -180,8 +180,9 @@ class MK_Cron {
 //                    $logs->add($info, '5', '', true);
             }
 
-            $this->db->Execute("INSERT INTO cron_tasks (id, cron_id, createdate, info) values (default, ?, ?, ?)", array($ret['id'], $this->db->DBTimeStamp(time()), $info));
-
+			$this->cronTasksDb = new Broker_Model_Cron_Tasks();
+			$this->cronTasksDb->insertInfoById($ret['id'], $info);
+			
             //odblokowanie zadania po jego wykonaniu
             $this->enabledisableCronBlockage('0', $ret['id']);
 
