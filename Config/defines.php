@@ -15,7 +15,6 @@ define('MK_IS_CLI',		defined('STDIN'));
 // Konfigruacja zgłaszania i zapisywania błędów
 define('MK_DEVELOPER',		defined('APP_DEVELOPER') ? APP_DEVELOPER : false);
 define('MK_ERROR_JS_ENABLED',	defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
-define('MK_DEBUG_FIREPHP',	isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI ? true : false);
 
 // Ścieżki do plików wykorzystywanych przez aplikację
 define('APP_FILE_LOCK',		'under_construction.txt');
