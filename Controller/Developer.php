@@ -18,12 +18,12 @@ class MK_Controller_Developer {
 	 */
 	public function enableDebug() {
 		$msg = '';
-		if (array_key_exists('APP_DEBUG', $_SESSION) && $_SESSION['APP_DEBUG'] === true) {
-			unset($_SESSION['APP_DEBUG']);
+		if (array_key_exists('DEBUG_FIREPHP', $_SESSION) && $_SESSION['DEBUG_FIREPHP'] === true) {
+			unset($_SESSION['DEBUG_FIREPHP']);
 			MK_Cookie::clear('XDEBUG_SESSION');
 			$msg = 'Wyłączono';
 		} else {
-			$_SESSION['APP_DEBUG'] = true;
+			$_SESSION['DEBUG_FIREPHP'] = true;
 			MK_Cookie::set('XDEBUG_SESSION', 'netbeans-xdebug', 0);
 			$msg = 'Włączono';
 		}
