@@ -463,11 +463,11 @@ class MK_Db_PDO {
 			$countParams = array_slice($params, -$countExclamation);
 
 			$preparedSqlToGetRowNumber = 'SELECT row_number'
-					. ' FROM ( ' . $preparedSqlToGetRowNumber . ' ) as oldtable'
+					. ' FROM ( ' . $preparedSqlToGetRowNumber . ' ) oldtable'
 					. ' CROSS JOIN ('
-					. ' SELECT ARRAY( ' . $preparedSqlToGetRowNumber . ' ) as id)  AS oldids'
+					. ' SELECT ARRAY( ' . $preparedSqlToGetRowNumber . ' ) AS id) AS oldids'
 					. ' CROSS JOIN generate_series(1, ' . $resCount . ') AS row_number'
-					. ' WHERE oldids.id[row_number] =  oldtable.key_column AND oldtable.key_column = ?'
+					. ' WHERE oldids.id[row_number] = oldtable.key_column AND oldtable.key_column = ?'
 					. ' LIMIT 1';
 
 			$rowNumber = (int) $this->GetOne($preparedSqlToGetRowNumber, array_merge($countParams, $countParams, array($primaryVal)));
