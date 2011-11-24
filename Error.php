@@ -138,7 +138,7 @@ class MK_Error {
 				. " REMOTE_ADDR:\t{$_SERVER['REMOTE_ADDR']}\n"
 				. " SERVER_ADDR:\t{$_SERVER['SERVER_ADDR']}\n"
 				. " REQUEST_URI:\t{$_SERVER['REQUEST_URI']}\n"
-				. " USER_AGENT:\t{$_SERVER['HTTP_USER_AGENT']}\n";
+				. " USER_AGENT:\t" . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'brak danych') . "\n";
 
 		if (defined('APP_PATH')) {
 			$devMessage .= " APP_PATH:\t" . APP_PATH . "\n"
