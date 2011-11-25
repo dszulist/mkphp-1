@@ -11,26 +11,6 @@
 class MK_Exception extends Exception {
 
 	/**
-	 * Uproszczony raport błędu dla Exception.
-	 * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
-	 *
-	 * try {
-	 *	// code
-	 * } catch (Exception $e) {
-	 *	die($e->getSimpleMessage());
-	 * }
-	 *
-	 * @return string
-	 */
-	public function getSimpleMessage() {
-		$_file = $this->getFile();
-		$_line = strval($this->getLine());
-		$_trace = MK_Error::getExtendedTrace($this);
-
-		return '<pre>' . MK_Error::fromException($this->getMessage(), $_file, $_line, $_trace) . '</pre>';
-	}
-
-	/**
 	 * Rozbudowany raport błędu dla MK_Exception i MK_Db_Exception.
 	 * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
 	 *
