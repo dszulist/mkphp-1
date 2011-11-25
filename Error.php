@@ -48,7 +48,7 @@ class MK_Error {
 			$_line = "";
 			$_trace = "";
 		}
-		return self::fromException($msg, $_file, $_line, $_trace);
+		return '<pre>' . self::fromException($msg, $_file, $_line, $_trace) . '</pre>';
 	}
 
 	/**
