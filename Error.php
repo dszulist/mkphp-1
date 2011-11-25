@@ -31,6 +31,22 @@ class MK_Error {
 	}
 
 	/**
+	 * Uproszczony raport błędu dla Exception.
+	 * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
+	 *
+	 * try {
+	 *	// code
+	 * } catch (Exception $e) {
+	 *	die(MK_Error::getSimpleMessage($e));
+	 * }
+	 *
+	 * @return string
+	 */
+	public static function getSimpleInfo($exceptionClass) {
+		return '<pre>' . self::fromException($exceptionClass->getMessage(), $exceptionClass->getFile(), strval($exceptionClass->getLine()), self::getExtendedTrace($exceptionClass)) . '</pre>';
+	}
+
+	/**
 	 * Rozbudowany raport ścieżki błędu
 	 */
 	public static function getExtendedTrace($exception=null) {
