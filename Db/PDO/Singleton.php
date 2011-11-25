@@ -97,12 +97,7 @@ class MK_Db_PDO_Singleton {
 					die(json_encode($retArray));
 				}
 
-				echo $retArray['message'] . PHP_EOL;
-
-				if (MK_DEVELOPER) {
-					echo $retArray['debug'] . PHP_EOL;
-				}
-				die();
+				exit(MK_DEVELOPER === true ? $retArray['debug'] : $retArray['message']);
 			}
 		}
 		return self::$_singleton;
