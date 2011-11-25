@@ -31,27 +31,6 @@ class MK_Error {
 	}
 
 	/**
-	 * Zwrócenie komunikatu błędu dla Exception
-	 *
-	 * @param string $msg
-	 * @param object $exceptionClass
-	 *
-	 * @return string
-	 */
-	public static function getSimpleInfo($msg, $exceptionClass=null) {
-		if (is_object($exceptionClass)) {
-			$_file = $exceptionClass->getFile();
-			$_line = strval($exceptionClass->getLine());
-			$_trace = self::getExtendedTrace($exceptionClass);
-		} else {
-			$_file = "";
-			$_line = "";
-			$_trace = "";
-		}
-		return '<pre>' . self::fromException($msg, $_file, $_line, $_trace) . '</pre>';
-	}
-
-	/**
 	 * Rozbudowany raport ścieżki błędu
 	 */
 	public static function getExtendedTrace($exception=null) {
