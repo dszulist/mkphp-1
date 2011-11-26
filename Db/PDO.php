@@ -384,9 +384,12 @@ class MK_Db_PDO {
 			MK_Db_PDO_Singleton::transCount(-1);
 			return true;
 		} else if ($_transCount == 1) {
+			// Jeśli transakcja nie została przerwana, to należy zamknąć logi
+			if ($commit == true) {
+				$tableLogsDb = new TableLogsDb();
+				$tableLogsDb->closeConnectionForTableLog();
+			}
 			// Transakcja jest do zamknięcia
-			$tableLogsDb = new TableLogsDb();
-			$tableLogsDb->closeConnectionForTableLog();
 			MK_Db_PDO_Singleton::transCount(0, true);
 		} else if ($_transCount == 0) {
 			// Transakcja nie była uruchomiona
