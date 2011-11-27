@@ -72,7 +72,7 @@ class MK_Db_PDO {
 	 * @throws MK_Db_Exception
 	 * @return integer
 	 */
-	public function Execute($sql, array $params = array()) {
+	protected function Execute($sql, array $params = array()) {
 		// Bez array_values wywala błąd - nie ma być kluczy w tablicy!
 		$params = array_values($params);
 
@@ -114,7 +114,7 @@ class MK_Db_PDO {
 	 * @throws MK_Db_Exception
 	 * @return string
 	 */
-	public function GetOne($sql, array $params = array()) {
+	protected function GetOne($sql, array $params = array()) {
 		// Bez array_values wywala błąd - nie ma być kluczy w tablicy!
 		$params = array_values($params);
 
@@ -158,7 +158,7 @@ class MK_Db_PDO {
 	 * @throws MK_Db_Exception
 	 * @return array
 	 */
-	public function GetCol($sql, $params = array(), $trim = false) {
+	protected function GetCol($sql, $params = array(), $trim = false) {
 		// Bez array_values wywala błąd - nie ma być kluczy w tablicy!
 		$params = array_values($params);
 
@@ -200,7 +200,7 @@ class MK_Db_PDO {
 	 * @throws MK_Db_Exception
 	 * @return array
 	 */
-	public function GetRow($sql, array $params = array()) {
+	protected function GetRow($sql, array $params = array()) {
 		// Bez array_values wywala błąd - nie ma być kluczy w tablicy!
 		$params = array_values($params);
 
@@ -245,7 +245,7 @@ class MK_Db_PDO {
 	 * @throws MK_Db_Exception
 	 * @return array
 	 */
-	public function GetRows($sql, array $params, $columnAsKey = '') {
+	protected function GetRows($sql, array $params, $columnAsKey = '') {
 		// Bez array_values wywala błąd - nie ma być kluczy w tablicy!
 		$params = array_values($params);
 
@@ -452,7 +452,7 @@ class MK_Db_PDO {
 	 *   $res[totalCount] - maksymalna ilość wierszy
 	 *   $res[results] - wynik zapytania
 	 */
-	public function SelectLimit($sql, array $params, $primaryName = null, $primaryVal = 0, $start = false, $limit = false) {
+	protected function SelectLimit($sql, array $params, $primaryName = null, $primaryVal = 0, $start = false, $limit = false) {
 		$limit = ($limit === false) ? MK_Registry::get('limit') : $limit;
 		$start = ($start === false) ? MK_Registry::get('start') : $start;
 		$primaryVal = (int) $primaryVal;
@@ -593,7 +593,7 @@ class MK_Db_PDO {
 	 *
 	 * @return String
 	 */
-	public function createInsert(array $data, $table) {
+	protected function createInsert(array $data, $table) {
 		return 'INSERT INTO ' . $table . '(' . implode(', ', array_keys($data)) . ')'
 				. ' VALUES(' . self::arrayToQueryIn($data) . ')';
 	}
@@ -607,7 +607,7 @@ class MK_Db_PDO {
 	 *
 	 * @return String
 	 */
-	public function createUpdate(array $data, $table, array $where) {
+	protected function createUpdate(array $data, $table, array $where) {
 		$sql = 'UPDATE ' . $table . ' SET ';
 
 		foreach ($data as $key => $value) {
@@ -638,7 +638,7 @@ class MK_Db_PDO {
 	 *
 	 * @return Array
 	 */
-	public function prepareQueryWhere($fields, $query, $logicalExpression, &$whereSql, &$whereValue, $fullText = false) {
+	protected function prepareQueryWhere($fields, $query, $logicalExpression, &$whereSql, &$whereValue, $fullText = false) {
 		if (!empty($fields) && $query != '') {
 			$whereSql_tmp = array();
 			$fields = (json_decode($fields) == NULL) ? $fields : json_decode($fields);
