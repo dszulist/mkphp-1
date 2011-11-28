@@ -46,6 +46,7 @@ class MK_Db_PDO {
 
 	/**
 	 * Ustawienie większej ilości klas do ignorowania dla fireBugSqlDump()
+	 *
 	 * @param array $classArray
 	 */
 	public function setMoreSqlIgnoreClass($classArray) {
@@ -67,7 +68,7 @@ class MK_Db_PDO {
 	 * Zwracany ilość zmienionych rekordów.
 	 *
 	 * @param String	 $sql - zapytanie sql'owe
-	 * @param Array	 $params - parametry zapytania
+	 * @param Array	 $params (default: array()) - parametry zapytania
 	 *
 	 * @throws MK_Db_Exception
 	 * @return integer
@@ -109,7 +110,7 @@ class MK_Db_PDO {
 	 * Brany jest pod uwagę tylko jeden rekord, a zwracana wartość typu string.
 	 *
 	 * @param String $sql - zapytanie sql'owe
-	 * @param Array	 $params - parametry zapytania
+	 * @param Array	 $params (default: array()) - parametry zapytania
 	 *
 	 * @throws MK_Db_Exception
 	 * @return string
@@ -152,8 +153,8 @@ class MK_Db_PDO {
 	 * Odczytane dane są w postaci tablicy jednowymiarowej, indeksowanej od zera.
 	 *
 	 * @param String	 $sql
-	 * @param Array	 $params
-	 * @param boolean $trim
+	 * @param Array	 $params (default: array())
+	 * @param boolean $trim (default: false)
 	 *
 	 * @throws MK_Db_Exception
 	 * @return array
@@ -195,7 +196,7 @@ class MK_Db_PDO {
 	 * Odczytanie tylko jednego wiersza z podanego zapytania SQL.
 	 *
 	 * @param String	 $sql - zapytanie sql'owe
-	 * @param Array	 $params - parametry zapytania
+	 * @param Array	 $params (default: array()) - parametry zapytania
 	 *
 	 * @throws MK_Db_Exception
 	 * @return array
@@ -239,13 +240,13 @@ class MK_Db_PDO {
 	 * której kluczem (indeksem) będzie wartość podanej kolumny, np. sid
 	 *
 	 * @param String	 $sql - zapytanie sql'owe
-	 * @param Array	 $params - parametry zapytania
-	 * @param String $columnAsKey (opcjonalnie) - nazwa kolumny jako klucz
+	 * @param Array	 $params (default: array()) - parametry zapytania
+	 * @param String $columnAsKey (default:'') - nazwa kolumny jako klucz
 	 *
 	 * @throws MK_Db_Exception
 	 * @return array
 	 */
-	protected function GetRows($sql, array $params, $columnAsKey = '') {
+	protected function GetRows($sql, array $params = array(), $columnAsKey = '') {
 		// Bez array_values wywala błąd - nie ma być kluczy w tablicy!
 		$params = array_values($params);
 
@@ -428,7 +429,8 @@ class MK_Db_PDO {
 
 	/**
 	 * Włączenie (true) lub wyłączenie (false) debugowania SQL.
-	 * @param boolean $debug
+	 *
+	 * @param boolean $debug (default: true)
 	 */
 	public function debug($debug=true) {
 		$this->db->debug = $debug;
@@ -438,11 +440,11 @@ class MK_Db_PDO {
 	 * Metodę SelectLimit. Jeżeli podamy id klucza i nazwę, to pobiera numer strony na której znajduje się rekord.
 	 *
 	 * @param String	 $sql - zapytanie sql'owe
-	 * @param Array	 $params - parametry zapytania
-	 * @param String	 $paramName - nazwa klucza
-	 * @param String	 $paramVal - wartość klucza
-	 * @param Integer	$start - start
-	 * @param Integer	$limit - limit
+	 * @param Array	 $params (default: array()) - parametry zapytania
+	 * @param String	 $primaryName (default: null) - nazwa klucza
+	 * @param String	 $primaryVal (default: 0) - wartość klucza
+	 * @param Integer	$start (default: false) - start
+	 * @param Integer	$limit (default: false) - limit
 	 *
 	 * @throws MK_Db_Exception
 	 * @return Array
@@ -452,7 +454,7 @@ class MK_Db_PDO {
 	 *   $res[totalCount] - maksymalna ilość wierszy
 	 *   $res[results] - wynik zapytania
 	 */
-	protected function SelectLimit($sql, array $params, $primaryName = null, $primaryVal = 0, $start = false, $limit = false) {
+	protected function SelectLimit($sql, array $params = array(), $primaryName = null, $primaryVal = 0, $start = false, $limit = false) {
 		$limit = ($limit === false) ? MK_Registry::get('limit') : $limit;
 		$start = ($start === false) ? MK_Registry::get('start') : $start;
 		$primaryVal = (int) $primaryVal;
@@ -495,10 +497,10 @@ class MK_Db_PDO {
 	 * Pomocnicza funkcja do SelectLimit
 	 *
 	 * @param type $sql
-	 * @param type $nrows
-	 * @param type $offset
-	 * @param type $inputarr
-	 * @param type $secs2cache
+	 * @param type $nrows (default: -1)
+	 * @param type $offset (default: -1)
+	 * @param type $inputarr (default: false)
+	 * @param type $secs2cache (default: 0)
 	 *
 	 * @return array
 	 */
@@ -632,11 +634,12 @@ class MK_Db_PDO {
 	/**
 	 * Metoda przygotowująca warunki wyszukiwania
 	 *
-	 * @param Mixed	  fields
-	 * @param String	 query
-	 * @param String	 logicalExpression
-	 *
-	 * @return Array
+	 * @param mixed $fields
+	 * @param string $query
+	 * @param string $logicalExpression
+	 * @param array &$whereSql
+	 * @param array &$whereValue
+	 * @param boolean $fullText (default: false)
 	 */
 	protected function prepareQueryWhere($fields, $query, $logicalExpression, &$whereSql, &$whereValue, $fullText = false) {
 		if (!empty($fields) && $query != '') {
