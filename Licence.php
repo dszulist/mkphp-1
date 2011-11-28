@@ -12,6 +12,27 @@
  */
 class MK_Licence {
 
+	private $_expireDate;
+
+	/**
+	 * Odczytanie daty wygaśnięcia licencji
+	 *
+	 * @param string $licence
+	 * @return string
+	 */
+	private function _expireDate($licence) {
+		if( isset($this->_expireDate) ) {
+			return $this->_expireDate;
+		}
+
+		if (!preg_match('#^([0-9]{4})([0-9]{2})([0-9]{2})#', $licence, $matches)) {
+			throw new MK_Exception('Nieprawidłowa licencja. Proszę o kontakt z administratorem.');
+		}
+
+		$this->_expireDate = $matches[1] . '-' . $matches[2] . '-' . $matches[3];
+		return $this->_expireDate;
+	}
+
 	/**
 	 * Sprawdanie licencji
 	 *
@@ -24,7 +45,7 @@ class MK_Licence {
 			return true;
 		}
 
-		$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
+		$expireDate = $this->_expireDate($licence);
 
 		if (!$this->isValidSignature($licence)
 				|| ( $statusInconsistencyLicenseKey == 'stop_application' && strtotime($expireDate) < strtotime(date('Y-m-d')))) {
@@ -59,8 +80,7 @@ class MK_Licence {
 	 * @return Boolean
 	 */
 	function isSupportActive($licence) {
-		$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
-		return (strtotime($expireDate) < strtotime(date('Y-m-d')));
+		return strtotime($this->_expireDate($licence)) < strtotime(date('Y-m-d'));
 	}
 
 	/**
@@ -70,11 +90,10 @@ class MK_Licence {
 	 * @return Boolean
 	 */
 	function isValidSignature($licence) {
-		$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
-		//20121231.md5($expireDate . ' ' . exec('hostname') . ' ' . APP_PATH);
+		$expireDate = $this->_expireDate($licence);
+		//echo '20121231'.md5($expireDate . ' ' . exec('hostname') . ' ' . APP_PATH);
 		$validLicence = str_replace('-', '', $expireDate) . md5($expireDate . ' ' . exec('hostname') . ' ' . APP_PATH);
-
-		return ((strlen($licence) == 40 && strcmp($validLicence, $licence) == 0));
+		return (strlen($licence) == 40 && strcmp($validLicence, $licence) == 0);
 	}
 
 }
