@@ -43,7 +43,7 @@ class MK_Controller_Console {
 		echo "DBHOST=" . DB_HOST . PHP_EOL;
 		echo "PORT=" . DB_PORT . PHP_EOL;
 		$db = new MK_Db_PDO();
-		echo "VERSION=" . $db->GetOne('SELECT get_app_version()') . PHP_EOL;
+		echo "VERSION=" . $db->getAppVersion() . PHP_EOL;
 		exit();
 	}
 

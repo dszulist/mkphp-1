@@ -64,6 +64,15 @@ class MK_Db_PDO {
 	}
 
 	/**
+	 * Pobiera aktualną wersję aplikacji z bazy danych
+	 *
+	 * @return string
+	 */
+	public function getAppVersion() {
+		return $this->GetOne('SELECT get_app_version()');
+	}
+
+	/**
 	 * Wykonanie przygotowanego zapytania SQL. Nie są pobierane żadne dane.
 	 * Zwracany ilość zmienionych rekordów.
 	 *
