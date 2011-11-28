@@ -150,12 +150,12 @@ class MK_Error {
 	 * @param String	 $message (default: "")
 	 * @param String	 $file (default: "")
 	 * @param Integer 	 $line (default: "")
-	 * @param Array 	 $errContext (default: array())
+	 * @param Mixed 	 $errContext (default: array())
 	 * @param String     $debugBacktrace (default: "")
 	 *
 	 * @return Boolean
 	 */
-	public static function handler($type, $message="", $file="", $line="", array $errContext=array(), $debugBacktrace="") {
+	public static function handler($type, $message="", $file="", $line="", $errContext=array(), $debugBacktrace="") {
 		// W przypadku tego błędu nie logujemy ponieważ nie ma on się pojawiać
 		if ($type == 2 && preg_match('#pg_fetch_array\(\) \[[^]]+\]: Unable to jump to row [0-9]+ on PostgreSQL result index [0-9]+#i', $message)) {
 			return true;
