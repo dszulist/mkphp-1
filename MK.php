@@ -45,8 +45,12 @@ class MK {
 		if (empty($argv)) {
 			return;
 		}
-
-		$consoleController = ucfirst(APP_NAME) . '_Controller_Console';
+                if(version_compare(PHP_VERSION, '5.3.0', '>=')){
+                    $consoleController = ucfirst(APP_NAME) . '\Controller\Console';    
+                } else{
+                    $consoleController = ucfirst(APP_NAME) . '_Controller_Console';    
+                }
+		
 		if (class_exists($consoleController)) {
 			$consoleController = new $consoleController();
 		} elseif (class_exists('ConsoleController')) {
