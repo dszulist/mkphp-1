@@ -136,7 +136,7 @@ class MK_Filter {
 	 * @return integer
 	 */
 	public static function integerValue($argName, array $args, $defaultValue=0, $canBeZero=false) {
-		return MK_Validator::integerArgument($argName, $args, $canBeZero) ? (int) $args[$argName] : $defaultValue;
+		return MK_Validator::integerArgument($argName, $args, $canBeZero) ? intval($args[$argName]) : $defaultValue;
 	}
 
 	/**
@@ -150,7 +150,8 @@ class MK_Filter {
 	 * @return float
 	 */
 	public static function floatValue($argName, array $args, $defaultValue=0) {
-		return MK_Validator::isNumeric($argName, $args) ? (float) $args[$argName] : $defaultValue;
+		$value = MK_Validator::isDefined($argName, $args) ? $args[$argName] : $defaultValue;
+		return is_string($value) ? floatval(str_replace('.', '', $value)) : floatval($value);
 	}
 
 	/**
