@@ -307,6 +307,8 @@ class MK_Logs {
 		$results = $this->_sendRequest();
 		$this->_debug('Odpowiedź serwera: ' . PHP_EOL . $results);
 		if ($results !== 'true') {
+			$this->_debug('Usuwam lock: ' . $this->_fileReportLock);
+			unlink($this->_fileReportLock);
 			return false;
 		}
 
