@@ -52,13 +52,41 @@ class MK_Logs {
 	 * Zapisanie komunikatu błędu do odpowiedniego pliku w folderze z raportami błędów
 	 * Po zapisaniu wiadomości nastąpi próba wysłania pliku na serwer logs.madkom.pl
 	 *
-	 * @param string $type - 'php', 'js', 'sql' itp.
+	 * @param string $type - 'php', 'exception', 'db', 'js' itp.
 	 * @param string $devMessage - komunikat błędu do zapisania
 	 * @return string
 	 */
 	public function saveToFile($type, &$devMessage) {
 		$errorFile = $this->_dirErrors . DIRECTORY_SEPARATOR . strtolower($type) . '.log';
-		error_log($devMessage . "\n#" . str_repeat("\t#", 20) . "\n\n", 3, $errorFile);
+		$msgMd5 = md5($devMessage);
+
+		// Czy błąd się powtórzył?
+		if (file_exists($errorFile) && is_writable($errorFile)) {
+			$fewBytes = 100;
+			$fr = fopen($errorFile, 'r+');
+			if ($fr) {
+				if (fseek($fr, -$fewBytes, SEEK_END) === 0) {
+					$fpos = ftell($fr);
+					$fewLines = '';
+					while (!feof($fr)) {
+						$fewLines .= fgets($fr, $fewBytes);
+					}
+					if (preg_match("#([0-9]+)\t@\t{$msgMd5}#", $fewLines, $matches)) {
+						fseek($fr, $fpos);
+						ftruncate($fr, $fpos + $fewBytes);
+						fputs($fr, str_replace($matches[0], (intval($matches[1]) + 1) . "\t@\t" . $msgMd5, $fewLines));
+						fclose($fr);
+						return;
+					}
+				}
+			}
+		}
+
+		// Jest to nowy błąd
+		list($usec, $sec) = explode(' ', microtime());
+		$msgHeader = "#^#\t" . date("Y-m-d", $sec) . "\t" . bcadd($usec, $sec, 8) . "\t\"{$type}\"\t#^#\n";
+		$msgFooter = "#$#$#\t" . "1\t@\t" . $msgMd5 . "\t#$#$#" . "\n\n\n\n";
+		error_log($msgHeader . $devMessage . $msgFooter, 3, $errorFile);
 	}
 
 	/**
