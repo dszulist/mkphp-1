@@ -35,9 +35,9 @@ class MK_Error {
 	 * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
 	 *
 	 * try {
-	 *	// code
+	 * 	// code
 	 * } catch (Exception $e) {
-	 *	die(MK_Error::getSimpleMessage($e));
+	 * 	die(MK_Error::getSimpleMessage($e));
 	 * }
 	 *
 	 * @return string
@@ -95,14 +95,11 @@ class MK_Error {
 	/**
 	 * Tworzy szczegółowe informacje dla raportu błędu
 	 *
-	 * @param type $type
 	 * @param type $file (default: "(null)")
 	 * @param type $line (default: "(null)")
 	 * @return string
 	 */
-	private static function _prepareMessage($type, $file='(null)', $line='(null)') {
-		list($usec, $sec) = explode(' ', microtime());
-
+	private static function _prepareMessage($file='(null)', $line='(null)') {
 		//@TODO - ugryźć jako parametruyzacja czy cos :)
 		//	if(!UserSingleton::getInstance()->isLogged()) {
 		//		$userLogin = 'Brak informacji';
@@ -116,12 +113,9 @@ class MK_Error {
 		$userId = 'Brak informacji';
 		$userLogin = 'Brak informacji';
 
-		$devMessage = "Błąd " . ( is_int($type) ? 'PHP (' . $type . ')' : $type ) . "\n"
-				. " Data:\t" . date("Y-m-d", $sec) . "\n"
-				. " Czas:\t" . date("H:i:s", $sec) . '.' . $usec * 1000000 . "\n"
-				. " Linia:\t{$line}\n"
+		$devMessage = " Host:\t{$_SERVER['HTTP_HOST']}\n"
 				. " Plik:\t{$file}\n"
-				. " Host:\t{$_SERVER['HTTP_HOST']}\n"
+				. " Linia:\t{$line}\n"
 				. "Baza danych:\n"
 				. " Host:\t" . DB_HOST . "\n"
 				. " Nazwa:\t" . DB_NAME . "\n"
@@ -161,14 +155,14 @@ class MK_Error {
 			return true;
 		}
 
-		$devMessage = self::_prepareMessage($type, $file, $line) . "Komunikat błędu:\n " . $message . "\n\n";
+		$devMessage = self::_prepareMessage($file, $line) . "Komunikat błędu:\n " . $message . "\n\n";
 		if (count($errContext) > 0) {
 			$devMessage .= "Informacje szczegółowe:\n " . print_r($errContext, true) . "\n\n";
 		}
 		$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
 		if (MK_DEVELOPER === true) {
-			return $devMessage;
+			return "Błąd \"php\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
 
 		$logs = new MK_Logs(APP_PATH);
@@ -193,11 +187,11 @@ class MK_Error {
 	 * @return Boolean
 	 */
 	public static function fromException($message="", $file="", $line="", $debugBacktrace="") {
-		$devMessage = self::_prepareMessage('exception', $file, $line) . "Komunikat błędu:\n " . $message . "\n\n";
+		$devMessage = self::_prepareMessage($file, $line) . "Komunikat błędu:\n " . $message . "\n\n";
 		$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
 		if (MK_DEVELOPER === true) {
-			return $devMessage;
+			return "Błąd \"exception\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
 
 		$logs = new MK_Logs(APP_PATH);
@@ -217,11 +211,11 @@ class MK_Error {
 	 * @return string
 	 */
 	public static function fromDataBase($message="", $file="", $line=0, $debugBacktrace="") {
-		$devMessage = self::_prepareMessage('database', $file, $line) . "Komunikat błędu:\n " . $message . "\n\n"
+		$devMessage = self::_prepareMessage($file, $line) . "Komunikat błędu:\n " . $message . "\n\n"
 				. "Backtrace:\n" . (empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
 		if (MK_DEVELOPER === true) {
-			return $devMessage;
+			return "Błąd \"db\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
 
 		$logs = new MK_Logs(APP_PATH);
@@ -239,10 +233,10 @@ class MK_Error {
 		if (isset($_COOKIE['ys-javascriptErrorLog'])) {
 			MK_Cookie::clear('ys-javascriptErrorLog');
 			$errorObject = json_decode(substr($_COOKIE['ys-javascriptErrorLog'], 2));
-			$devMessage = self::_prepareMessage('javascript') . "Informacje:\n " . print_r($errorObject, true) . "\n\n";
+			$devMessage = self::_prepareMessage() . "Informacje:\n " . print_r($errorObject, true) . "\n\n";
 
 			if (MK_DEVELOPER === true) {
-				return $devMessage;
+				return "Błąd \"js\"\t" . md5($devMessage) . "\n" . $devMessage;
 			}
 
 			$logs = new MK_Logs(APP_PATH);
