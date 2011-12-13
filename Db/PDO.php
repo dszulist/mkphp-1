@@ -660,7 +660,7 @@ class MK_Db_PDO {
 			$fields = (!is_array($fields)) ? array($fields) : $fields;
 			foreach ($fields as $v) {
 				$whereSql_tmp[] = 'UPPER(CAST(' . $v . ' AS text)) ' . ((strstr($query, '%') !== false) ? 'LIKE' : '=') . ' ?';
-				$whereValue[] = strtoupper($query);
+				$whereValue[] = mb_convert_case($query, MB_CASE_UPPER, 'UTF-8');
 			}
 			$whereSql[] = '(' . implode(' ' . $logicalExpression . ' ', $whereSql_tmp) . ')';
 		}
