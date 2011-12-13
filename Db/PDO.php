@@ -1060,7 +1060,7 @@ class MK_Db_PDO {
 		$keywords = array("select ", " from ", " left join ", " right join ", " inner join ", " where ", " order by ", " group by ", "insert into ", "update ");
 		foreach ($keywords as $keyword) {
 			if (preg_match("#($keyword*)#i", $query, $matches)) {
-				$query = str_replace($matches[1], "\n" . strtoupper($matches[1]) . "  \t", $query);
+				$query = str_replace($matches[1], "\n" . mb_convert_case($matches[1], MB_CASE_UPPER, 'UTF-8') . "  \t", $query);
 			}
 		}
 		return $query . "\n";
