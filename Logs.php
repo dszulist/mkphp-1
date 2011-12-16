@@ -85,7 +85,7 @@ class MK_Logs {
 		// Jest to nowy błąd
 		list($usec, $sec) = explode(' ', microtime());
 		$msgHeader = "#^#\t" . date("Y-m-d", $sec) . "\t" . bcadd($usec, $sec, 8) . "\t\"{$type}\"\t#^#\n";
-		$msgFooter = "#$#$#\t" . "1\t@\t" . $msgMd5 . "\t#$#$#" . "\n\n\n\n";
+		$msgFooter = "\n#$#$#\t" . "1\t@\t" . $msgMd5 . "\t#$#$#" . "\n\n\n\n";
 		error_log($msgHeader . $devMessage . $msgFooter, 3, $errorFile);
 	}
 
