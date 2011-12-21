@@ -23,6 +23,14 @@ class MK_Db_PDO {
 	protected $db = null;
 
 	/**
+	 * Przechowywanie obiektu Mk_Logs do debugowania SQL-i
+	 *
+	 * @access private
+	 * @var object
+	 */
+	private $_mkLogs = null;
+
+	/**
 	 * Ignorowane klasy w debug_backtrace dla SQL-i [fireBugSqlDump()]
 	 * Można rozszerzyć w dowolnym momencie poprzez setMoreSqlIgnoreClass()
 	 *
@@ -116,6 +124,9 @@ class MK_Db_PDO {
 			$this->fireBugSqlDump("DbExecute", $sql, $params, $execTime);
 		}
 
+		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
+		$this->_debugToFile($sql, $params);
+
 		// Ilość zmodyfikowanych wierszy
 		return $affectedRows;
 	}
@@ -162,6 +173,9 @@ class MK_Db_PDO {
 		if (MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("DbGetOne", $sql, $params, $execTime);
 		}
+
+		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
+		$this->_debugToFile($sql, $params);
 
 		return $resString;
 	}
@@ -210,6 +224,9 @@ class MK_Db_PDO {
 			$this->fireBugSqlDump("DbGetCol", $sql, $params, $execTime);
 		}
 
+		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
+		$this->_debugToFile($sql, $params);
+
 		return $resArray;
 	}
 
@@ -254,6 +271,9 @@ class MK_Db_PDO {
 		if (MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("DbGetRow", $sql, $params, $execTime);
 		}
+
+		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
+		$this->_debugToFile($sql, $params);
 
 		return $resArray;
 	}
@@ -313,6 +333,9 @@ class MK_Db_PDO {
 			$this->fireBugSqlDump($sqlDumpName, $sql, $params, $execTime);
 		}
 
+		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
+		$this->_debugToFile($sql, $params);
+
 		return $resArray;
 	}
 
@@ -350,6 +373,9 @@ class MK_Db_PDO {
 		if (MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("setNextVal", $sql);
 		}
+
+		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
+		$this->_debugToFile($sql, $params);
 
 		return $resValue;
 	}
@@ -465,12 +491,31 @@ class MK_Db_PDO {
 	}
 
 	/**
-	 * Włączenie (true) lub wyłączenie (false) debugowania SQL.
+	 * Włączenie (true) lub wyłączenie (false) debugowania zapytań SQL.
+	 * Zapisywanie zapytań SQL do pliku /temp/errors/sql-debug.log i upload do logs.madkom.pl (od Klienta)
+	 *
+	 * @param boolean $debug (default: true)
+	 * @param string $fileName (default:'sql-debug')
+	 */
+	public function debug($debug=true, $fileName='sql-debug') {
+		MK_Db_PDO_Singleton::debug($debug);
+		if ($debug === true) {
+			$this->_debugFileName = $fileName;
+		}
+	}
+
+	/**
+	 * Jeżeli debugowanie jest włączone, to zapisuje wykonane zapytanie SQL do pliku *.log
 	 *
 	 * @param boolean $debug (default: true)
 	 */
-	public function debug($debug=true) {
-		$this->db->debug = $debug;
+	private function _debugToFile(&$sql, &$params) {
+		if (MK_Db_PDO_Singleton::debug() === true) {
+			if (is_null($this->_mkLogs)) {
+				$this->_mkLogs = new MK_Logs(APP_PATH);
+			}
+			$this->_mkLogs->saveToFile($this->_debugFileName, $this->_prepareFullQuery($sql, $params));
+		}
 	}
 
 	/**
@@ -525,6 +570,9 @@ class MK_Db_PDO {
 		if (MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("DbSelectLimit", $sql, $params, $execTime);
 		}
+
+		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
+		$this->_debugToFile($sql, $params);
 
 		return array(
 			'start' => $start,

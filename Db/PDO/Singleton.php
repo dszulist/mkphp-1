@@ -42,6 +42,15 @@ class MK_Db_PDO_Singleton {
 	private static $_transCounter = 0;
 
 	/**
+	 * Czy debugować zapytania SQL?
+	 *
+	 * @access private
+	 * @var boolean
+	 * @static
+	 */
+	private static $_debug = false;
+
+	/**
 	 *
 	 * Singleton pattern for database connection
 	 *
@@ -137,6 +146,22 @@ class MK_Db_PDO_Singleton {
 			}
 		}
 		return self::$_transCounter;
+	}
+
+	/**
+	 * Ustawienie/Odczytanie statusu debugowania zapytań SQL.
+	 * Podanie parametru $status ustawia nową wartość.
+	 * Domyślnie zwraca ustawioną wcześniej wartość.
+	 *
+	 * @param boolean $status (default:null)
+	 *
+	 * @return boolean
+	 */
+	public static function debug($status=null) {
+		if (is_bool($status)) {
+			self::$_debug = $status;
+		}
+		return self::$_debug;
 	}
 
 }
