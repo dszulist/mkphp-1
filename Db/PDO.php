@@ -40,8 +40,11 @@ class MK_Db_PDO {
 
 		// Odczytanie i obliczenie czasu wykonania zapytania SQL
 		$execTime = microtime(true) - $timeStart;
+
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		$this->fireBugSqlDump("MK_Db_PDO_Singleton::getInstance()", '', array(), $execTime);
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("MK_Db_PDO_Singleton::getInstance()", '', array(), $execTime);
+		}
 	}
 
 	/**
@@ -107,8 +110,11 @@ class MK_Db_PDO {
 
 		// Odczytanie i obliczenie czasu wykonania zapytania SQL
 		$execTime = microtime(true) - $timeStart;
+
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		$this->fireBugSqlDump("DbExecute", $sql, $params, $execTime);
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("DbExecute", $sql, $params, $execTime);
+		}
 
 		// Ilość zmodyfikowanych wierszy
 		return $affectedRows;
@@ -151,8 +157,11 @@ class MK_Db_PDO {
 
 		// Odczytanie i obliczenie czasu wykonania zapytania SQL
 		$execTime = microtime(true) - $timeStart;
+
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		$this->fireBugSqlDump("DbGetOne", $sql, $params, $execTime);
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("DbGetOne", $sql, $params, $execTime);
+		}
 
 		return $resString;
 	}
@@ -195,8 +204,11 @@ class MK_Db_PDO {
 
 		// Odczytanie i obliczenie czasu wykonania zapytania SQL
 		$execTime = microtime(true) - $timeStart;
+
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		$this->fireBugSqlDump("DbGetCol", $sql, $params, $execTime);
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("DbGetCol", $sql, $params, $execTime);
+		}
 
 		return $resArray;
 	}
@@ -237,8 +249,11 @@ class MK_Db_PDO {
 
 		// Odczytanie i obliczenie czasu wykonania zapytania SQL
 		$execTime = microtime(true) - $timeStart;
+
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		$this->fireBugSqlDump("DbGetRow", $sql, $params, $execTime);
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("DbGetRow", $sql, $params, $execTime);
+		}
 
 		return $resArray;
 	}
@@ -292,8 +307,11 @@ class MK_Db_PDO {
 
 		// Odczytanie i obliczenie czasu wykonania zapytania SQL
 		$execTime = microtime(true) - $timeStart;
+
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		$this->fireBugSqlDump($sqlDumpName, $sql, $params, $execTime);
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump($sqlDumpName, $sql, $params, $execTime);
+		}
 
 		return $resArray;
 	}
@@ -329,7 +347,9 @@ class MK_Db_PDO {
 		}
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		$this->fireBugSqlDump("setNextVal", $sql);
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("setNextVal", $sql);
+		}
 
 		return $resValue;
 	}
@@ -353,7 +373,11 @@ class MK_Db_PDO {
 	 *
 	 */
 	public function transStart() {
-		$this->fireBugSqlDump("transStart");
+		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("transStart");
+		}
+
 		if (MK_Db_PDO_Singleton::transCount() > 0) {
 			MK_Db_PDO_Singleton::transCount(1);
 			return true;
@@ -386,7 +410,11 @@ class MK_Db_PDO {
 	 * @return
 	 */
 	public function transComplete($commit = true) {
-		$this->fireBugSqlDump("transComplete(" . ($commit ? 'true' : 'false') . ")");
+		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("transComplete(" . ($commit ? 'true' : 'false') . ")");
+		}
+
 		$_transCount = MK_Db_PDO_Singleton::transCount();
 
 		if ($_transCount > 1) {
@@ -492,7 +520,11 @@ class MK_Db_PDO {
 		$resArray = $this->_selectLimit($sql, $limit, $start, $params);
 
 		$execTime = microtime(true) - $timeStart;
-		$this->fireBugSqlDump("DbSelectLimit", $sql, $params, $execTime);
+
+		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
+		if (MK_DEBUG_FIREPHP) {
+			$this->fireBugSqlDump("DbSelectLimit", $sql, $params, $execTime);
+		}
 
 		return array(
 			'start' => $start,
@@ -1002,51 +1034,49 @@ class MK_Db_PDO {
 	 * @param Array $params - parametry zapytania (dane)
 	 */
 	public function fireBugSqlDump($dumpName, $sql="", array $params=array(), $execTime=0) {
-		if (MK_DEBUG_FIREPHP) {
-			// Odczytanie klasy i metody, w której wyświetlony zostanie komunikat
-			$className = get_class($this);
-			$methodName = '';
-			$filePath = '';
-			$lineNumber = '';
-			$traceList = debug_backtrace();
-			$traceArr = array();
-			foreach ($traceList as $trace) {
-				if (!isset($trace['class']) || in_array($trace['class'], $this->_sqlIgnoreClass)) {
-					continue;
-				}
-				if (count($traceArr) == 0) {
-					$className = $trace['class'];
-					$methodName = isset($trace['function']) ? $trace['function'] : '';
-					$filePath = isset($trace['file']) ? str_replace(APP_PATH, '', $trace['file']) : '';
-					$lineNumber = isset($trace['line']) ? $trace['line'] : -1;
-				}
-				if (isset($trace['object'])) {
-					unset($trace['object']);
-				}
-				$traceArr[] = $trace;
+		// Odczytanie klasy i metody, w której wyświetlony zostanie komunikat
+		$className = get_class($this);
+		$methodName = '';
+		$filePath = '';
+		$lineNumber = '';
+		$traceList = debug_backtrace();
+		$traceArr = array();
+		foreach ($traceList as $trace) {
+			if (!isset($trace['class']) || in_array($trace['class'], $this->_sqlIgnoreClass)) {
+				continue;
 			}
-			// Czas generowania SQL-a
-			$sqlTime = microtime(true);
-			$sqlTimeDiff = round($sqlTime - ( isset($_SESSION['sql_last_time']) ? $_SESSION['sql_last_time'] : 0 ), 4);
-			$execTime = round($execTime, 4);
-			// Wyświetlenie komunikatu debug-a
-			if (empty($sql)) {
-				// Debugowanie dodatkowych informacji (utworzenie połączenia, otwarcie/zamknięcie transakcji)
-				if (DB_DEBUG) {
-					FB::info((object) array(
-								'OPERATION' => $dumpName,
-								'BACKTRACE' => $traceArr
-							), "INFO ({$sqlTime} [+{$sqlTimeDiff}]) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
-				}
-			} else {
-				FB::warn((object) array(
+			if (count($traceArr) == 0) {
+				$className = $trace['class'];
+				$methodName = isset($trace['function']) ? $trace['function'] : '';
+				$filePath = isset($trace['file']) ? str_replace(APP_PATH, '', $trace['file']) : '';
+				$lineNumber = isset($trace['line']) ? $trace['line'] : -1;
+			}
+			if (isset($trace['object'])) {
+				unset($trace['object']);
+			}
+			$traceArr[] = $trace;
+		}
+		// Czas generowania SQL-a
+		$sqlTime = microtime(true);
+		$sqlTimeDiff = round($sqlTime - ( isset($_SESSION['sql_last_time']) ? $_SESSION['sql_last_time'] : 0 ), 4);
+		$execTime = round($execTime, 4);
+		// Wyświetlenie komunikatu debug-a
+		if (empty($sql)) {
+			// Debugowanie dodatkowych informacji (utworzenie połączenia, otwarcie/zamknięcie transakcji)
+			if (DB_DEBUG) {
+				FB::info((object) array(
 							'OPERATION' => $dumpName,
-							'SQL+PARAMS' => $this->_sqlFormat($this->_prepareFullQuery($sql, $params)),
-							'SQL' => "\n" . $sql . "\n",
-							'PARAMS' => $params,
 							'BACKTRACE' => $traceArr
-						), "SQL ({$sqlTime} [+{$sqlTimeDiff}ms] {{$execTime}ms}) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
+						), "INFO ({$sqlTime} [+{$sqlTimeDiff}]) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
 			}
+		} else {
+			FB::warn((object) array(
+						'OPERATION' => $dumpName,
+						'SQL+PARAMS' => $this->_sqlFormat($this->_prepareFullQuery($sql, $params)),
+						'SQL' => "\n" . $sql . "\n",
+						'PARAMS' => $params,
+						'BACKTRACE' => $traceArr
+					), "SQL ({$sqlTime} [+{$sqlTimeDiff}ms] {{$execTime}ms}) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
 		}
 	}
 
