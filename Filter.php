@@ -30,7 +30,6 @@ class MK_Filter {
 	}
 
 	/**
-	 *
 	 * Zamienia przeformatowaną kwotę na float, np.
 	 *  "1 234 567,89" na 1234567.89
 	 *  "1.234.567,-" na 1234567
@@ -49,7 +48,6 @@ class MK_Filter {
 	}
 
 	/**
-	 *
 	 * Usunięcie niechcianych znaków z tekstu (filtrowanie).
 	 * ZERO WIDTH SPACE: U200B (dec: 8203)
 	 *
@@ -62,7 +60,6 @@ class MK_Filter {
 	}
 
 	/**
-	 *
 	 * Formatowanie liczby do waluty
 	 *
 	 * @param float $amount
@@ -87,8 +84,7 @@ class MK_Filter {
 	}
 
 	/**
-	 *
-	 * Formatowanie liczby do kwot pieniężnych urzędowych postaci '4.500.000,- zł.'
+	 * Formatowanie liczby do kwot pieniężnych urzędowych postaci '4.500.000,00' lub '4.500.000,00 zł.'
 	 *
 	 * @param float $amount
 	 * @param boolean $withCurrency
@@ -101,7 +97,6 @@ class MK_Filter {
 		}
 
 		$amount = number_format($amount, 2, ',', '.');
-		$amount = str_replace(',00', ',-', $amount);
 
 		if ($withCurrency) {
 			$amount .= ' zł.';
@@ -111,7 +106,6 @@ class MK_Filter {
 	}
 
 	/**
-	 *
 	 * Pobranie wartości elementu, jeżeli istnieje i jest typu string.
 	 * W przeciwnym wypadku zwraca pusty ciąg znaków (domyślnie).
 	 *
@@ -125,7 +119,6 @@ class MK_Filter {
 	}
 
 	/**
-	 *
 	 * Pobranie wartości elementu, jeżeli istnieje i jest typu integer.
 	 * W przeciwnym wypadku zwraca 0 (domyślnie).
 	 *
@@ -140,7 +133,6 @@ class MK_Filter {
 	}
 
 	/**
-	 *
 	 * Pobranie wartości elementu, jeżeli istnieje i jest typu float.
 	 * W przeciwnym wypadku zwraca 0 (domyślnie).
 	 *
@@ -155,7 +147,6 @@ class MK_Filter {
 	}
 
 	/**
-	 *
 	 * Pobranie wartości elementu, jeżeli istnieje i ma postać zbliżoną do JSON-a.
 	 * W przeciwnym wypadku zwraca pustą tablicę (domyślnie).
 	 *
@@ -170,7 +161,6 @@ class MK_Filter {
 	}
 
 	/**
-	 *
 	 * Formatowanie liczby do wartości procentowej z dokładnością do kilku miejsc po przecinku
 	 * Jako wartość należy podać współczynnik, np. 1 = 100%, 0.5 = 50%, 0.1234 = 12,34%
 	 *
