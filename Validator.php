@@ -5,7 +5,7 @@
  *
  * Weryfikacja danych
  *
- * @todo przerobić chociaĹĽ cześć na użycie Klas z Zend_Validator
+ * @todo przerobić chociaż cześć na użycie Klas z Zend_Validator
  *
  * @category MK
  * @package	MK_Validator
@@ -56,11 +56,11 @@ class MK_Validator {
 
 	/**
 	 *
-	 * Sprawdza czy podany argument jest integere'm i jest wiÄ™kszy od zera
+	 * Sprawdza czy podany argument jest integere'm i jest większy od zera
 	 *
 	 * @param string $argName - nazwa sprawdzanego argumentu
-	 * @param array $args - tablica, ktĂłrej powinien znajdowaÄ‡ siÄ™ parametr
-	 * @param boolean $canBeZero - czy wartoĹ›Ä‡ moĹĽe byÄ‡ zerem
+	 * @param array $args - tablica, której powinien znajdować się parametr
+	 * @param boolean $canBeZero - czy wartość może być zerem
 	 *
 	 * @return boolean
 	 */
@@ -77,11 +77,11 @@ class MK_Validator {
 
 	/**
 	 *
-	 * Sprawdza czy podany argument jest float'em i jest wiÄ™kszy od zera
+	 * Sprawdza czy podany argument jest float'em i jest większy od zera
 	 *
 	 * @param string $argName - nazwa sprawdzanego argumentu
-	 * @param array $args - tablica, ktĂłrej powinien znajdowaÄ‡ siÄ™ parametr
-	 * @param boolean $canBeZero - czy wartoĹ›Ä‡ moĹĽe byÄ‡ zerem
+	 * @param array $args - tablica, której powinien znajdować się parametr
+	 * @param boolean $canBeZero - czy wartość może być zerem
 	 *
 	 * @return boolean
 	 */
@@ -102,12 +102,12 @@ class MK_Validator {
 
 	/**
 	 *
-	 * Sprawdza czy podany string istnieje w tablicy argumentĂłw i czy jest odpowiedniej dĹ‚ugoĹ›ci
+	 * Sprawdza czy podany string istnieje w tablicy argumentów i czy jest odpowiedniej długości
 	 *
 	 * @param string $argName - nazwa sprawdzanego argumentu
-	 * @param array $args - tablica, ktĂłrej powinien znajdowaÄ‡ siÄ™ parametr
-	 * @param int $min - minimalna dĹ‚ugoĹ›Ä‡ parametru, jeĹĽeli nie bÄ™dzie podany nie bÄ™dzie sprawdzany
-	 * @param int $max - maksymalna dĹ‚ugoĹ›Ä‡ parametru, jeĹĽeli nie bÄ™dzie podany nie bÄ™dzie sprawdzany
+	 * @param array $args - tablica, której powinien znajdować się parametr
+	 * @param int $min - minimalna długość parametru, jeżeli nie będzie podany nie będzie sprawdzany
+	 * @param int $max - maksymalna długość parametru, jeżeli nie będzie podany nie będzie sprawdzany
 	 *
 	 * @return boolean
 	 */
@@ -132,11 +132,11 @@ class MK_Validator {
 
 	/**
 	 *
-	 * Sprawdza czy podany argument znajduje sie w podanej tablicy
+	 * Sprawdza czy podany argument znajduje się w podanej tablicy
 	 *
 	 * @param string $argName - nazwa sprawdzanego argumentu
-	 * @param array $args - tablica argumentow w ktorej znajduje sie interesujacy nas argument
-	 * @param array $haystack - tablica, w ktorej jest sprawdzane czy istnieje podany argument
+	 * @param array $args - tablica argumentów w której znajduje się interesujący nas argument
+	 * @param array $haystack - tablica, w której jest sprawdzane czy istnieje podany argument
 	 *
 	 * @return boolean
 	 */
@@ -156,7 +156,7 @@ class MK_Validator {
 	 * Sprawdza czy podany argument jest prawidłową datą
 	 *
 	 * @param string $argName - nazwa sprawdzanego argumentu
-	 * @param array $args - tablica argumentow w ktorej znajduje sie interesujay nas argument
+	 * @param array $args - tablica argumentów w której znajduje się interesujący nas argument
 	 *
 	 * @return boolean
 	 */
@@ -181,12 +181,12 @@ class MK_Validator {
 	}
 
 	/**
-	 * Sprawdza czy podany argument jest prawidĹ‚owÄ… datÄ… i czy mieĹ›ci siÄ™ w podanym przedziale
+	 * Sprawdza czy podany argument jest prawidłową datą i czy mieści się w podanym przedziale
 	 *
 	 * @param string $argName - nazwa sprawdzanego argumentu
-	 * @param array $args - tablica argumentĂłw w ktĂłrej znajduje siÄ™ interesujÄ…cy nas argument
-	 * @param string $dateFrom - prawidĹ‚owy poczÄ…tek przedziaĹ‚u dla daty, jeĹĽeli nie bÄ™dzie podany nie bÄ™dzie sprawdzany
-	 * @param string $dateTo - prawidĹ‚owy koniec przedziaĹ‚u dla daty, jeĹĽeli nie bÄ™dzie podany nie bÄ™dzie sprawdzany
+	 * @param array $args - tablica argumentów w której znajduje się interesujący nas argument
+	 * @param string $dateFrom - prawidłowy początek przedziału dla daty, jeżeli nie będzie podany nie będzie sprawdzany
+	 * @param string $dateTo - prawidłowy koniec przedziału dla daty, jeżeli nie będzie podany nie będzie sprawdzany
 	 *
 	 * @return boolean
 	 */
@@ -260,9 +260,9 @@ class MK_Validator {
 
 	/**
 	 *
-	 * Wyrazenie regularne wg którego musi byÄ‡ zbudowana wartość w kolumnie pkwiu.
+	 * Wyrażenie regularne wg którego musi być zbudowana wartość w kolumnie pkwiu.
 	 *
-	 * PrzykĹ‚adowe wartości: 12.45.27.6, 90.22.36.8
+	 * Przykładowe wartości: 12.45.27.6, 90.22.36.8
 	 *
 	 * @param String $pkiuw
 	 */
