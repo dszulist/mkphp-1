@@ -6,7 +6,7 @@
  * Weryfikacja danych
  *
  * @todo przerobić chociaĹĽ cześć na użycie Klas z Zend_Validator
- * 
+ *
  * @category MK
  * @package	MK_Validator
  */
@@ -88,6 +88,7 @@ class MK_Validator {
 	public static function positiveFloatArgument($argName, array $args, $canBeZero = false) {
 
 		$isValid = self::isDefined($argName, $args);
+		$args[$argName] = str_replace(',', '.', $args[$argName]);
 
 		if ($isValid === true && (((float) $args[$argName] <= 0 && $canBeZero === false)
 				|| ((float) $args[$argName] < 0 && $canBeZero === true))) {
@@ -153,7 +154,7 @@ class MK_Validator {
 	/**
 	 *
 	 * Sprawdza czy podany argument jest prawidłową datą
-	 * 
+	 *
 	 * @param string $argName - nazwa sprawdzanego argumentu
 	 * @param array $args - tablica argumentow w ktorej znajduje sie interesujay nas argument
 	 *
