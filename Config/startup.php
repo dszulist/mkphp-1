@@ -1,5 +1,12 @@
 <?php
 
+// Ustawienie uprawnień użytkownika/grupy "www-data"
+$posixInfo = posix_getpwnam('www-data');
+if ($posixInfo !== false) {
+	posix_setgid($posixInfo['gid']);
+	posix_setuid($posixInfo['uid']);
+}
+
 require_once ('defines.php');
 require_once (MK_PATH . DIRECTORY_SEPARATOR . 'MK.php');
 
