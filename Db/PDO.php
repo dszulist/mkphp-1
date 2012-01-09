@@ -677,7 +677,7 @@ class MK_Db_PDO {
 	 * @return string
 	 */
 	private function _stripOrderBy($sql) {
-		$rez = preg_match('/(\sORDER\s+BY\s[^)]*)/is', $sql, $arr);
+		preg_match('/(\sORDER\s+BY\s[^)]*)/is', $sql, $arr);
 		if ($arr) {
 			if (strpos($arr[0], '(') !== false) {
 				$at = strpos($sql, $arr[0]);
@@ -1082,7 +1082,7 @@ class MK_Db_PDO {
 			'delete' => array()
 		);
 
-		foreach ($newIds as $nKey => $nValue) {
+		foreach ($newIds as $nValue) {
 			$notInArray = true;
 			foreach ($oldIds as $oKey => $oValue) {
 				if ($nValue == $oValue) {
