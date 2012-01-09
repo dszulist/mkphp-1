@@ -208,12 +208,11 @@ class MK_Db_PDO {
 	 *
 	 * @param String	 $sql
 	 * @param Array	 $params (default: array())
-	 * @param boolean $trim (default: false)
 	 *
 	 * @throws MK_Db_Exception
 	 * @return array
 	 */
-	protected function GetCol($sql, $params = array(), $trim = false) {
+	protected function GetCol($sql, $params = array()) {
 		// Bez array_values wywala błąd - nie ma być kluczy w tablicy!
 		$params = array_values($params);
 
