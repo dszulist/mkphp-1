@@ -343,8 +343,8 @@ class MK_Files_Mime {
 					$new_y = $y / ($y / $max_y);
 					$save = imagecreatetruecolor($new_x, $new_y);
 				}
-				$new_uid = uniqid("");
-				$date_temp = date("Y-m-d H:i:s");	
+//				$new_uid = uniqid("");
+//				$date_temp = date("Y-m-d H:i:s");
 //				$zalacznik_helper = new zalacznik_helper();
 //				$path_with_date = $zalacznik_helper->parse_createdate_to_path($date_temp);
 //				if(!is_dir(DirectoriesConfig::$directories['tempDirectory'].$path_with_date)){

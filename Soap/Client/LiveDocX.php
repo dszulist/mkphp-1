@@ -129,8 +129,10 @@ class MK_Soap_Client_LiveDocX {
 			$fileContent = $this->mailMerge->retrieveDocument($this->_destinationFileExtension);
 
 			if ($this->_writeToDb) {
-				$this->_helpDb = new HelpDb();
-				$this->_helpDb->setValue($fileContent);
+                if(class_exists('HelpDb')){
+				    $helpDb = new HelpDb();
+				    $helpDb->setValue($fileContent);
+                }
 			} else {
 				file_put_contents($destinationFile, $fileContent);
 			}

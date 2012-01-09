@@ -160,7 +160,7 @@ class MK_Files {
 
 	function multi_array_search($search_value, $the_array) {
 		if (is_array($the_array)) {
-			foreach ($the_array as $key => $value) {
+			foreach ($the_array as $value) {
 				$result = $this->multi_array_search($search_value, $value);
 				if ($result == true) {
 					return true;

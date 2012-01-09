@@ -34,6 +34,7 @@ class MK_Exception extends Exception {
 		$_file = $this->getFile();
 		$_line = strval($this->getLine());
 		$_trace = MK_Error::getExtendedTrace($this);
+        $debugMsg = '';
 
 		$mkDb = new MK_Db_PDO();
 		if (is_object($mkDb)) {
