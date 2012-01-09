@@ -41,7 +41,6 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
         $this->handle();
     }
 
-
     /**
      * Zwraca uri zawierajacego instancje oraz proźbę o wsdl'a
      *
