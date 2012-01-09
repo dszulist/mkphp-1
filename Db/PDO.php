@@ -615,11 +615,10 @@ class MK_Db_PDO {
      * @param type $nrows (default: -1)
      * @param type $offset (default: -1)
      * @param bool|\type $inputarr (default: false)
-     * @param int|\type $secs2cache (default: 0)
      *
      * @return array
      */
-	private function _selectLimit($sql, $nrows=-1, $offset=-1, $inputarr=false, $secs2cache=0) {
+	private function _selectLimit($sql, $nrows=-1, $offset=-1, $inputarr=false) {
 		$offsetStr = ($offset >= 0) ? " OFFSET " . ((integer) $offset) : '';
 		$limitStr = ($nrows >= 0) ? " LIMIT " . ((integer) $nrows) : '';
 		return $this->GetRows($sql . "{$limitStr}{$offsetStr}", $inputarr);
