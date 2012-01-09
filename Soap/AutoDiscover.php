@@ -37,17 +37,20 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
         }
 
         parent::__construct($strategy, $uri, $wsdlClass);
-        $this->setClass($this->_serviceInstance);
+
+        $this->setClass('SynchronizationService');
+
         $this->handle();
     }
 
     /**
      * Zwraca uri zawierajacego instancje oraz proźbę o wsdl'a
      *
+     * @param Bool $wsdl
      * @return String
      */
-    public function getUri(){
-        return parent::getUri() . "?wsdl&instance=" . $this->_serviceInstance;
+    public function getUri($wsdl=false){
+        return parent::getUri() . (($wsdl) ? "?wsdl&instance=" . $this->_serviceInstance : '');
     }
 
     /**
@@ -66,7 +69,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      * Tworzy instancje i stara się obsłużyć rządanie
      */
     private function createServer(){
-        $soap = new Zend_Soap_Server($this->getUri());
+        $soap = new Zend_Soap_Server($this->getUri(true));
         $soap->setClass($this->_serviceInstance);
         $soap->handle();
     }
