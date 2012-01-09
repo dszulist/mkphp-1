@@ -39,6 +39,28 @@ class MK_Db_PDO {
 	 */
 	private $_sqlIgnoreClass = array('MK_Db_PDO');
 
+    /**
+     * @var String
+     */
+    protected $_debugFileName;
+
+    /**
+     * @var Array
+     */
+    protected $_tableColumns;
+
+    /**
+     * @var Array
+     */
+    protected $fieldsCanBeSearched;
+
+    /**
+     * Nazwa tabeli modelu bazy danych
+     *
+     * @var String
+     */
+    protected $_tableName;
+
 	public function __construct() {
 		// Uruchomienie licznika uruchamiania zapytania SQL
 		$timeStart = microtime(true);
@@ -1025,7 +1047,7 @@ class MK_Db_PDO {
 	 */
 	private function _prepareSql($name, array $arguments) {
 		$paramsNames = explode('And', $name);
-		$sql = 'SELECT * FROM ' . $this->_tableName . ' WHERE ';
+		$sql = "SELECT * FROM {$this->_tableName} WHERE ";
 		$sqlAnd = '';
 
 		$i = 0;

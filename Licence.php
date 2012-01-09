@@ -51,6 +51,7 @@ class MK_Licence {
 				|| ( $statusInconsistencyLicenseKey == 'stop_application' && strtotime($expireDate) < strtotime(date('Y-m-d')))) {
 			throw new MK_Exception('Błąd krytyczny. Niezgodna sygnatura licencji! <br/> Skontaktuj się z administratorem.');
 		}
+        return true;
 	}
 
 	/**

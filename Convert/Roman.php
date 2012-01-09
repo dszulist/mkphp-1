@@ -74,9 +74,9 @@ class MK_Convert_Roman {
 	public static function convert2rom() {
 		if (self::$number > 0) {
 			self::$result = self::convertRom();
-		} else {
-			return self::raiseError(1);
 		}
+
+        return self::raiseError(1);
 	}
 
 	public static function convertNum() {

@@ -11,7 +11,8 @@
 class MK_Files_Mime {
 	
 	private $filename;
-	
+	protected $imageType;
+
 	var $availbeImagesExt =  array('jpg','jpeg','gif','png');	
 	
 	var $mime_map = array(
@@ -344,15 +345,15 @@ class MK_Files_Mime {
 				}
 				$new_uid = uniqid("");
 				$date_temp = date("Y-m-d H:i:s");	
-				$zalacznik_helper = new zalacznik_helper();
-				$path_with_date = $zalacznik_helper->parse_createdate_to_path($date_temp);
-				if(!is_dir(DirectoriesConfig::$directories['tempDirectory'].$path_with_date)){
-					$zalacznik_helper->tworz_katalogi_wg_createdate(DirectoriesConfig::$directories['tempDirectory'],$date_temp);			
-				}	
-				$file_path = DirectoriesConfig::$directories['tempDirectory'].$path_with_date.$new_uid.".jpg";
+//				$zalacznik_helper = new zalacznik_helper();
+//				$path_with_date = $zalacznik_helper->parse_createdate_to_path($date_temp);
+//				if(!is_dir(DirectoriesConfig::$directories['tempDirectory'].$path_with_date)){
+//					$zalacznik_helper->tworz_katalogi_wg_createdate(DirectoriesConfig::$directories['tempDirectory'],$date_temp);
+//				}
+//				$file_path = DirectoriesConfig::$directories['tempDirectory'].$path_with_date.$new_uid.".jpg";
 				imagecopyresized($save, $im, 0, 0, 0, 0, $new_x, $new_y, $x, $y);
-				imagejpeg($save, $file_path);  
-				$this->filename = $file_path; 
+//				imagejpeg($save, $file_path);
+//				$this->filename = $file_path;
 			}
         return null;
     }
