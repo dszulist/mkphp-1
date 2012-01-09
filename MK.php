@@ -127,12 +127,15 @@ class MK
             if (strpos(file_get_contents(APP_FILE_LOCK), 'upgrade') !== false) {
 
                 if (self::isAjaxExecution(true)) {
-                    echo '{"success":false,"msg":"<b>Przerwa techniczna.</b><br />Proszę spróbować za 10 minut.<br />Proszę nie wyłączać i nie restartować serwera."}';
+                    die(json_decode(array(
+                        "success" => false,
+                        "msg" => "Przerwa techniczna.<br />Proszę spróbować za 10 minut.<br />Proszę nie wyłączać i nie restartować serwera."
+                    )));
                 } else {
                     header("Content-type: text/html; charset=utf-8");
-                    echo "<center><div style='margin-top:80px;'><img src='public/images/docflow_logo.png' alt='Logo Docflow'>"
-                        . "<h1>Przerwa techniczna.</h1><br />Proszę spróbować za 10 minut.<br />Proszę nie wyłączać i nie restartować serwera.<br />"
-                        . "</div><br /><img alt='W trakcie przetwarzania' align='top' src='public/images/ajax/ajaxLoadingSmall.gif' /></center>";
+                    echo "<div style='text-align: center;'><div style='margin-top:80px;'><img src='public/images/docflow_logo.png' alt='Logo Docflow'>
+                            <h1>Przerwa techniczna.</h1><br />Proszę spróbować za 10 minut.<br />Proszę nie wyłączać i nie restartować serwera.<br />
+                            </div><br /><img alt='W trakcie przetwarzania' align='top' src='public/images/ajax/ajaxLoadingSmall.gif' /></div>";
                 }
                 die;
             }
