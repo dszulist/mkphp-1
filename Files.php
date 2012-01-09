@@ -284,19 +284,18 @@ class MK_Files {
      */
 	public static function saveTempXMLFile($fileNameToSave, $dataToSave) {
 
-		$tempPath = '';
+        //utworzenie ścieżki wg schematu
+        //temp/webservice/adres_ip_klienta/'DocflowWebServiceService.wsdl'
+        //$_SERVER["REMOTE_ADDR"]
+        $tempWebServiceDefinitionFolder = DIR_TEMP . DIRECTORY_SEPARATOR . 'webservice' . DIRECTORY_SEPARATOR . uniqid('', TRUE);
+
+        if (!file_exists($tempWebServiceDefinitionFolder)) {
+            mkdir($tempWebServiceDefinitionFolder, 0775, TRUE);
+        }
+
+        $tempPath = $tempWebServiceDefinitionFolder . DIRECTORY_SEPARATOR . $fileNameToSave;
+
 		try {
-
-			//utworzenie ścieżki wg schematu
-			//temp/webservice/adres_ip_klienta/'DocflowWebServiceService.wsdl'
-			//$_SERVER["REMOTE_ADDR"]
-			$tempWebServiceDefinitionFolder = DIR_TEMP . DIRECTORY_SEPARATOR . 'webservice' . DIRECTORY_SEPARATOR . uniqid('', TRUE);
-
-			if (!file_exists($tempWebServiceDefinitionFolder)) {
-				mkdir($tempWebServiceDefinitionFolder, 0775, TRUE);
-			}
-
-			$tempPath = $tempWebServiceDefinitionFolder . DIRECTORY_SEPARATOR . $fileNameToSave;
 
 			$xml = new SimpleXMLElement(
 							$dataToSave,
