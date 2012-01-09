@@ -22,33 +22,39 @@ class MK_Error {
 		'MK::shutdownFunction'
 	);
 
-	/**
-	 * Ustawienie większej ilości klas do ignorowania dla fireBugSqlDump()
-	 * @param array $classArray
-	 */
+    /**
+     * Ustawienie większej ilości klas do ignorowania dla fireBugSqlDump()
+     *
+     * @param $tracePath
+     * @internal param array $classArray
+     */
 	public static function setMoreTraceIgnorePath($tracePath) {
 		self::$_traceIgnorePath = array_merge(self::$_traceIgnorePath, $tracePath);
 	}
 
-	/**
-	 * Uproszczony raport błędu dla Exception.
-	 * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
-	 *
-	 * try {
-	 * 	// code
-	 * } catch (Exception $e) {
-	 * 	die(MK_Error::getSimpleMessage($e));
-	 * }
-	 *
-	 * @return string
-	 */
+    /**
+     * Uproszczony raport błędu dla Exception.
+     * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
+     *
+     * try {
+     *     // code
+     * } catch (Exception $e) {
+     *     die(MK_Error::getSimpleMessage($e));
+     * }
+     *
+     * @param $exceptionClass
+     * @return string
+     */
 	public static function getSimpleInfo($exceptionClass) {
 		return '<pre>' . self::fromException($exceptionClass->getMessage(), $exceptionClass->getFile(), strval($exceptionClass->getLine()), self::getExtendedTrace($exceptionClass)) . '</pre>';
 	}
 
-	/**
-	 * Rozbudowany raport ścieżki błędu
-	 */
+    /**
+     * Rozbudowany raport ścieżki błędu
+     *
+     * @param null $exception
+     * @return string
+     */
 	public static function getExtendedTrace($exception=null) {
 		$traceKey = 1;
 		$msg = " #" . $traceKey++ . "\t";
@@ -92,13 +98,13 @@ class MK_Error {
 		return $msg . "\n";
 	}
 
-	/**
-	 * Tworzy szczegółowe informacje dla raportu błędu
-	 *
-	 * @param type $file (default: "(null)")
-	 * @param type $line (default: "(null)")
-	 * @return string
-	 */
+    /**
+     * Tworzy szczegółowe informacje dla raportu błędu
+     *
+     * @param string|\type $file (default: "(null)")
+     * @param string|\type $line (default: "(null)")
+     * @return string
+     */
 	private static function _prepareMessage($file='(null)', $line='(null)') {
 		//@TODO - ugryźć jako parametruyzacja czy cos :)
 		//	if(!UserSingleton::getInstance()->isLogged()) {
@@ -137,18 +143,18 @@ class MK_Error {
 		return $devMessage . "\n";
 	}
 
-	/**
-	 * Obsługa błędów PHP. Zapisywanie informacji do pliku.
-	 *
-	 * @param Integer	 $type
-	 * @param String	 $message (default: "")
-	 * @param String	 $file (default: "")
-	 * @param Integer 	 $line (default: "")
-	 * @param Mixed 	 $errContext (default: array())
-	 * @param String     $debugBacktrace (default: "")
-	 *
-	 * @return Boolean
-	 */
+    /**
+     * Obsługa błędów PHP. Zapisywanie informacji do pliku.
+     *
+     * @param Integer     $type
+     * @param String     $message (default: "")
+     * @param String     $file (default: "")
+     * @param int|string $line (default: "")
+     * @param Mixed      $errContext (default: array())
+     * @param String     $debugBacktrace (default: "")
+     *
+     * @return Boolean
+     */
 	public static function handler($type, $message="", $file="", $line="", $errContext=array(), $debugBacktrace="") {
 		// W przypadku tego błędu nie logujemy ponieważ nie ma on się pojawiać
 		if ($type == 2 && preg_match('#pg_fetch_array\(\) \[[^]]+\]: Unable to jump to row [0-9]+ on PostgreSQL result index [0-9]+#i', $message)) {
@@ -164,7 +170,9 @@ class MK_Error {
 		if (MK_DEVELOPER === true) {
 			return "Błąd \"php\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
-
+        if(!class_exists('MK_Logs')){
+            include_once('Logs.php');
+        }
 		$logs = new MK_Logs(APP_PATH);
 		$logs->saveToFile('php', $devMessage);
 
@@ -176,16 +184,16 @@ class MK_Error {
 		return $message;
 	}
 
-	/**
-	 * Obsługa błędów zwróconych przez aplikację. Zapisywanie informacji do pliku.
-	 *
-	 * @param String	 $message (default: "")
-	 * @param String	 $file (default: "")
-	 * @param Integer 	 $line (default: "")
-	 * @param String     $debugBacktrace (default: "")
-	 *
-	 * @return Boolean
-	 */
+    /**
+     * Obsługa błędów zwróconych przez aplikację. Zapisywanie informacji do pliku.
+     *
+     * @param String     $message (default: "")
+     * @param String     $file (default: "")
+     * @param int|string $line (default: "")
+     * @param String     $debugBacktrace (default: "")
+     *
+     * @return Boolean
+     */
 	public static function fromException($message="", $file="", $line="", $debugBacktrace="") {
 		$devMessage = self::_prepareMessage($file, $line) . "Komunikat błędu:\n " . $message . "\n\n";
 		$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
@@ -244,6 +252,7 @@ class MK_Error {
 
 			return 'Błąd JavaScript. ' . self::$_mailAdmin;
 		}
+        return null;
 	}
 
 }

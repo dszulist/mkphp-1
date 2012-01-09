@@ -23,11 +23,12 @@ class MK_Logs {
 	private $_reportUrl = 'https://logs.madkom.pl/report.php';
 	private $_reportAuth = 'aplikacja:Cziayu48B';
 
-	/**
-	 * Ustawienie ścieżki do aplikacji (konstruktor)
-	 *
-	 * @param string $appPath
-	 */
+    /**
+     * Ustawienie ścieżki do aplikacji (konstruktor)
+     *
+     * @param string $appPath
+     * @param bool $debug
+     */
 	public function __construct($appPath, $debug=false) {
 		$this->_debug = $debug;
 
@@ -205,7 +206,8 @@ class MK_Logs {
 	/**
 	 * Wysłanie zapytania POST-em do logs.madkom.pl (cURL)
 	 *
-	 */
+     * @return mixed|string
+     */
 	private function _sendRequest() {
 		$this->_debug('Odczytanie informacji o aplikacji (appinfo)');
 		$appInfo = MK_AppInfo::load($this->_appPath);
@@ -255,23 +257,23 @@ class MK_Logs {
 		return $results;
 	}
 
-	/**
-	 * Ustawianie opóźnienia w wysłaniu POST-a do logs.madkom.pl
-	 *
-	 * @param itneger $seconds
-	 */
+    /**
+     * Ustawianie opóźnienia w wysłaniu POST-a do logs.madkom.pl
+     *
+     * @param int|\itneger $seconds
+     */
 	public function setDelay($seconds=0) {
 		$this->_sendDelay = ($seconds > 0) ? $seconds : rand(0, 59);
 	}
 
-	/**
-	 * Wysłanie plików z raportami błędów do logs.madkom.pl
-	 * Spakowanie wszystkich plików z błędami do zip-a.
-	 *
-	 * @param array $filePaths
-	 *
-	 * @return boolean
-	 */
+    /**
+     * Wysłanie plików z raportami błędów do logs.madkom.pl
+     * Spakowanie wszystkich plików z błędami do zip-a.
+     *
+     * @internal param array $filePaths
+     *
+     * @return boolean
+     */
 	public function sendPackage() {
 		if (file_exists($this->_fileReportLock)) {
 			// Sprawdzenie czy lock istnieje dłużej jak 24h = 60*60*24 = 86400
