@@ -38,7 +38,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
 
         parent::__construct($strategy, $uri, $wsdlClass);
 
-        $this->setClass('SynchronizationService');
+        $this->setClass($this->_serviceInstance);
 
         $this->handle();
     }
