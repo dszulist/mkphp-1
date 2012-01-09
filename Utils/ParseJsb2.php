@@ -43,13 +43,14 @@ class MK_Utils_ParseJsb2 {
 		exit(json_encode($retArray));
 	}
 
-	/**
-	 *
-	 * Odczytanie rozszerzenia danego pliku
-	 *
-	 * @param string $filename
-	 * @return string
-	 */
+    /**
+     *
+     * Odczytanie rozszerzenia danego pliku
+     *
+     * @param $fileName
+     * @internal param string $filename
+     * @return string
+     */
 	public function getFileExtension($fileName) {
 		$pi = pathinfo($fileName);
 		return isset($pi['extension']) ? $pi['extension'] : '';
@@ -67,13 +68,14 @@ class MK_Utils_ParseJsb2 {
 		return isset($pi['dirname']) ? $pi['dirname'] . '/' : '';
 	}
 
-	/**
-	 *
-	 * Sprawdzenie czy dany plik jest z roszerzeniem *.js
-	 *
-	 * @param string $filename
-	 * @return Boolean
-	 */
+    /**
+     *
+     * Sprawdzenie czy dany plik jest z roszerzeniem *.js
+     *
+     * @param $fileName
+     * @internal param string $filename
+     * @return Boolean
+     */
 	private function _isJs($fileName) {
 		if ($this->getFileExtension($fileName) == 'js') {
 			return true;
@@ -81,13 +83,15 @@ class MK_Utils_ParseJsb2 {
 		return false;
 	}
 
-	/**
-	 *
-	 * Dopisanie pliku JS do zawartości .jsb2 (linia "fileIncludes")
-	 *
-	 * @param string $filename
-	 * @return string
-	 */
+    /**
+     *
+     * Dopisanie pliku JS do zawartości .jsb2 (linia "fileIncludes")
+     *
+     * @param $fileName
+     * @param $filePath
+     * @internal param string $filename
+     * @return string
+     */
 	private function _createJsb2Line($fileName, $filePath) {
 		$filePath = str_replace($this->_scriptPath, '', $filePath);
 		$jsb2Line = "\t\t\t" . '{' . PHP_EOL;
@@ -97,12 +101,13 @@ class MK_Utils_ParseJsb2 {
 		return $jsb2Line;
 	}
 
-	/**
-	 *
-	 * Odczytanie listy plików (*.js)
-	 *
-	 * @param string $path
-	 */
+    /**
+     *
+     * Odczytanie listy plików (*.js)
+     *
+     * @param $dirPath
+     * @internal param string $path
+     */
 	public function getJsFiles($dirPath) {
 		$di = new DirectoryIterator($dirPath);
 		foreach ($di as $fileInfo) {
@@ -117,12 +122,16 @@ class MK_Utils_ParseJsb2 {
 		}
 	}
 
-	/**
-	 *
-	 * Tworzenie pliku jsb2
-	 *
-	 * @param string $path
-	 */
+    /**
+     *
+     * Tworzenie pliku jsb2
+     *
+     * @param $jsb2File
+     * @param $jsPath
+     * @param $pkgsName
+     * @param $pkgsFile
+     * @internal param string $path
+     */
 	public function createJsb2File($jsb2File, $jsPath, $pkgsName, $pkgsFile) {
 
 		// Pobranie listy plików *.js

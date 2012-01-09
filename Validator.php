@@ -17,7 +17,8 @@ class MK_Validator {
 	 *
 	 * @param string $argName - szukany klucz
 	 * @param array $args - tabela w ktorej sukamy klucza
-	 */
+     * @return bool
+     */
 	public static function isDefined($argName, array $args) {
 		return (array_key_exists($argName, $args));
 	}
@@ -27,7 +28,8 @@ class MK_Validator {
 	 *
 	 * @param string $argName - szukany klucz
 	 * @param array $args - tabela w ktorej sukamy klucza
-	 */
+     * @return bool
+     */
 	public static function isNotEmpty($argName, array $args) {
 		return (self::isDefined($argName, $args) && !empty($args[$argName]));
 	}
@@ -38,7 +40,8 @@ class MK_Validator {
 	 *
 	 * @param string $argName
 	 * @param array $args
-	 */
+     * @return bool
+     */
 	public static function isNumeric($argName, array $args) {
 		return (self::isDefined($argName, $args) && is_numeric($args[$argName]));
 	}
@@ -49,7 +52,8 @@ class MK_Validator {
 	 *
 	 * @param string $argName
 	 * @param array $args
-	 */
+     * @return bool
+     */
 	public static function integerArgument($argName, array $args) {
 		return (self::isDefined($argName, $args) && is_numeric($args[$argName]));
 	}
@@ -221,7 +225,8 @@ class MK_Validator {
 	 * Sprawdza poprawność kodu pocztowego
 	 *
 	 * @param String $postcode
-	 */
+     * @return bool
+     */
 	public static function postCode($postcode) {
 		return!!preg_match('/^[0-9]{2}-?[0-9]{3}$/Du', $postcode);
 	}
@@ -231,17 +236,21 @@ class MK_Validator {
 	 * Sprawdza poprawność peselu
 	 *
 	 * @param String $pesel
-	 */
+     * @return bool
+     */
 	public static function pesel($pesel) {
 		return!!preg_match("/^[0-9]{11}$/", $pesel);
 	}
 
-	/**
-	 *
-	 * Sprawdza poprawność adresu email
-	 *
-	 * @param String $email
-	 */
+    /**
+     *
+     * Sprawdza poprawność adresu email
+     *
+     * @param string $argName
+     * @param $args
+     * @internal param \String $email
+     * @return bool
+     */
 	public static function email($argName='email', $args) {
 		$emailValidator = new Zend_Validate_EmailAddress();
 
@@ -253,7 +262,8 @@ class MK_Validator {
 	 * Sprawdza poprawność loginu
 	 *
 	 * @param String $login
-	 */
+     * @return bool
+     */
 	public static function login($login) {
 		return!!preg_match("/^[A-Za-z0-9_\-]{4,}$/", $login);
 	}
@@ -265,7 +275,8 @@ class MK_Validator {
 	 * Przykładowe wartości: 12.45.27.6, 90.22.36.8
 	 *
 	 * @param String $pkiuw
-	 */
+     * @return bool
+     */
 	public static function pkiuw($pkiuw) {
 		return!!preg_match('/^(\d{2}\.{1}){3}\d{1}$/', $pkiuw);
 	}

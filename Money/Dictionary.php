@@ -36,14 +36,14 @@ class MK_Money_Dictionary {
 		array('decylion', 'decyliony', 'decylionów')
 	);
 
-	/**
-	 * Wylicza wartość brutto
-	 *
-	 * @param float $netto		- wartość netto
-	 * @param float $tax		- procentowa wartość podatku
-	 * @param float $quantity	- ilość
-	 * @return float
-	 */
+    /**
+     * Wylicza wartość brutto
+     *
+     * @param float $netto        - wartość netto
+     * @param float $tax        - procentowa wartość podatku
+     * @param float|int $quantity - ilość
+     * @return float
+     */
 	public static function calculateBrutto($netto, $tax, $quantity=1) {
 		$netto = (float) $netto;
 		$tax = (float) $tax;
@@ -115,22 +115,23 @@ class MK_Money_Dictionary {
 		return $txt;
 	}
 
-	/**
-	 * Główna metoda zamieniająca dowolną liczbę na jej postać słowną.
-	 *
-	 * Przykład użycia:
-	 *  echo MK_Money_Dictionary::verbal(103);
-	 *  // Wynik: "sto trzy"
-	 *  echo MK_Money_Dictionary::verbal('12345');
-	 *  // Wynik: "dwanaście tysięcy trzysta czterdzieści pięć"
-	 *  echo MK_Money_Dictionary::verbal('123456789');
-	 *  // Wynik: "sto dwadzieścia trzy miliony czterysta pięćdziesiąt sześć tysięcy siedemset osiemdziesiąt dziewięć"
-	 *
-	 * @param Mixed $_number (zarówno Integer jak i String)
-	 * @param Boolean $fractionNumeric - w przypadku wystąpienia wartości po przecinku (grosze) wyświetli podsumowanie
-	 *  numeryczne 'xx/100' (true) lub słowne 'dwanaście groszy' (false)
-	 * @return String
-	 */
+    /**
+     * Główna metoda zamieniająca dowolną liczbę na jej postać słowną.
+     *
+     * Przykład użycia:
+     *  echo MK_Money_Dictionary::verbal(103);
+     *  // Wynik: "sto trzy"
+     *  echo MK_Money_Dictionary::verbal('12345');
+     *  // Wynik: "dwanaście tysięcy trzysta czterdzieści pięć"
+     *  echo MK_Money_Dictionary::verbal('123456789');
+     *  // Wynik: "sto dwadzieścia trzy miliony czterysta pięćdziesiąt sześć tysięcy siedemset osiemdziesiąt dziewięć"
+     *
+     * @param $number
+     * @param Boolean $fractionNumeric - w przypadku wystąpienia wartości po przecinku (grosze) wyświetli podsumowanie
+     *  numeryczne 'xx/100' (true) lub słowne 'dwanaście groszy' (false)
+     * @internal param \Mixed $_number (zarówno Integer jak i String)
+     * @return String
+     */
 	public static function verbal($number, $fractionNumeric=false) {
 		$txt = '';
 

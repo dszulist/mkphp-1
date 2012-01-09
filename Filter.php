@@ -10,14 +10,17 @@
  */
 class MK_Filter {
 
-	/**
-	 * Przeksztalca wybrane wartosci pól w tablicy na wielkie litery
-	 *
-	 * @param string field
-	 * @param string word
-	 *
-	 * @return string
-	 */
+    /**
+     * Przeksztalca wybrane wartosci pól w tablicy na wielkie litery
+     *
+     * @param $fields
+     * @param $field
+     * @param $word
+     * @internal param \field $string
+     * @internal param \word $string
+     *
+     * @return string
+     */
 	public static function convertToUcWord($fields, $field, $word) {
 		if (in_array($field, $fields)) {
 			if (function_exists('mb_convert_case')) {

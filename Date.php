@@ -34,6 +34,7 @@ class MK_Date {
 		);
 
 		$pieces = preg_split('#[:/.\-, ]#', $format);
+        $replace = array();
 
 		if ($pieces) {
 			if ($timestamp === null) {
@@ -48,6 +49,7 @@ class MK_Date {
 			}
 			return str_replace($pieces, $replace, $format);
 		}
+        return null;
 	}
 
 	/**

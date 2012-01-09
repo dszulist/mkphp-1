@@ -310,6 +310,7 @@ class MK_Files_Mime {
      * Stworzenie z filename jesli jest jpg obrazka
      * 
      * @param string typ
+     * @return bool
      */
     function createImageFile($type = 'jpg'){
       		
@@ -352,7 +353,8 @@ class MK_Files_Mime {
 				imagecopyresized($save, $im, 0, 0, 0, 0, $new_x, $new_y, $x, $y);
 				imagejpeg($save, $file_path);  
 				$this->filename = $file_path; 
-			}	  	
+			}
+        return null;
     }
 
     
@@ -367,9 +369,9 @@ class MK_Files_Mime {
     		$this->imageType = $ext;
     		return true;
     	}
-    	else {
-    		return false;
-    	}
+
+        return false;
+
     }
     
     

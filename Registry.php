@@ -13,11 +13,12 @@ class MK_Registry extends ArrayObject {
 
 	private static $_registry = null;
 
-	/**
-	 *
-	 * @param array $array
-	 * @param type $flags 
-	 */
+    /**
+     *
+     * @param array $array
+     * @param int $flags
+     * @internal param $ #P#C\ArrayObject.ARRAY_AS_PROPS|\type|? $flags
+     */
 	public function __construct(array $array = array(), $flags = parent::ARRAY_AS_PROPS) {
 		parent::__construct($array, $flags);
 	}
@@ -88,10 +89,12 @@ class MK_Registry extends ArrayObject {
 		return self::$_registry->offsetExists($index);
 	}
 
-	/**
-	 * (non-PHPdoc)
-	 * @see ArrayObject::offsetExists()
-	 */
+    /**
+     * (non-PHPdoc)
+     * @see ArrayObject::offsetExists()
+     * @param $index
+     * @return bool
+     */
 	public function offsetExists($index) {
 		return array_key_exists($index, $this);
 	}

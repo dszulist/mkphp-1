@@ -48,13 +48,13 @@ class MK_Cookie {
 	 * @param String	 $name
 	 */
 
-	/**
-	 * Ustawia wartość ciastka
-	 *
-	 * @param string $name
-	 * @param string $value (default: '')
-	 * @param intger $time (default: 0)
-	 */
+    /**
+     * Ustawia wartość ciastka
+     *
+     * @param string $name
+     * @param string $value (default: '')
+     * @param int|\intger $time (default: 0)
+     */
 	public static function set($name, $value='', $time=0) {
 		setcookie($name, $value, $time, MK_COOKIES_PATH);
 	}

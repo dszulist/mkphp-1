@@ -11,13 +11,16 @@
  */
 class MK_Files {
 
-	/**
-	 * metoda, ktora zwraca dzien, miesiac lub rok
-	 * z daty wg wzoru YYYY-mm-dd hh:mm:ss
-	 *
-	 * metoda wykorzystywana przy tworzeniu sciezki dostepu
-	 * do zalacznikow
-	 */
+    /**
+     * metoda, ktora zwraca dzien, miesiac lub rok
+     * z daty wg wzoru YYYY-mm-dd hh:mm:ss
+     *
+     * metoda wykorzystywana przy tworzeniu sciezki dostepu
+     * do zalacznikow
+     * @param $attachment_date
+     * @param $format_date
+     * @return string
+     */
 	function splitDate($attachment_date, $format_date) {
 
 		$subdate = explode('-', $attachment_date, 3);
@@ -36,15 +39,18 @@ class MK_Files {
 				return $subdate[0];
 				break;
 		}
+        return null;
 	}
 
-	/**
-	 * zamienia date utworzenia zalacznika
-	 * na odpowiednia sciezke dostepu
-	 * wg schematu
-	 *
-	 * '/' .$rok .'/' . $miesiac. '/' .$dzien .'/'
-	 */
+    /**
+     * zamienia date utworzenia zalacznika
+     * na odpowiednia sciezke dostepu
+     * wg schematu
+     *
+     * '/' .$rok .'/' . $miesiac. '/' .$dzien .'/'
+     * @param $data_utworzenia_zal
+     * @return string
+     */
 	function parseCreatedateToPath($data_utworzenia_zal) {
 		//dodane ze wzgledu na mozliwosc przekazania DBTimeStamp
 		//zwracanego z apostrofami na poczatku i koncu ciagu daty
@@ -59,10 +65,12 @@ class MK_Files {
 		//koniec obslugi daty utworzenia zalacznika jako elementu sciezki dostepu
 	}
 
-	/**
-	 * metoda tworzy katalogi dla zalacznikow lub plikow tymczasowych
-	 * wedlug podanych sciezek
-	 */
+    /**
+     * metoda tworzy katalogi dla zalacznikow lub plikow tymczasowych
+     * wedlug podanych sciezek
+     * @param $glowny_kat
+     * @param $data_utworzenia_zal
+     */
 	function createDirsByCreatedate($glowny_kat, $data_utworzenia_zal) {
 
 		//dodane ze wzgledu na mozliwosc przekazania DBTimeStamp
@@ -101,7 +109,8 @@ class MK_Files {
 	 * 	@var string filePath
 	 *
 	 * 	$return string
-	 */
+     * @return string
+     */
 	public function detectTextFileContentEncoding($filePath) {
 		$detectedCharset = null;
 		ob_start();
@@ -137,7 +146,8 @@ class MK_Files {
 	 * @param string directory (glowny katalog)
 	 * @param array $sfile_array (tablica z plikami - sesyjna)
 	 * @param string form_uid (uid formularza)
-	 */
+     * @return bool
+     */
 	function isFileNameDuplicated($name, $create_date, $directory, array $sfile_array, $form_uid) {
 
 		$file = $directory . $this->parseCreatedateToPath($create_date) . $form_uid . DIRECTORY_SEPARATOR . $name;
@@ -166,11 +176,14 @@ class MK_Files {
 		}
 	}
 
-	/**
-	 * konwert zalacznika do JPG
-	 *
-	 * @param string typ
-	 */
+    /**
+     * konwert zalacznika do JPG
+     *
+     * @param $path
+     * @param $type
+     * @internal param \typ $string
+     * @return bool
+     */
 	function convertFileToJPG($path, $type) {
 		switch ($type) {
 			case 'tiff': case 'tif':
@@ -227,12 +240,13 @@ class MK_Files {
 		return true;
 	}
 
-	/**
-	 * Stworzenie pliku Zip z plikami z danego dokumentu
-	 *
-	 * @param array $arrayPdf - lista wraz z zawartoscia plikow dokumentow
-	 * @return string - sciezka to tymczasowego pliku
-	 */
+    /**
+     * Stworzenie pliku Zip z plikami z danego dokumentu
+     *
+     * @param array $arrayDocs
+     * @internal param array $arrayPdf - lista wraz z zawartoscia plikow dokumentow
+     * @return string - sciezka to tymczasowego pliku
+     */
 	public static function packAllContents(array $arrayDocs) {
 
 		if (empty($arrayDocs)) {
@@ -262,9 +276,12 @@ class MK_Files {
 		}
 	}
 
-	/**
-	 * Zapis tymczasowego pliku xmlowego
-	 */
+    /**
+     * Zapis tymczasowego pliku xmlowego
+     * @param $fileNameToSave
+     * @param $dataToSave
+     * @return string
+     */
 	public static function saveTempXMLFile($fileNameToSave, $dataToSave) {
 
 		$tempPath = '';
@@ -304,10 +321,11 @@ class MK_Files {
 		return $tempPath;
 	}
 
-	/**
-	 * Metoda służąca do usuwania tymczasowego pliku
-	 * razem z plikiem
-	 */
+    /**
+     * Metoda służąca do usuwania tymczasowego pliku
+     * razem z plikiem
+     * @param $pathToTemporaryPath
+     */
 	public static function removeTemporaryFileWithParentDirectory($pathToTemporaryPath) {
 		try {
 			$tempWebServiceDefinitionPathFileInfo = new SplFileInfo($pathToTemporaryPath);

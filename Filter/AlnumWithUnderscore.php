@@ -10,12 +10,12 @@
  */
 class MK_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum {
 
-	/**
-	 * Sets default option values for this instance
-	 *
-	 * @param  boolean $allowWhiteSpace
-	 * @return void
-	 */
+    /**
+     * Sets default option values for this instance
+     *
+     * @param  boolean $allowWhiteSpace
+     * @return \MK_Filter_AlnumWithUnderscore
+     */
 	public function __construct($allowWhiteSpace = false) {
 		parent::__construct($allowWhiteSpace);
 	}

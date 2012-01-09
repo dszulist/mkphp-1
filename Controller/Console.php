@@ -30,11 +30,12 @@ class MK_Controller_Console {
 		$_SERVER['REQUEST_URI'] = 'localhost';
 	}
 
-	/**
-	 * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
-	 *
-	 * 	php index.php -mappinfo
-	 */
+    /**
+     * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
+     *
+     *     php index.php -mappinfo
+     * @param array $argv
+     */
 	public function appinfo(array $argv) {
 		echo "APP=" . strtolower(APP_NAME) . PHP_EOL;
 		echo "DATABASE=" . DB_NAME . PHP_EOL;
@@ -47,11 +48,12 @@ class MK_Controller_Console {
 		exit();
 	}
 
-	/**
-	 * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
-	 *
-	 * 	php index.php -mapplogs
-	 */
+    /**
+     * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
+     *
+     *     php index.php -mapplogs
+     * @param array $argv
+     */
 	public function applogs(array $argv) {
 		$debug = (isset($argv[0]) && $argv[0] == 'true') ? true : false;
 		$logs = new MK_Logs(APP_PATH, $debug);

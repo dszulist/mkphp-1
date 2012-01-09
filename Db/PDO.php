@@ -397,7 +397,8 @@ class MK_Db_PDO {
 	 * 4. Wywołanie metody CompleteTrans() śledzi błędy, więc jeśli wystąpił jakiś błąd SQL
 	 * lub została wywołana wcześniej metoda FailTrans(), to zostanie uruchomiony ROLLBACK.
 	 *
-	 */
+     * @return bool
+     */
 	public function transStart() {
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if (MK_DEBUG_FIREPHP) {
@@ -425,16 +426,16 @@ class MK_Db_PDO {
 		return $transOk;
 	}
 
-	/**
-	 * Zatwierdzenie SQL-i głównego bloku transakcji, gdy $this->transOff == 1
-	 * oraz gdy nie wystąpiły żadne błędy SQL-owe.
-	 *
-	 * @param boolean $commit
-	 *   true  - monitoruje błędy SQL,
-	 *   false - wymuszenie odrzucenia wszystkich SQL-i w transakcji
-	 *
-	 * @return
-	 */
+    /**
+     * Zatwierdzenie SQL-i głównego bloku transakcji, gdy $this->transOff == 1
+     * oraz gdy nie wystąpiły żadne błędy SQL-owe.
+     *
+     * @param boolean $commit
+     *   true  - monitoruje błędy SQL,
+     *   false - wymuszenie odrzucenia wszystkich SQL-i w transakcji
+     *
+     * @return bool
+     */
 	public function transComplete($commit = true) {
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if (MK_DEBUG_FIREPHP) {
@@ -504,11 +505,13 @@ class MK_Db_PDO {
 		}
 	}
 
-	/**
-	 * Jeżeli debugowanie jest włączone, to zapisuje wykonane zapytanie SQL do pliku *.log
-	 *
-	 * @param boolean $debug (default: true)
-	 */
+    /**
+     * Jeżeli debugowanie jest włączone, to zapisuje wykonane zapytanie SQL do pliku *.log
+     *
+     * @param $sql
+     * @param $params
+     * @internal param bool $debug (default: true)
+     */
 	private function _debugToFile(&$sql, &$params) {
 		if (MK_Db_PDO_Singleton::debug() === true) {
 			if (is_null($this->_mkLogs)) {
@@ -518,24 +521,24 @@ class MK_Db_PDO {
 		}
 	}
 
-	/**
-	 * Metodę SelectLimit. Jeżeli podamy id klucza i nazwę, to pobiera numer strony na której znajduje się rekord.
-	 *
-	 * @param String	 $sql - zapytanie sql'owe
-	 * @param Array	 $params (default: array()) - parametry zapytania
-	 * @param String	 $primaryName (default: null) - nazwa klucza
-	 * @param String	 $primaryVal (default: 0) - wartość klucza
-	 * @param Integer	$start (default: false) - start
-	 * @param Integer	$limit (default: false) - limit
-	 *
-	 * @throws MK_Db_Exception
-	 * @return Array
-	 *  Dodatkowo:
-	 *   $res[start] - początek pobieranych wierszy
-	 *   $res[limit] - ilość wierszy na stronę
-	 *   $res[totalCount] - maksymalna ilość wierszy
-	 *   $res[results] - wynik zapytania
-	 */
+    /**
+     * Metodę SelectLimit. Jeżeli podamy id klucza i nazwę, to pobiera numer strony na której znajduje się rekord.
+     *
+     * @param String     $sql - zapytanie sql'owe
+     * @param Array     $params (default: array()) - parametry zapytania
+     * @param String     $primaryName (default: null) - nazwa klucza
+     * @param int|\String $primaryVal (default: 0) - wartość klucza
+     * @param bool|int $start (default: false) - start
+     * @param bool|int $limit (default: false) - limit
+     *
+     * @throws MK_Db_Exception
+     * @return Array
+     *  Dodatkowo:
+     *   $res[start] - początek pobieranych wierszy
+     *   $res[limit] - ilość wierszy na stronę
+     *   $res[totalCount] - maksymalna ilość wierszy
+     *   $res[results] - wynik zapytania
+     */
 	protected function SelectLimit($sql, array $params = array(), $primaryName = null, $primaryVal = 0, $start = false, $limit = false) {
 		$limit = ($limit === false) ? MK_Registry::get('limit') : $limit;
 		$start = ($start === false) ? MK_Registry::get('start') : $start;
@@ -582,31 +585,31 @@ class MK_Db_PDO {
 		);
 	}
 
-	/**
-	 * Pomocnicza funkcja do SelectLimit
-	 *
-	 * @param type $sql
-	 * @param type $nrows (default: -1)
-	 * @param type $offset (default: -1)
-	 * @param type $inputarr (default: false)
-	 * @param type $secs2cache (default: 0)
-	 *
-	 * @return array
-	 */
+    /**
+     * Pomocnicza funkcja do SelectLimit
+     *
+     * @param type $sql
+     * @param type $nrows (default: -1)
+     * @param type $offset (default: -1)
+     * @param bool|\type $inputarr (default: false)
+     * @param int|\type $secs2cache (default: 0)
+     *
+     * @return array
+     */
 	private function _selectLimit($sql, $nrows=-1, $offset=-1, $inputarr=false, $secs2cache=0) {
 		$offsetStr = ($offset >= 0) ? " OFFSET " . ((integer) $offset) : '';
 		$limitStr = ($nrows >= 0) ? " LIMIT " . ((integer) $nrows) : '';
 		return $this->GetRows($sql . "{$limitStr}{$offsetStr}", $inputarr);
 	}
 
-	/**
-	 * Zlicza wiersze na podstawie podanego zapytania i parametrów
-	 *
-	 * @param type $sql
-	 * @param type $params
-	 *
-	 * @return integer
-	 */
+    /**
+     * Zlicza wiersze na podstawie podanego zapytania i parametrów
+     *
+     * @param type $sql
+     * @param array|\type $params
+     *
+     * @return integer
+     */
 	private function _getCount($sql, array $params) {
 		$qryRecs = 0;
 		$rewritesql = $this->_stripOrderBy($sql);
@@ -848,16 +851,17 @@ class MK_Db_PDO {
 		return str_replace($tempSql, 'SELECT ' . $param . ' AS key_column FROM', $sql);
 	}
 
-	/**
-	 * 	Metoda dzieli, długą listę (powyżej 1000 elementów) występującą w zapytaniu SQL na mniejsze
-	 *  czesci, po 1000 elementow i zwraca spreparowanego SQLa
-	 *
-	 * 	@param $columnName string - Nazwa kolumny z tabeli
-	 * 	@param $arrayValues array - Tablica wartosci z kolumny
-	 * 	@param $delimiter string  - Delimiter, którym oddzielone beda dane
-	 *
-	 * 	@return String
-	 */
+    /**
+     *     Metoda dzieli, długą listę (powyżej 1000 elementów) występującą w zapytaniu SQL na mniejsze
+     *  czesci, po 1000 elementow i zwraca spreparowanego SQLa
+     *
+     * @param $columnName string - Nazwa kolumny z tabeli
+     * @param $arrayValues array - Tablica wartosci z kolumny
+     * @param $delimiter string  - Delimiter, którym oddzielone beda dane
+     *
+     * @param $quote
+     * @return String
+     */
 	static function splitSqlList($columnName, array $arrayValues, $delimiter, $quote) {
 		$maxListSize = 1000;
 		$splittedSql = '(';
@@ -1074,13 +1078,14 @@ class MK_Db_PDO {
 		return $ret;
 	}
 
-	/**
-	 * Zrzucenie SQL-a i jego parametrów do okna firebuga
-	 *
-	 * @param String $dumpName - nazwa wyświetlanej operacji
-	 * @param String $sql - zapytanie SQL
-	 * @param Array $params - parametry zapytania (dane)
-	 */
+    /**
+     * Zrzucenie SQL-a i jego parametrów do okna firebuga
+     *
+     * @param String $dumpName - nazwa wyświetlanej operacji
+     * @param String $sql - zapytanie SQL
+     * @param Array $params - parametry zapytania (dane)
+     * @param int $execTime
+     */
 	public function fireBugSqlDump($dumpName, $sql="", array $params=array(), $execTime=0) {
 		// Odczytanie klasy i metody, w której wyświetlony zostanie komunikat
 		$className = get_class($this);
