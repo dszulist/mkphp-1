@@ -90,7 +90,7 @@ class MK_Convert_Roman {
 		$split_rom = preg_split('//', strrev($number), -1, PREG_SPLIT_NO_EMPTY);
 		$tmp_arr = $split_rom;
 		$split_rom = array();
-		foreach ($tmp_arr as $key => $val) {
+		foreach ($tmp_arr as $val) {
 			if ($val != '/') {
 				$split_rom[] = $val;
 			}
