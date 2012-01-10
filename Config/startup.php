@@ -1,6 +1,7 @@
 <?php
 
 require_once ('defines.php');
+require_once (MK_PATH . DIRECTORY_SEPARATOR . 'functions.php');
 require_once (MK_PATH . DIRECTORY_SEPARATOR . 'MK.php');
 
 spl_autoload_register('MK::_autoload');
