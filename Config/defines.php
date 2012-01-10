@@ -10,7 +10,7 @@ define('MK_LOCALE_NUMERIC',	'en_US');
 define('MK_TIMEZONE',		'Europe/Warsaw');
 define('MK_HTML_HEADER',	'Content-Type: text/html; charset=utf-8');
 define('MK_COOKIES_PATH',	dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
-define('MK_IS_CLI',		defined('STDIN'));
+define('MK_IS_CLI',			defined('STDIN'));
 
 // Konfigruacja zgłaszania i zapisywania błędów
 define('MK_DEVELOPER',		defined('APP_DEVELOPER') ? APP_DEVELOPER : false);
@@ -26,14 +26,18 @@ define('MTM_FILE_LOCK',		'/tmp/mtm_task.lock');
 define('EXEC_MINIFY',		'/opt/yuicompressor-2.4.6/build/yuicompressor-2.4.6.jar');
 
 // Domyślna konfiguracja systemu
-define('DB_DEFAULT_LIMIT',		40);
-define('DB_DEFAULT_START',		0);
+define('DB_DEFAULT_LIMIT',			40);
+define('DB_DEFAULT_START',			0);
 define('DB_DEFAULT_SORT_DIRECTION',	'ASC');
 define('DB_DEFAULT_SORT_COLUMN',	null);
 
 // Cacheowanie wsdl'i
 define('WSDL_CACHE_ENABLE',		false);
 
+// Ilość miejsc po przecinku - wykorzystywane lokalnie poprzez bcscale()
+define('PRECISION_NUMBER',	2); // liczby
+define('PRECISION_INDEX',	4); // wskaźniki
+define('PRECISION_PERCENT',	2); // procenty
 
 /**
  * Stałe wymagane, aby niektóre części MK(php) działały:
