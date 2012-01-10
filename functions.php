@@ -8,7 +8,7 @@
  * @return string
  */
 function bcceil($number) {
-	$number = trim($number, '.0');
+	$number = rtrim($number, '.0');
 	if (strpos($number, '.') !== false) {
 		if ($number[0] != '-') {
 			return bcadd($number, 1, 0);
@@ -26,7 +26,7 @@ function bcceil($number) {
  * @return string
  */
 function bcfloor($number) {
-	$number = trim($number, '.0');
+	$number = rtrim($number, '.0');
 	if (strpos($number, '.') !== false) {
 		if ($number[0] != '-') {
 			return bcadd($number, 0, 0);
@@ -45,7 +45,7 @@ function bcfloor($number) {
  * @return string
  */
 function bcround($number, $precision = 0) {
-	$number = trim($number, '.0');
+	$number = rtrim($number, '.0');
 	if (strpos($number, '.') !== false) {
 		if ($number[0] != '-') {
 			return bcadd($number, '0.' . str_repeat('0', $precision) . '5', $precision);
