@@ -35,9 +35,9 @@ define('DB_DEFAULT_SORT_COLUMN',	null);
 define('WSDL_CACHE_ENABLE',		false);
 
 // Ilość miejsc po przecinku - wykorzystywane lokalnie poprzez bcscale()
-define('PRECISION_NUMBER',	2); // liczby
-define('PRECISION_INDEX',	4); // wskaźniki
-define('PRECISION_PERCENT',	2); // procenty
+define('MK_PRECISION_NUMBER',	2); // liczby
+define('MK_PRECISION_INDEX',	4); // wskaźniki
+define('MK_PRECISION_PERCENT',	2); // procenty
 
 /**
  * Stałe wymagane, aby niektóre części MK(php) działały:
