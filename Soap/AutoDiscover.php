@@ -34,7 +34,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      */
     public function __construct(){
 
-        if(!isset($_GET['instance'])){
+        if(!isset($_GET['instance']) && !isset($_ENV['instance'])){
             throw new MK_Exception("Brak podanej instancjii serwera");
         }
         $this->setInstanceName();
@@ -59,8 +59,6 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
         $this->handleSOAP($namespace);
     }
 
-
-
     /**
      * Zwraca uri zawierajacego instancje oraz proźbę o wsdl'a
      *
@@ -78,10 +76,12 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      */
     public function setInstanceName($instance=null) {
 
+        if(empty($_GET['instance']) && !empty($_ENV['instance'])){
+            $_GET['instance'] = $_ENV['instance'];
+        }
         if($instance===null && empty($_GET['instance'])){
             return;
         }
-
         if($instance===null && !empty($_GET['instance'])){
            $instance = $_GET['instance'];
         }
