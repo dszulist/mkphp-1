@@ -77,7 +77,7 @@ class MK_Filter {
 		if (!is_numeric($amount)) {
 			return $amount;
 		}
-		$amount = number_format($amount, 2, ',', ' ');
+		$amount = number_format($amount, MK_PRECISION_NUMBER, ',', ' ');
 
 		if ($withCurrency) {
 			$amount .= ' zł.';
@@ -99,7 +99,7 @@ class MK_Filter {
 			return $amount;
 		}
 
-		$amount = number_format($amount, 2, ',', '.');
+		$amount = number_format($amount, MK_PRECISION_NUMBER, ',', '.');
 
 		if ($withCurrency) {
 			$amount .= ' zł.';
@@ -146,7 +146,7 @@ class MK_Filter {
 	 */
 	public static function floatValue($argName, array $args, $defaultValue=0) {
 		$value = MK_Validator::isDefined($argName, $args) ? $args[$argName] : $defaultValue;
-		return is_string($value) ? floatval(str_replace('.', '', $value)) : floatval($value);
+		return floatval(is_string($value) ? str_replace('.', '', $value) : $value);
 	}
 
 	/**
@@ -159,8 +159,7 @@ class MK_Filter {
 	 * @return array
 	 */
 	public static function jsonValue($argName, array $args, $defaultValue=array()) {
-		return MK_Validator::isDefined($argName, $args) ?
-				( ($args[$argName][0] == '{') ? json_decode($args[$argName], true) : $args[$argName] ) : $defaultValue;
+		return MK_Validator::isDefined($argName, $args) ? ( ($args[$argName][0] == '{') ? json_decode($args[$argName], true) : $args[$argName] ) : $defaultValue;
 	}
 
 	/**
@@ -168,16 +167,14 @@ class MK_Filter {
 	 * Jako wartość należy podać współczynnik, np. 1 = 100%, 0.5 = 50%, 0.1234 = 12,34%
 	 *
 	 * @param float $value
-	 * @param integer $precision
-	 *
 	 * @return string
 	 */
-	public static function getPercentage($value, $precision=2) {
+	public static function getPercentage($value) {
 		if (!is_numeric($value)) {
 			return $value;
 		}
 
-		$value = number_format($value * 100, $precision, ',', '');
+		$value = number_format($value * 100, MK_PRECISION_PERCENT, ',', '');
 
 		return $value . '%';
 	}
