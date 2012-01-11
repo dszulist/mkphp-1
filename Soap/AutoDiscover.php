@@ -34,9 +34,12 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      */
     public function __construct(){
 
-        if(!isset($_GET['instance']) && !isset($_ENV['instance'])){
+        $this->setParamsFromEnv();
+
+        if(!isset($_GET['instance'])){
             throw new MK_Exception("Brak podanej instancjii serwera");
         }
+
         $this->setInstanceName();
 
     }
@@ -90,6 +93,22 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
     }
 
     /**
+     * Jeżeli nie ma podanych getów a w apache2 ustawiono ENV dla instance i wsdl
+     * to przenosi te ustawienia z ENV do GET
+     */
+    private function setParamsFromEnv(){
+        $instance = getenv('instance');
+        $wsdl = getenv('wsdl');
+
+        if($instance !== false) {
+            $_GET['instance'] = $instance;
+        }
+        if($wsdl !== false){
+            $_GET['wsdl'] = $wsdl;
+        }
+    }
+
+    /**
      * Ustawia właściwość zawierającą tablice z mapowaniem klas
      *
      * @param $map
@@ -97,7 +116,6 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
     public function setClassMap($map){
         $this->_classMap = $map;
     }
-
 
     /**
      * Tworzy instancje i stara się obsłużyć rządanie
@@ -140,7 +158,6 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
         $this->handle();
         die;
     }
-
 
     /**
     * Set the Class the SOAP server will use
