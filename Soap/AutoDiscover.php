@@ -135,7 +135,6 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      * @return string
      */
     private function getClassMap(){
-
       if(!empty($this->_classMap) && isset($this->_classMap[$this->_serviceInstance])){
           return $this->_classMap[$this->_serviceInstance];
       }
@@ -151,9 +150,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      * @param $wsdlClass
      */
     function handleWSDL($strategy, $namespace, $uri, $wsdlClass ){
-
         parent::__construct($strategy, $uri, $wsdlClass);
-
         $this->setClass($this->getClassMap(), $namespace);
         $this->handle();
         die;
@@ -167,8 +164,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
     * @param array $argv Arguments to instantiate the class - Not Used
     * @return Zend_Soap_AutoDiscover
     */
-   public function setClass($class, $namespace = '', $argv = null)
-   {
+   public function setClass($class, $namespace = '', $argv = null){
        $uri = $this->getUri();
 
        $wsdl = new $this->_wsdlClass($class, $uri, $this->_strategy);
