@@ -47,12 +47,12 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
     /**
      * Uruchamia wsdl/soapws
      *
-     * @param $classMap
+     * @param array $classMap
      * @param string $namespace
      * @param null $uri
      * @param null $wsdlClass
      */
-    public function startService($classMap, $namespace = '', $uri=null, $wsdlClass=null){
+    public function startService(array $classMap=array(), $namespace = '', $uri=null, $wsdlClass=null){
         $this->setClassMap($classMap);
 
         if(isset($_GET['wsdl'])){
@@ -135,7 +135,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      * @return string
      */
     private function getClassMap(){
-      if(!empty($this->_classMap) && isset($this->_classMap[$this->_serviceInstance])){
+      if(!empty($this->_classMap) && array_key_exists($this->_serviceInstance, $this->_classMap)){
           return $this->_classMap[$this->_serviceInstance];
       }
       return $this->_serviceInstance;
@@ -160,7 +160,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
     * Set the Class the SOAP server will use
     *
     * @param string $class Class Name
-    * @param string $namespace Class Namspace - przestrzen nazw w ktorej jest klasa instancji serwera
+    * @param string $namespace Class Namspace - przestrzeń nazw w której jest klasa instancji serwera
     * @param array $argv Arguments to instantiate the class - Not Used
     * @return Zend_Soap_AutoDiscover
     */
