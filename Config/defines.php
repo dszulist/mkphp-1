@@ -2,6 +2,9 @@
 // Ścieżka do biblioteki MK(php)
 define('MK_PATH',		realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
 
+// Ścieżki do katalogów wykorzystywanych przez bibliotekę
+define('MK_DIR_TEMP',		defined('DIR_TEMP') ? DIR_TEMP : realpath(sys_get_temp_dir()));
+
 // Konfiguracja startowa aplikacji
 define('MK_LANG',			'pl');
 define('MK_DEFAULT_LANG',	'pl');
@@ -11,6 +14,7 @@ define('MK_TIMEZONE',		'Europe/Warsaw');
 define('MK_HTML_HEADER',	'Content-Type: text/html; charset=utf-8');
 define('MK_COOKIES_PATH',	dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
 define('MK_IS_CLI',			defined('STDIN'));
+define('MK_CHMOD_DIR',		0775);
 
 // Konfigruacja zgłaszania i zapisywania błędów
 define('MK_DEVELOPER',		defined('APP_DEVELOPER') ? APP_DEVELOPER : false);

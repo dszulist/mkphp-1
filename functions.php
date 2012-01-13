@@ -71,3 +71,16 @@ function file_exists_in_app($filePath, $appPath = '') {
 	}
 	return strcmp($appPath, substr(realpath($filePath), 0, strlen($appPath))) === 0;
 }
+
+/**
+ * Sprawdzamy i tworzymy katalogi wymagane przez aplikację
+ *
+ * @param string $dirPath
+ */
+function validate_directory($dirPath) {
+	if (!file_exists($dirPath) || !is_dir($dirPath)) {
+		if (!@mkdir($dirPath, MK_CHMOD_DIR, true)) {
+			exit('Nie można utworzyć katalogu ' . $dirPath);
+		}
+	}
+}
