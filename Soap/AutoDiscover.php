@@ -30,14 +30,20 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
     private $_serverOptions = null;
 
     /**
+     * Target namespace przechopwywany w <port>
+     * @var null
+     */
+    private $_targetNamespace = null;
+
+    /**
      * Strategia do generowania WSDL'a
      * @var string
      */
     public $strategy = 'Zend_Soap_Wsdl_Strategy_ArrayOfTypeSequence';
 
-
     /**
      * Konstruktor sprawdza czy są podane wymagane dane w _GET i uruchamia mechanizm generowania wsdl'a
+     *
      * @return MK_Soap_AutoDiscover
      */
     public function __construct(){
@@ -78,6 +84,29 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      */
     public function getUri($wsdl=false){
         return parent::getUri() . (($wsdl) ? "?wsdl&instance=" . $this->_serviceInstance : '');
+    }
+
+    /**
+     * Ustawia target Namespace
+     *
+     * @param String $tns
+     * @return \MK_Soap_AutoDiscover
+     */
+    public function setTargetNamespace($tns){
+        $this->_targetNamespace = $tns;
+        return $this;
+    }
+
+    /**
+     * Zwraca ustawiony targetnamespace lub standardowy jezeli nie jest ustawiony
+     *
+     * @return string
+     */
+    private function getTargetNamespace(){
+       if($this->_targetNamespace === null ){
+           return $this->getUri() . "?instance=" . $this->_serviceInstance;
+       }
+       return $this->_targetNamespace;
     }
 
     /**
@@ -195,9 +224,8 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
     * @return Zend_Soap_AutoDiscover
     */
    public function setClass($class, $namespace = '', $argv = null){
-       $uri = $this->getUri();
 
-       $wsdl = new $this->_wsdlClass($class, $uri, $this->_strategy);
+       $wsdl = new $this->_wsdlClass($class, $this->getUri(), $this->_strategy);
 
        // The wsdl:types element must precede all other elements (WS-I Basic Profile 1.1 R2023)
        $wsdl->addSchemaTypeSection();
@@ -206,7 +234,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
        $binding = $wsdl->addBinding($class . 'Binding', 'tns:' . $class . 'Port');
 
        $wsdl->addSoapBinding($binding, $this->_bindingStyle['style'], $this->_bindingStyle['transport']);
-       $wsdl->addService($class . 'Service', $class . 'Port', 'tns:' . $class . 'Binding', $uri."?instance=" . $this->_serviceInstance);
+       $wsdl->addService($class . 'Service', $class . 'Port', 'tns:' . $class . 'Binding', $this->getTargetNamespace());
 
        foreach ($this->_reflection->reflectClass($namespace . $class)->getMethods() as $method) {
            $this->_addFunctionToWsdl($method, $wsdl, $port, $binding);
