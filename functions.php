@@ -54,3 +54,20 @@ function bcround($number, $precision = 0) {
 	}
 	return $number;
 }
+
+/**
+ * Funkcja bezpieczeństwa - sprawdzenie czy plik istnieje w projekcie
+ *
+ * @param string $filePath
+ * @param string $appPath
+ * @return boolean
+ */
+function file_exists_in_app($filePath, $appPath = '') {
+	if (empty($appPath)) {
+		if (!defined('APP_PATH')) {
+			trigger_error('Undefined argument $appPath in function ' . __FUNCTION__ . '() OR constant APP_PATH', E_USER_ERROR);
+		}
+		$appPath = APP_PATH;
+	}
+	return strcmp($appPath, substr(realpath($filePath), 0, strlen($appPath))) === 0;
+}
