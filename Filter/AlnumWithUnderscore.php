@@ -3,37 +3,31 @@
 /**
  * MK_Filter_AlnumWithUnderscore
  *
- * Filtrowanie - wykorzystuje ZendFramework
- *
  * @category	MK_Filter
  * @package		MK_Filter_AlnumWithUnderscore
  */
-class MK_Filter_AlnumWithUnderscore extends Zend_Filter_Alnum {
-
-    /**
-     * Sets default option values for this instance
-     *
-     * @param  boolean $allowWhiteSpace
-     * @return \MK_Filter_AlnumWithUnderscore
-     */
-	public function __construct($allowWhiteSpace = false) {
-		parent::__construct($allowWhiteSpace);
-	}
+class MK_Filter_AlnumWithUnderscore {
 
 	/**
-	 * Defined by Zend_Filter_Interface
-	 *
 	 * Returns the string $value, removing all but alphabetic and digit characters
 	 *
-	 * @param  string $value
+	 * @param string $value
+	 * @param boolean $allowWhiteSpace
+	 * @param boolean $unicodeEnabled
 	 * @return string
 	 */
-	public function filter($value) {
-		$whiteSpace = $this->allowWhiteSpace ? '\s' : '';
-		if (!self::$_unicodeEnabled) {
+	public static function filter($value, $allowWhiteSpace=false, $unicodeEnabled=true) {
+        $allowWhiteSpace = (boolean) $allowWhiteSpace;
+        if (null === $unicodeEnabled) {
+            $unicodeEnabled = (@preg_match('/\pL/u', 'a')) ? true : false;
+        }
+		$_meansEnglishAlphabet = false;
+
+		$whiteSpace = $allowWhiteSpace ? '\s' : '';
+		if (!$unicodeEnabled) {
 			// POSIX named classes are not supported, use alternative a-zA-Z0-9 match
 			$pattern = '/[^a-zA-Z0-9_' . $whiteSpace . ']/';
-		} else if (self::$_meansEnglishAlphabet) {
+		} else if ($_meansEnglishAlphabet) {
 			//The Alphabet means english alphabet.
 			$pattern = '/[^a-zA-Z0-9_' . $whiteSpace . ']/u';
 		} else {
