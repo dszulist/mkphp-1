@@ -1,6 +1,6 @@
 <?php
 /**
- * MK_Filter_AlnumWithUnderscore
+ * MK_Files_Mime
  *
  * Klasa do obsługi/ rozpoznawania MIME wzieta z Docflow
  * nazwyała sie openfile
@@ -9,12 +9,12 @@
  * @package		MK_Files_Mime
  */
 class MK_Files_Mime {
-	
+
 	private $filename;
 	protected $imageType;
 
-	var $availbeImagesExt =  array('jpg','jpeg','gif','png');	
-	
+	var $availbeImagesExt =  array('jpg','jpeg','gif','png');
+
 	var $mime_map = array(
 		'ai'	=>	'application/postscript',
 		'aif'	=>	'audio/x-aiff',
@@ -184,7 +184,7 @@ class MK_Files_Mime {
 		'xyz'	=>	'chemical/x-pdb',
 		'zip'	=>	'application/zip'
 	);
-	
+
 	var $dublin_core_map = array(
 		'asc'	=>	'Text',
 		'avi'	=>	'Moving Image',
@@ -254,11 +254,11 @@ class MK_Files_Mime {
 		'xml'	=>	'Text',
 		'zip'	=>	'Collection'
 	);
-	
-    
+
+
     /**
      * pobranie rozszerzenia pliku
-     * 
+     *
      * @return string / boolean
      */
     function getExtention(){
@@ -268,11 +268,11 @@ class MK_Files_Mime {
     	}
     	return false;
     }
-    
-    
+
+
     /**
      * pobranie typu mime
-     * 
+     *
      * @param string ext
      * @return string
      */
@@ -284,16 +284,16 @@ class MK_Files_Mime {
 			return false;
 		}
     }
-    
-    
+
+
     function getExtByMime($mime){
     	return array_search($mime, $this->mime_map);
     }
-    
+
     /**
      * Pobranie typu zgodnego z Dublin Meta Core
      * link: http://dublincore.org/documents/dcmi-type-vocabulary/
-     * 
+     *
      * @param string ext
      * @return string
      */
@@ -305,16 +305,16 @@ class MK_Files_Mime {
 			return false;
 		}
     }
-    
-    
+
+
     /**
      * Stworzenie z filename jesli jest jpg obrazka
-     * 
+     *
      * @param string typ
      * @return bool
      */
     function createImageFile($type = 'jpg'){
-      		
+
       	switch($type){
     			case 'jpg' : case 'jpeg' :
 				$im = imagecreatefromjpeg($this->filename);
@@ -358,10 +358,10 @@ class MK_Files_Mime {
         return null;
     }
 
-    
+
     /**
      * Sprawdzenie czy plik jest obrazkiem
-     * 
+     *
      * @return boolean
      */
     function isImage(){
@@ -374,15 +374,15 @@ class MK_Files_Mime {
         return false;
 
     }
-    
-    
+
+
     /**
      * Pobranie zawartosci pliku
-     * 
+     *
      * @return string
      */
     function fileGetContents(){
     	return file_get_contents($this->filename);
     }
-    
+
 }
