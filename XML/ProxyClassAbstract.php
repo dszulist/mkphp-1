@@ -3,6 +3,10 @@
  * ProxyClassAbstract
  *
  * Obsługa dziedziczenia po tablicy która jest przekazana jako argument
+ *
+ * @category	MK_XML
+ * @package		MK_XML_ProxyClassAbstract
+ * @author		bskrzypkowiak
  */
 abstract class MK_XML_ProxyClassAbstract {
 
