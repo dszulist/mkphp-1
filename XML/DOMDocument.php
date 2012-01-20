@@ -34,7 +34,7 @@ class MK_XML_DOMDocument extends DOMDocument {
      *
      * @param String/null $xmlSrc - scieżka do pliku xml albo ciąg zawierający XML
      */
-    public function __construct($xmlSrc=null){
+    public function __construct($xmlSrc=null) {
         if($xmlSrc === null){
             throw new Exception('Brak źródła XML');
         }
