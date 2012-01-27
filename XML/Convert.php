@@ -69,16 +69,18 @@ class MK_XML_Convert {
      * @param stdClass $object
      * @param SimpleXMLElement $xml
      */
-    private function iteratechildren(stdClass $object, SimpleXMLElement $xml){
-        foreach ($object as $name => $value){
-            if (is_string($value) || is_numeric($value)) {
-               $xml->$name = $value;
-            }
-            else {
-               $xml->$name = null;
-               $this->iteratechildren($value, $xml->$name);
-            }
-        }
+    private function iteratechildren($object, SimpleXMLElement $xml){
+    	if(!empty($object)){
+	        foreach ($object as $name => $value){
+	            if (is_string($value) || is_numeric($value)) {
+	               $xml->$name = $value;
+	            }
+	            else {
+	               $xml->$name = null;
+	               $this->iteratechildren($value, $xml->$name);
+	            }
+	        }
+    	}
     }
 
 
@@ -133,7 +135,7 @@ class MK_XML_Convert {
      *
      * @return mixed
      */
-    public function getAsXml(stdClass $object, $rootNode='root'){
+    public function getAsXml($object, $rootNode='root'){
         $this->_xmlResult = new SimpleXMLElement("<$rootNode></$rootNode>");
         $this->iteratechildren($object, $this->_xmlResult);
         return $this->_xmlResult->asXML();
@@ -171,4 +173,26 @@ class MK_XML_Convert {
         eval("Final Class {$className} extends MK_XML_ProxyClassAbstract { }");
         return true;
     }
+    
+    /**
+     * Zmienia typ obiektu na inny
+     *  
+     * @param object $obj
+     * @param string $toClass
+     * 
+     * @return Mixed
+     */
+    public static function cast($obj, $toClass) {
+    	
+		if(class_exists($toClass)) {
+			
+			$objArray = explode(":", serialize($obj));
+			$objArray[1] = strlen($toClass);
+			$objArray[2] = '"'.$toClass.'"';
+			return unserialize(implode(':', $objArray));
+		}
+    	return false;
+	}
+    
+    
 }
