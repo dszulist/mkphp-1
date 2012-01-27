@@ -1,6 +1,6 @@
 <?php
 
-class MK_DigitalSig_DigitalSig {
+class MK_DigitalSig {
 	
 	private $toSign = '';
 	private $pfxFile = '';
