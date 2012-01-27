@@ -33,8 +33,9 @@ class MK_DigitalSig {
         $this->signingXmlBufforDirectory = self::TEMP . DIRECTORY_SEPARATOR . 'signingXmlBuffor';
 
 		if ($toSign !== null){
-            $this->toSign = str_replace('"','\"',$toSign);
+            $this->toSign = str_replace('"','\"',$toSign); //todo addslashes() ?
         }
+
 		if ($pfxFile !== null){
             $this->pfxFile = $pfxFile;
         }
@@ -53,7 +54,7 @@ class MK_DigitalSig {
 		if (isset($this->{$name})){
 			$this->{$name} = $value;
 		}
-		
+
 	}
 	
 	private function checkParameters(){
@@ -98,32 +99,48 @@ class MK_DigitalSig {
             unlink($tempFileName);
         }
     }
-    
+
+    public function setTosig($canonizedXML){
+        $this->toSign = $canonizedXML;
+        return $this;
+    }
+
+    public function setFilename($name){
+        $this->fileName = $name;
+        return $this;
+    }
+
     /**
      * Ustawia ściężkę do pliku JAR
      *
      * @param string $pathToJarSign
+     * @return \MK_DigitalSig
      */
     public function setPathToJarSign($pathToJarSign){
     	$this->pathToJarSign = $pathToJarSign;
+        return $this;
     }
     
     /**
      * Ustawia ścieżkę do javy na serwerze
      *
      * @param string $pathToJava
+     * @return \MK_DigitalSig
      */
     public function setPathToJava($pathToJava){
     	$this->pathToJava = $pathToJava;
+        return $this;
     }
     
     /**
      * Ustawia alias dla klucza
      *
      * @param string $keyAlias
+     * @return \MK_DigitalSig
      */
     public function setKeyAlias($keyAlias){
     	$this->keyAlias = $keyAlias;
+        return $this;
     }
     
     /**
