@@ -19,7 +19,7 @@ class MK_DigitalSig {
     private $keyAlias = '';
     
     public $_errorMsg = '';
-    
+
     CONST TEMP = 'temp';
 
     /**
