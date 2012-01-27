@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * MK_DigitalSig
+ *
+ * @TODO klasa do Opisania - brak komentarzy
+ *
+ * @category MK
+ * @package	MK_DigitalSig
+ */
 class MK_DigitalSig {
 	
 	private $toSign = '';
@@ -15,18 +22,32 @@ class MK_DigitalSig {
     
     CONST TEMP = 'temp';
 
+    /**
+     * Konstruktor
+     *
+     * @param null $toSign
+     * @param null $pfxFile
+     * @param null $password
+     */
     public function __construct($toSign = null, $pfxFile = null, $password = null){
         $this->signingXmlBufforDirectory = self::TEMP . DIRECTORY_SEPARATOR . 'signingXmlBuffor';
 
-		if ($toSign !== null)
-			$this->toSign = str_replace('"','\"',$toSign);
-		if ($pfxFile !== null)
-			$this->pfxFile = $pfxFile;
-		if ($password !== null)
-			$this->password = $password;
-	
+		if ($toSign !== null){
+            $this->toSign = str_replace('"','\"',$toSign);
+        }
+		if ($pfxFile !== null){
+            $this->pfxFile = $pfxFile;
+        }
+		if ($password !== null) {
+            $this->password = $password;
+        }
+
 	}
-	
+
+    /**
+     * @param $name
+     * @param $value
+     */
 	public function set($name, $value){
 	
 		if (isset($this->{$name})){
@@ -37,9 +58,11 @@ class MK_DigitalSig {
 	
 	private function checkParameters(){
 
-        if (!is_dir($this->signingXmlBufforDirectory))
-            if (!mkdir($this->signingXmlBufforDirectory, 0775))
+        if (!is_dir($this->signingXmlBufforDirectory)){
+            if (!mkdir($this->signingXmlBufforDirectory, 0775)){
                 throw new Exception('Nie udało się stworzyć katalogu do przechowywania wersji roboczych podpisywanych plików xml');
+            }
+        }
 
 		if (empty($this->toSign)){
 			throw new Exception('Nie przekazano danych do podpisu');
@@ -71,12 +94,14 @@ class MK_DigitalSig {
 	}
 
     private function clear($tempFileName){
-        if (is_file($tempFileName))
+        if (is_file($tempFileName)){
             unlink($tempFileName);
+        }
     }
     
     /**
      * Ustawia ściężkę do pliku JAR
+     *
      * @param string $pathToJarSign
      */
     public function setPathToJarSign($pathToJarSign){
@@ -85,6 +110,7 @@ class MK_DigitalSig {
     
     /**
      * Ustawia ścieżkę do javy na serwerze
+     *
      * @param string $pathToJava
      */
     public function setPathToJava($pathToJava){
@@ -93,6 +119,7 @@ class MK_DigitalSig {
     
     /**
      * Ustawia alias dla klucza
+     *
      * @param string $keyAlias
      */
     public function setKeyAlias($keyAlias){
@@ -101,7 +128,8 @@ class MK_DigitalSig {
     
     /**
      * Zwraca komunikat błędu jeśli wystąpił
-     * Enter description here ...
+     *
+     * @return string
      */
     public function getErrorMsg(){
     	return $this->_errorMsg;
@@ -122,8 +150,9 @@ class MK_DigitalSig {
 			$this->checkParameters();
 	        
 			$tempFileName = $this->signingXmlBufforDirectory . DIRECTORY_SEPARATOR . $this->fileName;
-	        if (file_put_contents($tempFileName, $this->toSign) === false)
+	        if (file_put_contents($tempFileName, $this->toSign) === false){
 	            throw new Exception('Nie udało się zapisać pliku tymczasowego do podpisu: ' . $tempFileName);
+            }
 
 			exec($this->pathToJava . ' -jar "' . $this->pathToJarSign . '" -in "' .$tempFileName. '" -sign -dsig -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' 2>&1', $output, $returnCode);
 			
