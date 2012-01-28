@@ -13,14 +13,30 @@ class MK_DigitalSig {
 	private $pfxFile = '';
 	private $password = '';
     private $fileName = '';
-    
-    private $pathToJarSign = '';
-    private $pathToJava = '';
-    private $keyAlias = '';
-    
-    public $_errorMsg = '';
 
-    CONST TEMP = 'temp';
+    /**
+     * Ścieżka do jar'a podpisującego
+     * @var string
+     */
+    private $pathToJarSign = 'DigitalSig/DigitalSignature.jar';
+
+    /**
+     * Ścieżka do javy na srv
+     * @var string
+     */
+    private $pathToJava = EXEC_JAVA;
+
+    /**
+     * Alias dla klucza (urzędu w certyfikacie (potrzebne do odczytania dancyh z certyfikatu))
+     * @var string
+     */
+    private $keyAlias = '';
+
+    /**
+     * Zawiera weentualne komunikaty błędu podczas podpisywania
+     * @var string
+     */
+    private $errorMsg = '';
 
     /**
      * Konstruktor
@@ -30,7 +46,7 @@ class MK_DigitalSig {
      * @param null $password
      */
     public function __construct($toSign = null, $pfxFile = null, $password = null){
-        $this->signingXmlBufforDirectory = self::TEMP . DIRECTORY_SEPARATOR . 'signingXmlBuffor';
+        $this->signingXmlBufforDirectory = MK_DIR_TEMP . DIRECTORY_SEPARATOR . 'signingXmlBuffor';
 
 		if ($toSign !== null){
             $this->toSign = str_replace('"','\"',$toSign); //todo addslashes() ?
@@ -46,17 +62,9 @@ class MK_DigitalSig {
 	}
 
     /**
-     * @param $name
-     * @param $value
+     *
+     * @throws Exception
      */
-	public function set($name, $value){
-	
-		if (isset($this->{$name})){
-			$this->{$name} = $value;
-		}
-
-	}
-	
 	private function checkParameters(){
 
         if (!is_dir($this->signingXmlBufforDirectory)){
@@ -149,7 +157,7 @@ class MK_DigitalSig {
      * @return string
      */
     public function getErrorMsg(){
-    	return $this->_errorMsg;
+    	return $this->errorMsg;
     }
 	
     /**
@@ -183,7 +191,7 @@ class MK_DigitalSig {
 			return $output;
 		}
 		catch (Exception $e){
-			$this->_errorMsg = $e->getMessage();
+			$this->errorMsg = $e->getMessage();
 			$bool = false;
 		}
 		

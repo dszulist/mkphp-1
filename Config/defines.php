@@ -28,6 +28,7 @@ define('MTM_FILE_LOCK',		'/tmp/mtm_task.lock');
 
 // Ścieżki do aplikacji zewnętrznych
 define('EXEC_MINIFY',		'/opt/yuicompressor-2.4.6/build/yuicompressor-2.4.6.jar');
+define('EXEC_JAVA',         '/opt/java/bin/java');
 
 // Domyślna konfiguracja systemu
 define('DB_DEFAULT_LIMIT',			40);
