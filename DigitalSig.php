@@ -18,7 +18,7 @@ class MK_DigitalSig {
      * Ścieżka do jar'a podpisującego
      * @var string
      */
-    private $pathToJarSign = 'DigitalSig/DigitalSignature.jar';
+    private $pathToJarSign = '';
 
     /**
      * Ścieżka do javy na srv
@@ -46,7 +46,9 @@ class MK_DigitalSig {
      * @param null $password
      */
     public function __construct($toSign = null, $pfxFile = null, $password = null){
+
         $this->signingXmlBufforDirectory = MK_DIR_TEMP . DIRECTORY_SEPARATOR . 'signingXmlBuffor';
+        $this->pathToJarSign = MK_PATH . DIRECTORY_SEPARATOR . 'DigitalSig/DigitalSignature.jar';
 
 		if ($toSign !== null){
             $this->toSign = str_replace('"','\"',$toSign); //todo addslashes() ?
