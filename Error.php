@@ -181,7 +181,7 @@ class MK_Error {
 			return 'Nieoczekiwany błąd! ' . self::$_mailAdmin;
 		}
 
-		return $message;
+		return false;
 	}
 
     /**
