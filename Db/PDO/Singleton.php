@@ -18,7 +18,7 @@ class MK_Db_PDO_Singleton {
 	 * Instance of singleton class (in our case it’s the database connection)
 	 *
 	 * @access private
-	 * @var object
+	 * @var PDO
 	 * @static
 	 */
 	private static $_singleton;
