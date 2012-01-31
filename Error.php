@@ -42,24 +42,24 @@ class MK_Error {
      *     die(MK_Error::getSimpleMessage($e));
      * }
      *
-     * @param $exceptionClass
+     * @param Exception $exceptionClass
      * @return string
      */
-	public static function getSimpleInfo($exceptionClass) {
+	public static function getSimpleInfo(Exception $exceptionClass) {
 		return '<pre>' . self::fromException($exceptionClass->getMessage(), $exceptionClass->getFile(), strval($exceptionClass->getLine()), self::getExtendedTrace($exceptionClass)) . '</pre>';
 	}
 
     /**
      * Rozbudowany raport ścieżki błędu
      *
-     * @param null $exception
+     * @param Exception $exception
      * @return string
      */
 	public static function getExtendedTrace($exception=null) {
 		$traceKey = 1;
 		$msg = " #" . $traceKey++ . "\t";
 
-		if (is_object($exception)) {
+		if ($exception instanceof Exception) {
 			$msg .= $exception->getFile() . '(' . $exception->getLine() . ')';
 			$traceArray = $exception->getTrace();
 		} else {
