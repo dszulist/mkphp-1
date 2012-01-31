@@ -170,8 +170,6 @@ class MK_DigitalSig {
      */
 	public function sign(){
 	
-		$bool = false;
-		
 		try {
 			
 			$this->checkParameters();
@@ -194,9 +192,8 @@ class MK_DigitalSig {
 		}
 		catch (Exception $e){
 			$this->errorMsg = $e->getMessage();
-			$bool = false;
 		}
 		
-		return $bool;
+		return false;
 	}
 }
