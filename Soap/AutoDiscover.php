@@ -51,7 +51,7 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
         $this->setParamsFromEnv();
 
         if(!isset($_GET['instance'])){
-            throw new MK_Exception("Brak podanej instancjii serwera");
+            throw new MK_Exception("Brak podanej instancji serwera");
         }
 
         $this->setInstanceName();
