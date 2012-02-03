@@ -56,9 +56,9 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
 
         $this->setInstanceName();
 		$instance = $this->_serviceInstance;
-		if (property_exists($instance, 'classmap') === true && is_array($instance::$classmap)) {
-			$this->setServerOptions($instance::$classmap);
-		}
+		//if (property_exists($instance, 'classmap') === true && is_array($instance::$classmap)) {
+		//	$this->setServerOptions($instance::$classmap);
+		//}
 		
         return $this;
     }
