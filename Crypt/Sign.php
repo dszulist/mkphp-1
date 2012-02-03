@@ -1,11 +1,11 @@
 <?php
 /**
- * MK_Crypth_Sign
+ * MK_Crypt_Sign
  *
  * @TODO klasa do Opisania - brak komentarzy
  *
  * @category MK
- * @package	MK_Crypth_Sign
+ * @package	MK_Crypt_Sign
  */
 class MK_Crypth_Sign {
 	
@@ -124,7 +124,7 @@ class MK_Crypth_Sign {
      * Ustawia ściężkę do pliku JAR
      *
      * @param string $pathToJarSign
-     * @return \MK_Crypth_Sign
+     * @return \MK_Crypt_Sign
      */
     public function setPathToJarSign($pathToJarSign){
     	$this->pathToJarSign = $pathToJarSign;
@@ -135,7 +135,7 @@ class MK_Crypth_Sign {
      * Ustawia ścieżkę do javy na serwerze
      *
      * @param string $pathToJava
-     * @return \MK_Crypth_Sign
+     * @return \MK_Crypt_Sign
      */
     public function setPathToJava($pathToJava){
     	$this->pathToJava = $pathToJava;
@@ -146,7 +146,7 @@ class MK_Crypth_Sign {
      * Ustawia alias dla klucza
      *
      * @param string $keyAlias
-     * @return \MK_Crypth_Sign
+     * @return \MK_Crypt_Sign
      */
     public function setKeyAlias($keyAlias){
     	$this->keyAlias = $keyAlias;
