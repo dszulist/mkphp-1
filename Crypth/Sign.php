@@ -1,13 +1,13 @@
 <?php
 /**
- * MK_DigitalSig
+ * MK_Crypth_Sign
  *
  * @TODO klasa do Opisania - brak komentarzy
  *
  * @category MK
- * @package	MK_DigitalSig
+ * @package	MK_Crypth_Sign
  */
-class MK_DigitalSig {
+class MK_Crypth_Sign {
 	
 	private $toSign = '';
 	private $pfxFile = '';
@@ -48,7 +48,7 @@ class MK_DigitalSig {
     public function __construct($toSign = null, $pfxFile = null, $password = null){
 
         $this->signingXmlBufforDirectory = MK_DIR_TEMP . DIRECTORY_SEPARATOR . 'signingXmlBuffor';
-        $this->pathToJarSign = MK_PATH . DIRECTORY_SEPARATOR . 'DigitalSig/DigitalSignature.jar';
+        $this->pathToJarSign = MK_PATH . DIRECTORY_SEPARATOR . 'Crypth/Sign/jar/Signer.jar';
 
 		if ($toSign !== null){
             $this->toSign = str_replace('"','\"',$toSign); //todo addslashes() ?
@@ -124,7 +124,7 @@ class MK_DigitalSig {
      * Ustawia ściężkę do pliku JAR
      *
      * @param string $pathToJarSign
-     * @return \MK_DigitalSig
+     * @return \MK_Crypth_Sign
      */
     public function setPathToJarSign($pathToJarSign){
     	$this->pathToJarSign = $pathToJarSign;
@@ -135,7 +135,7 @@ class MK_DigitalSig {
      * Ustawia ścieżkę do javy na serwerze
      *
      * @param string $pathToJava
-     * @return \MK_DigitalSig
+     * @return \MK_Crypth_Sign
      */
     public function setPathToJava($pathToJava){
     	$this->pathToJava = $pathToJava;
@@ -146,7 +146,7 @@ class MK_DigitalSig {
      * Ustawia alias dla klucza
      *
      * @param string $keyAlias
-     * @return \MK_DigitalSig
+     * @return \MK_Crypth_Sign
      */
     public function setKeyAlias($keyAlias){
     	$this->keyAlias = $keyAlias;
