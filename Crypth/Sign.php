@@ -183,7 +183,7 @@ class MK_Crypth_Sign {
 			exec($command, $output, $returnCode);
 			
 			if ($returnCode != '0'){
-				throw new Exception('Niepowiodło się podpisanie dokumentu, output:'.PHP_EOL.$output);
+				throw new Exception('Niepowiodło się podpisanie dokumentu, output:' . PHP_EOL . $output);
 			}
 			
 			$output = file_get_contents($tempFileName);
