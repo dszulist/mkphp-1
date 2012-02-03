@@ -7,7 +7,7 @@
  * @category MK
  * @package	MK_Crypt_Sign
  */
-class MK_Crypth_Sign {
+class MK_Crypt_Sign {
 	
 	private $toSign = '';
 	private $pfxFile = '';
