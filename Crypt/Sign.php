@@ -175,14 +175,17 @@ class MK_Crypt_Sign {
 			$this->checkParameters();
 	        
 			$tempFileName = $this->signingXmlBufforDirectory . DIRECTORY_SEPARATOR . $this->fileName;
+
 	        if (file_put_contents($tempFileName, $this->toSign) === false){
-	            throw new Exception('Nie udało się zapisać pliku tymczasowego do podpisu: ' . $tempFileName);
+	            throw new Exception("Nie udało się zapisać pliku tymczasowego do podpisu: {$tempFileName}");
             }
 
-			exec($this->pathToJava . ' -jar "' . $this->pathToJarSign . '" -in "' .$tempFileName. '" -sign -dsig -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' 2>&1', $output, $returnCode);
+            $command = "{$this->pathToJava} -jar '{$this->pathToJarSign}' -in '{$tempFileName}' -sign -dsig -p12 '{$this->pfxFile}' -p12pass '{$this->password}' -keyalias {$this->keyAlias} 2>&1";
+
+            exec($command, $output, $returnCode);
 			
 			if ($returnCode != '0'){
-				throw new Exception('Niepowiodło się podpisanie dokumentu, output:'.PHP_EOL.$output);
+				throw new Exception('Niepowiodło się podpisanie dokumentu, output:' . MK_EOL . $output);
 			}
 			
 			$output = file_get_contents($tempFileName);
