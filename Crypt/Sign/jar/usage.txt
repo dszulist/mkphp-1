@@ -1,0 +1,11 @@
+Podpis wewnętrzny w formacie XmlDsig kluczem z hsm z zapisem do osobnego pliku
+java -jar Signer.jar -sign -dsig -in do_podpisu.xml -out podpisany.xml -hsm -slot 3 -kspass 1111 -keyalias test_user
+
+Podpis wewnętrzny w formacie XAdES kluczem z pliku PKCS12 z zapisem w tym samym pliku
+java -jar Signer.jar -sign -xades -in do_podpisu.xml -pkcs12 plik.p12 -kspass 1111 -keyalias test_user
+
+Podpis zewnętrzny w formacie XAdES-T kluczem z pliku PKCS12 z wynikiem wyświetlonym na ekranie
+java -jar Signer.jar -sign -xadest -tsaurl http://time.certum.pl -reflist plik.xml,plik.doc -pkcs12 plik.p12 -kspass 1111 -keyalias test_user -out system
+
+Podpis wewnętrzny w formacie XAdES z referencjami do innych plików kluczem z pliku PKCS12 z zapisem w tym samym pliku
+java -jar Signer.jar -sign -xades -in do_podpisu.xml -reflist plik1.jpg,plik2.pdf -pkcs12 plik.p12 -kspass 1111 -keyalias test_user -out system

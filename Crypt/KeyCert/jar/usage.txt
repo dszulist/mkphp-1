@@ -1,0 +1,39 @@
+Tworzenie certyfikatu CA na HSMie
+java -jar KeyCert.jar -genca -CN "TEST CA" -L Gdynia -C PL -O madkom -altname "madkom ca" -notafter "2020-01-01 00:00:00" -save hsm -sslot 1 -skspass 1111 -salias test_ca
+Tworzenie certyfikatu CA w pliku PKCS12
+java -jar KeyCert.jar -genca -CN "TEST CA" -L Gdynia -C PL -O madkom -altname "madkom ca" -notafter "2020-01-01 00:00:00" -save pkcs12 -sfile ca.p12 -skspass 1111 -salias test_ca
+
+Tworzenie certyfikatu pośredniego na HSMie
+java -jar KeyCert.jar -geninter -CN "TEST posredni" -L Gdynia -C PL -O madkom -altname "madkom inter" -notafter "2020-01-01 00:00:00" -save hsm -sslot 2 -skspass 1111 -salias test_inter -caslot 1 -cakspass 1111 -caalias test_ca
+Tworzenie certyfikatu pośredniego w pliku PKCS12
+java -jar KeyCert.jar -geninter -CN "TEST posredni" -L Gdynia -C PL -O madkom -altname "madkom inter" -notafter "2020-01-01 00:00:00" -save pkcs12 -sfile inter.p12 -skspass 1111 -salias test_inter -cafile ca.p12 -cakspass 1111 -caalias test_ca
+
+Tworzenie certyfikatu końcowego na HSMie
+java -jar KeyCert.jar -gen -CN "TEST user" -L Gdynia -C PL -O madkom -altname "madkom user" -notafter "2020-01-01 00:00:00" -save hsm -sslot 3 -skspass 1111 -salias test_user -interslot 2 -interkspass 1111 -interalias test_inter
+Tworzenie certyfikatu końcowego w pliku PKCS12
+java -jar KeyCert.jar -gen -CN "TEST user" -L Gdynia -C PL -O madkom -altname "madkom user" -notafter "2020-01-01 00:00:00" -save pkcs12 -sfile user.p12 -skspass 1111 -salias test_user -interfile inter.p12 -interkspass 1111 -interalias test_inter
+
+
+Wyświetlanie listy certyfikatów z HSMA
+java -jar KeyCert.jar -load hsm -lslot 3 -lkspass 1111 -list
+Wyświetlanie listy certyfikatów z pliku PKCS12
+java -jar KeyCert.jar -load pkcs12 -lfile plik.p12 -lkspass 1111 -list
+
+Wyświetlanie listy certyfikatów z HSMA w formacie JSON
+java -jar KeyCert.jar -load hsm -lslot 3 -lkspass 1111 -listjson
+Wyświetlanie listy certyfikatów z pliku PKCS12 w formacie JSON
+java -jar KeyCert.jar -load pkcs12 -lfile plik.p12 -lkspass 1111 -listjson
+
+Wyświetlanie informacji o certyfikacie na HSMie
+java -jar KeyCert.jar -load hsm -lslot 3 -lkspass 1111 -lalias test_user -certdetails
+Wyświetlanie informacji o certyfikacie w pliku PKCS12
+java -jar KeyCert.jar -load pkcs12 -lfile plik.p12 -lkspass 1111 -lalias test_user -certdetails
+
+Sprawdzanie czy istnieje już certyfikat o podanym aliasie na HSMie
+java -jar KeyCert.jar -load hsm -lslot 3 -lkspass 1111 -lalias test_user -check
+Sprawdzanie czy istnieje już certyfikat o podanym aliasie w pliku PKCS12
+java -jar KeyCert.jar -load pkcs12 -lfile plik.p12 -lkspass 1111 -lalias test_user -check
+zwraca kod wyjścia 0 jeśli istnieje, 1 jeśli nie istnieje
+
+Import certyfikatu z pliku PKCS12
+sh import-cert.exp PIN PASSWORD P12FILEPATH ALIAS HSMSLOT
