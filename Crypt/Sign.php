@@ -48,7 +48,7 @@ class MK_Crypt_Sign {
     public function __construct($toSign = null, $pfxFile = null, $password = null){
 
         $this->signingXmlBufforDirectory = MK_DIR_TEMP . DIRECTORY_SEPARATOR . 'signingXmlBuffor';
-        $this->pathToJarSign = MK_PATH . DIRECTORY_SEPARATOR . 'Crypth/Sign/jar/Signer.jar';
+        $this->pathToJarSign = MK_PATH . DIRECTORY_SEPARATOR . 'Crypt/Sign/jar/Signer.jar';
 
 		if ($toSign !== null){
             $this->toSign = str_replace('"','\"',$toSign); //todo addslashes() ?
@@ -180,7 +180,9 @@ class MK_Crypt_Sign {
 	            throw new Exception("Nie udało się zapisać pliku tymczasowego do podpisu: {$tempFileName}");
             }
 
-            $command = "{$this->pathToJava} -jar '{$this->pathToJarSign}' -in '{$tempFileName}' -sign -dsig -p12 '{$this->pfxFile}' -p12pass '{$this->password}' -keyalias {$this->keyAlias} 2>&1";
+            //$command = "{$this->pathToJava} -jar '{$this->pathToJarSign}' -in '{$tempFileName}' -sign -dsig -p12 '{$this->pfxFile}' -p12pass '{$this->password}' -keyalias {$this->keyAlias} 2>&1";
+    		//$command = $this->pathToJava.' -jar '.$this->pathToJarSign.' -sign -dsig -in '.$tempFileName.' -out '.$tempFileName.' -hsm -slot 3 -kspass '.$this->password.' -keyalias '.$this->keyAlias;
+            $command = '/opt/java/bin/java -jar "'.$this->pathToJarSign.'" -in "' .$tempFileName. '" -sign -type enveloped -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' -saveFile '.$tempFileName.' 2>&1';
 
             exec($command, $output, $returnCode);
 			
