@@ -179,11 +179,10 @@ class MK_Crypth_Sign {
 	            throw new Exception('Nie udało się zapisać pliku tymczasowego do podpisu: ' . $tempFileName);
             }
 
-            $command = "{$this->pathToJava} -jar '{$this->pathToJarSign}' -in '{$tempFileName}' -sign -dsig -p12 '{$this->pfxFile}' -p12pass '{$this->password}' -keyalias {$this->keyAlias} 2>&1";
-			exec($command, $output, $returnCode);
+			exec($this->pathToJava . ' -jar "' . $this->pathToJarSign . '" -in "' .$tempFileName. '" -sign -dsig -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' 2>&1', $output, $returnCode);
 			
 			if ($returnCode != '0'){
-				throw new Exception('Niepowiodło się podpisanie dokumentu, output:' . PHP_EOL . $output);
+				throw new Exception('Niepowiodło się podpisanie dokumentu, output:'.PHP_EOL.$output);
 			}
 			
 			$output = file_get_contents($tempFileName);
