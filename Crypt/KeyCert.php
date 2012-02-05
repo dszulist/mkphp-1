@@ -13,7 +13,7 @@ Abstract Class MK_Crypt_KeyCert {
 
     /**
      * HSM/PCKS12
-     * @var
+     * @var String
      */
     protected $srcType;
 
@@ -51,8 +51,22 @@ Abstract Class MK_Crypt_KeyCert {
          return $json === false ? json_decode($output, true) : $output;
      }
 
-
-    public function generate($name, $localization, $countryCode, $organization, $altName, $dateFrom, $dateTo, $slot, $skpass, $alias){
+    /**
+     *
+     * @param $name
+     * @param $localization
+     * @param $countryCode
+     * @param $organization
+     * @param $altName
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $slot
+     * @param $skpass
+     * @param $pin
+     * @param $alias
+     *
+     */
+    public function generate($name, $localization, $countryCode, $organization, $altName, $dateFrom, $dateTo, $slot, $skpass, $pin, $alias){
         /*
          $ java -jar KeyCert.jar -gen
             -CN "TEST user"
@@ -72,8 +86,22 @@ Abstract Class MK_Crypt_KeyCert {
                 -interalias test_inter
             */
 
-            $command = EXEC_JAVA . " -jar {$this->jarFilePath} ";
+            $command = EXEC_JAVA . "
+                -jar {$this->jarFilePath}
+                    -ON '{$name}'
+                    -L {$localization}
+                    -C {$countryCode}
+                    -O {$organization}
+                    -altname '{$altName}'
+                    -notafter {$dateTo}
+                    -notbefore {$dateFrom}
+                    -save {$this->srcType}
+                    -sslot {$slot}
+                    -skpass {$pin}
+                    -salias {$alias}
+            ";
 
+            exec($command, $output, $returnCode);
 
         }
 
