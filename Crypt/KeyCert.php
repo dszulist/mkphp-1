@@ -50,12 +50,12 @@ Abstract Class MK_Crypt_KeyCert {
             exec($command, $output, $returnCode);
 
             if ($returnCode != '0' && $silent === false){
-                throw new \Exception('Niepowiodło się wykonywanie polecenia' . MK_EOL . ((APP_DEVELOPER) ? ":" . $command . MK_EOL . json_decode($output) : '') );
+                //throw new \Exception('Niepowiodło się wykonywanie polecenia' . MK_EOL . ((APP_DEVELOPER) ? ":" . $command . MK_EOL . json_decode($output) : '') );
             }
         }
         catch(\Exception $e){
             if($silent === false){
-                throw new \Exception(MK_EOL . $e->getMessage() . ( (APP_DEVELOPER) ?  MK_EOL . $e->getTraceAsString() : '') );
+                //throw new \Exception(MK_EOL . $e->getMessage() . ( (APP_DEVELOPER) ?  MK_EOL . $e->getTraceAsString() : '') );
             }
         }
 
