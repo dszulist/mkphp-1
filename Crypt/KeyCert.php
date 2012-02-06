@@ -38,22 +38,25 @@ Abstract Class MK_Crypt_KeyCert {
      *
      * @param String $params
      * @param bool $load - jezeli true to robi load jezeli false to robi save
+     * @param bool $silent - w przypadku ustawinia na true nie wurzuca wyjatków
      * @return array
      */
-    protected function executeJar($params, $load = true){
+    protected function executeJar($params, $load = true, $silent=false){
         $load = ($load === true) ? "-load {$this->srcType}" : "-save {$this->srcType}";
 
-        $command = EXEC_JAVA . " -jar {$this->jarFilePath} {$load} {$params}";
+        $command = EXEC_JAVA . " -jar {$this->jarFilePath} {$load} {$params} -v";
 
         try {
             exec($command, $output, $returnCode);
 
-            if ($returnCode != '0'){
+            if ($returnCode != '0' && $silent === false){
                 throw new \Exception('Niepowiodło się wykonywanie polecenia' . MK_EOL . ((APP_DEVELOPER) ? ":" . $command . MK_EOL . json_decode($output) : '') );
             }
         }
         catch(\Exception $e){
-            throw new \Exception(MK_EOL . $e->getMessage() . ( (APP_DEVELOPER) ?  MK_EOL . $e->getTraceAsString() : '') );
+            if($silent === false){
+                throw new \Exception(MK_EOL . $e->getMessage() . ( (APP_DEVELOPER) ?  MK_EOL . $e->getTraceAsString() : '') );
+            }
         }
 
 
@@ -91,17 +94,17 @@ Abstract Class MK_Crypt_KeyCert {
      * @param $kspass
      * @param $alias
      *
-     * @return
+     * @return string
      */
     public function getInfo($slot, $kspass, $alias){
-        $exec = $this->executeJar("-lslot {$slot} -lkspass {$kspass} -lalias {$alias} -certdetails");
+        $exec = $this->executeJar("-lslot {$slot} -lkspass {$kspass} -lalias {$alias} -certdetails", true, true);
 
 //        Wyświetlanie informacji o certyfikacie na HSMie
 //            $ $java -jar KeyCert.jar -load hsm -lslot 3 -lkspass 1111 -lalias test_user -certdetails
 //        Wyświetlanie informacji o certyfikacie w pliku PKCS12
 //            $ $java -jar KeyCert.jar -load pkcs12 -lfile plik.p12 -lkspass 1111 -lalias test_user -certdetails
 
-        return $exec['output'];
+        return implode(MK_EOL, $exec['output']);
     }
 
     /**
