@@ -8,6 +8,8 @@
  * @category	MK_Crypt
  * @package		MK_Crypt_KeyCert
  * @author		bskrzypkowiak
+ * @todo przerobic zeby działało ładnie z podaniem typu providera, poprawic komentarze i posprzatać tą klase i z niej dziedziczące
+ *
  */
 Abstract Class MK_Crypt_KeyCert {
 
@@ -32,6 +34,36 @@ Abstract Class MK_Crypt_KeyCert {
 
 
     /**
+     * Uruchamia jara z podanymi parametrami
+     *
+     * @param String $params
+     * @param bool $load - jezeli true to robi load jezeli false to robi save
+     * @return array
+     */
+    protected function executeJar($params, $load = true){
+        $load = ($load === true) ? "-load {$this->srcType}" : "-save {$this->srcType}";
+
+        $command = EXEC_JAVA . " -jar {$this->jarFilePath} {$load} {$params}";
+
+        try {
+            exec($command, $output, $returnCode);
+
+            if ($returnCode != '0'){
+                throw new \Exception('Niepowiodło się wykonywanie polecenia' . MK_EOL . ((APP_DEVELOPER) ? ":" . $command . MK_EOL . json_decode($output) : '') );
+            }
+        }
+        catch(\Exception $e){
+            throw new \Exception(MK_EOL . $e->getMessage() . ( (APP_DEVELOPER) ?  MK_EOL . $e->getTraceAsString() : '') );
+        }
+
+
+        return array(
+            'output' => $output,
+            'returnCode' => $returnCode
+        );
+    }
+
+    /**
      * Wyświetlanie listy certyfikatów z HSMA/Pliku w formacie JSON
      *    $ java -jar KeyCert.jar -load TYP -lslot NR -lkspass HASLO -listjson
      *
@@ -41,68 +73,63 @@ Abstract Class MK_Crypt_KeyCert {
      * @return array|JsonString
      */
      public function getList($slot, $kspass, $json=false){
+         $output = null;
+         $exec = $this->executeJar("-lslot {$slot} -lkspass {$kspass} -listjson");
 
-         exec(EXEC_JAVA . " -jar {$this->jarFilePath} -load {$this->srcType} -lslot {$slot} -lkspass {$kspass} -listjson", $output, $returnCode);
-
-         if(array_key_exists(0, $output)){
-             $output = $output[0];
+         if(array_key_exists(0, $exec['output'])){
+             $output = $exec['output'][0];
          }
 
          return $json === false ? json_decode($output, true) : $output;
      }
 
     /**
+     * Wyświetlanie informacji o certyfikacie na HSMie
+     *  $ $java -jar KeyCert.jar -load hsm -lslot 3 -lkspass 1111 -lalias test_user -certdetails
+     *
+     * @param $slot
+     * @param $kspass
+     * @param $alias
+     *
+     * @return
+     */
+    public function getInfo($slot, $kspass, $alias){
+        $exec = $this->executeJar("-lslot {$slot} -lkspass {$kspass} -lalias {$alias} -certdetails");
+
+//        Wyświetlanie informacji o certyfikacie na HSMie
+//            $ $java -jar KeyCert.jar -load hsm -lslot 3 -lkspass 1111 -lalias test_user -certdetails
+//        Wyświetlanie informacji o certyfikacie w pliku PKCS12
+//            $ $java -jar KeyCert.jar -load pkcs12 -lfile plik.p12 -lkspass 1111 -lalias test_user -certdetails
+
+        return $exec['output'];
+    }
+
+    /**
      *
      * @param $name
      * @param $localization
      * @param $countryCode
+     * @param $state
      * @param $organization
      * @param $altName
      * @param $dateFrom
      * @param $dateTo
      * @param $slot
-     * @param $skpass
      * @param $pin
      * @param $alias
-     *
+     * @param $interSlot
+     * @param $interKspass
+     * @param $interAlias
+     * @param $serial
+     * @internal param $skpass
      */
-    public function generate($name, $localization, $countryCode, $organization, $altName, $dateFrom, $dateTo, $slot, $skpass, $pin, $alias){
-        /*
-         $ java -jar KeyCert.jar -gen
-            -CN "TEST user"
-                -L Gdynia
-                -C PL
-                -O madkom
-                -altname "madkom user"
-                -notafter "2020-01-01 00:00:00"
-                -notbefore "2020-01-01 00:00:00"
-                -save hsm
-                -sslot 3
-                -skspass 1111
-                -salias test_user
+    public function generate($name, $localization, $countryCode, $state,$organization, $altName, $dateFrom, $dateTo, $slot, $pin, $alias, $interSlot, $interKspass, $interAlias, $serial){
 
-                -interslot 2
-                -interkspass 1111
-                -interalias test_inter
-            */
+        $command = "-gen -CN '{$name}' -L {$localization} -C {$countryCode} -ST {$state} -O {$organization} -altname '{$altName}' -notafter '{$dateTo}' -notbefore '{$dateFrom}' -sslot {$slot} -skspass {$pin} -salias {$alias} -interslot {$interSlot} -interkspass {$interKspass} -interalias {$interAlias} -sserial {$serial}";
 
-            $command = EXEC_JAVA . "
-                -jar {$this->jarFilePath}
-                    -ON '{$name}'
-                    -L {$localization}
-                    -C {$countryCode}
-                    -O {$organization}
-                    -altname '{$altName}'
-                    -notafter {$dateTo}
-                    -notbefore {$dateFrom}
-                    -save {$this->srcType}
-                    -sslot {$slot}
-                    -skpass {$pin}
-                    -salias {$alias}
-            ";
+        $this->executeJar($command, false);
 
-            exec($command, $output, $returnCode);
+    }
 
-        }
 
 }
