@@ -59,7 +59,6 @@ Abstract Class MK_Crypt_KeyCert {
             }
         }
 
-
         return array(
             'output' => $output,
             'returnCode' => $returnCode
@@ -106,6 +105,20 @@ Abstract Class MK_Crypt_KeyCert {
 
         return implode(MK_EOL, $exec['output']);
     }
+
+    /**
+     * @param $slot
+     * @param $kspass
+     * @param $alias
+     * @return bool
+     */
+    public function exist($slot, $kspass, $alias){
+        //$ java -jar KeyCert.jar -load hsm -lslot 3 -lkspass 1111 -lalias test_user -check
+        $exec = $this->executeJar("-lslot {$slot} -lkspass {$kspass} -lalias {$alias} -check");
+//        echo MK_EOL.$exec['returnCode'].MK_EOL;
+        return !$exec['returnCode'];
+    }
+
 
     /**
      *
