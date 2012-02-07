@@ -42,7 +42,6 @@ class MK_XML_DOMDocument extends DOMDocument {
                     }
                     $arr[$value->nodeName] = $value->nodeValue;
                 }
-
             }
             return $arr;
         }
