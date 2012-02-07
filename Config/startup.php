@@ -6,6 +6,8 @@ require_once (MK_PATH . DIRECTORY_SEPARATOR . 'MK.php');
 
 spl_autoload_register('MK::_autoload');
 
+use_soap_error_handler(APP_DEBUG);
+
 MK::checkApplicationState();
 
 // wylaczenie cachowania wsdl'a
