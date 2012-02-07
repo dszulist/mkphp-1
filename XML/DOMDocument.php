@@ -26,15 +26,25 @@ class MK_XML_DOMDocument extends DOMDocument {
      * Zwraca liste dzieci danego noda w postaci tablicy
      *
      * @param DOMNode $node
-     * @return array|bool
+     * @param bool $withAttributes - gdy ustawione na true zwraca w tablicy też atrybuty ich nazwy kluczy poprzedzone są znakiem: @
+     * @return array|bool|string
      */
-    protected function getChildsAsArray(DOMNode $node){
+    protected function getChildsAsArray(DOMNode $node, $withAttributes=false){
 
-        if($node->hasChildNodes()){
+        if($node->hasChildNodes() || ($withAttributes === true && $node->hasAttributes()) ){
+
             $arr =  array();
+
+            if($withAttributes === true  && !is_null($node->attributes)){
+                foreach($node->attributes as $attr) {
+                    $arr["@{$attr->name}"] = $attr->value;
+                }
+            }
+
             foreach($node->childNodes as $value){
+
                 if($value->hasChildNodes()){
-                    $arr[$value->nodeName] = $this->getChildsAsArray($value);
+                    $arr[$value->nodeName] = $this->getChildsAsArray($value, $withAttributes);
                 }
                 else {
                     if($value->nodeName == "#text") {
@@ -42,9 +52,12 @@ class MK_XML_DOMDocument extends DOMDocument {
                     }
                     $arr[$value->nodeName] = $value->nodeValue;
                 }
+
             }
+
             return $arr;
         }
+
         return false;
     }
 
