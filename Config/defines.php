@@ -18,7 +18,7 @@ define('MK_CHMOD_DIR',		0775);
 define('MK_EOL',            (!empty($_SERVER['SERVER_SOFTWARE'])) ? "<br/>" : PHP_EOL);
 
 // Konfigruacja zgłaszania i zapisywania błędów
-define('MK_DEVELOPER',		defined('APP_DEVELOPER') ? APP_DEVELOPER : false);
+define('MK_DEBUG',		        defined('APP_DEBUG') ? APP_DEBUG : false);
 define('MK_ERROR_JS_ENABLED',	defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
 
 // Ścieżki do plików wykorzystywanych przez aplikację
@@ -60,7 +60,7 @@ define('MK_PRECISION_PERCENT',	2); // procenty
  *	define('DB_DEBUG',		'');	// Baza danych: Czy debugować zapytania SQL?
  *
  * Stałe pomocnicze:
- *	define('APP_DEVELOPER',			false);
+ *	define('MK_DEBUG',			false);
  *	define('APP_ERROR_JS_ENABLED',	true);
  *
  */

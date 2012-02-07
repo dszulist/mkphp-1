@@ -167,7 +167,7 @@ class MK_Error {
 		}
 		$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
-		if (MK_DEVELOPER === true) {
+		if (MK_DEBUG === true) {
 			return "Błąd \"php\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
         if(!class_exists('MK_Logs')){
@@ -198,7 +198,7 @@ class MK_Error {
 		$devMessage = self::_prepareMessage($file, $line) . "Komunikat:\n " . $message . "\n\n";
 		$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
-		if (MK_DEVELOPER === true) {
+		if (MK_DEBUG === true) {
 			return "Błąd \"exception\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
 
@@ -222,7 +222,7 @@ class MK_Error {
 		$devMessage = self::_prepareMessage($file, $line) . "Komunikat:\n " . $message . "\n\n"
 				. "Backtrace:\n" . (empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
-		if (MK_DEVELOPER === true) {
+		if (MK_DEBUG === true) {
 			return "Błąd \"db\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
 
@@ -243,7 +243,7 @@ class MK_Error {
 			$errorObject = json_decode(substr($_COOKIE['ys-javascriptErrorLog'], 2));
 			$devMessage = self::_prepareMessage() . "Komunikat:\n " . print_r($errorObject, true) . "\n\n";
 
-			if (MK_DEVELOPER === true) {
+			if (MK_DEBUG === true) {
 				return "Błąd \"js\"\t" . md5($devMessage) . "\n" . $devMessage;
 			}
 

@@ -24,8 +24,8 @@ setlocale(LC_NUMERIC, MK_LOCALE_NUMERIC);
 stream_wrapper_register("tcp", "MK_Stream_Tcp");
 
 // #ErrorHandling
-error_reporting(MK_DEVELOPER || MK_IS_CLI ? (E_ALL | E_STRICT) : '');
-ini_set('display_errors', MK_DEVELOPER || MK_IS_CLI ? 'on' : 'off');
+error_reporting(MK_DEBUG || MK_IS_CLI ? (E_ALL | E_STRICT) : '');
+ini_set('display_errors', MK_DEBUG || MK_IS_CLI ? 'on' : 'off');
 
 if (MK_IS_CLI === true) {
 	set_time_limit(0);

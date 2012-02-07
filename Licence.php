@@ -41,7 +41,7 @@ class MK_Licence {
 	 * @return type
 	 */
 	function verify($licence, $statusInconsistencyLicenseKey) {
-		if (MK_DEVELOPER === true) {
+		if (MK_DEBUG === true) {
 			return true;
 		}
 
