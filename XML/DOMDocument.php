@@ -33,7 +33,16 @@ class MK_XML_DOMDocument extends DOMDocument {
         if($node->hasChildNodes()){
             $arr =  array();
             foreach($node->childNodes as $value){
-                $arr[$value->nodeName] = $value->nodeValue;
+                if($value->hasChildNodes()){
+                    $arr[$value->nodeName] = $this->getChildsAsArray($value);
+                }
+                else {
+                    if($value->nodeName == "#text") {
+                        return $value->nodeValue;
+                    }
+                    $arr[$value->nodeName] = $value->nodeValue;
+                }
+
             }
             return $arr;
         }
