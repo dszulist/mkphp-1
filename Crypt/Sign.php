@@ -181,7 +181,7 @@ class MK_Crypt_Sign {
             }
 
             $command = 	$this->pathToJava.' -jar "'.$this->pathToJarSign.'" '.
-            			'-sign -xades -in "'.$tempFileName.'" -out system '.
+            			'-sign -dsig -in "'.$tempFileName.'" -out system '.
             			' -pkcs12 "'.$this->pfxFile.'" -kspass "'.$this->password.'" -keyalias "'.$this->keyAlias.'"';
             
             /* TODO podpisywanie za pomoca HSMa (na podstawie konfiguracji urzedu budowac polecenie) 
@@ -197,7 +197,7 @@ class MK_Crypt_Sign {
 			
 	        $this->clear($tempFileName);
 	        
-			return $output;
+			return implode("", $output);
 		}
 		catch (Exception $e){
 			$this->errorMsg = $e->getMessage();
