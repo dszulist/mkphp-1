@@ -180,17 +180,21 @@ class MK_Crypt_Sign {
 	            throw new Exception("Nie udało się zapisać pliku tymczasowego do podpisu: {$tempFileName}");
             }
 
-            //$command = "{$this->pathToJava} -jar '{$this->pathToJarSign}' -in '{$tempFileName}' -sign -dsig -p12 '{$this->pfxFile}' -p12pass '{$this->password}' -keyalias {$this->keyAlias} 2>&1";
-    		//$command = $this->pathToJava.' -jar '.$this->pathToJarSign.' -sign -dsig -in '.$tempFileName.' -out '.$tempFileName.' -hsm -slot 3 -kspass '.$this->password.' -keyalias '.$this->keyAlias;
-            $command = '/opt/java/bin/java -jar "'.$this->pathToJarSign.'" -in "' .$tempFileName. '" -sign -type enveloped -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' -saveFile '.$tempFileName.' 2>&1';
-
+            $command = 	$this->pathToJava.' -jar "'.$this->pathToJarSign.'" '.
+            			'-sign -xades -in "'.$tempFileName.'" -out system '.
+            			' -pkcs12 "'.$this->pfxFile.'" -kspass "'.$this->password.'" -keyalias "'.$this->keyAlias.'"';
+            
+            /* TODO podpisywanie za pomoca HSMa (na podstawie konfiguracji urzedu budowac polecenie) 
+            $command = 	$this->pathToJava.' -jar "'.$this->pathToJarSign.'" '.
+            			'-sign -xades -in "'.$tempFileName.'" -out system '.
+            			' -hsm -slot "CZYTAJ Z KONF" -kspass "'.$this->password.'" -keyalias "'.$this->keyAlias.'"';*/
+            
             exec($command, $output, $returnCode);
 			
 			if ($returnCode != '0'){
 				throw new Exception('Niepowiodło się podpisanie dokumentu, output:' . MK_EOL . $output);
 			}
 			
-			$output = file_get_contents($tempFileName);
 	        $this->clear($tempFileName);
 	        
 			return $output;
