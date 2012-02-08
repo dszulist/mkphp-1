@@ -165,7 +165,7 @@ class MK_Error {
 		if (count($errContext) > 0) {
 			$devMessage .= "Informacje szczegółowe:\n " . print_r($errContext, true) . "\n\n";
 		}
-		$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
+//		$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
 		if (MK_DEBUG === true) {
 			return "Błąd \"php\"\t" . md5($devMessage) . "\n" . $devMessage;
