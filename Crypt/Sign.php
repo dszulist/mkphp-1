@@ -186,10 +186,14 @@ class MK_Crypt_Sign {
             
             /* TODO podpisywanie za pomoca HSMa (na podstawie konfiguracji urzedu budowac polecenie) 
             $command = 	$this->pathToJava.' -jar "'.$this->pathToJarSign.'" '.
-            			'-sign -xades -in "'.$tempFileName.'" -out system '.
+            			'-sign -dsig -in "'.$tempFileName.'" -out system '.
             			' -hsm -slot "CZYTAJ Z KONF" -kspass "'.$this->password.'" -keyalias "'.$this->keyAlias.'"';*/
             
+            //exec($command, $output, $returnCode);
+            
+            $command = $this->pathToJava.' -jar "'.$this->pathToJarSign.'" -in "' .$tempFileName. '" -sign -type enveloped -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' -saveFile '.$tempFileName.' 2>&1';
             exec($command, $output, $returnCode);
+            $output = file_get_contents($tempFileName);
 			
 			if ($returnCode != '0'){
 				throw new Exception('Niepowiodło się podpisanie dokumentu, output:' . MK_EOL . $output);
@@ -197,7 +201,8 @@ class MK_Crypt_Sign {
 			
 	        $this->clear($tempFileName);
 	        
-			return implode("", $output);
+			return $output;
+			//return implode("", $output);
 		}
 		catch (Exception $e){
 			$this->errorMsg = $e->getMessage();
