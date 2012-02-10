@@ -18,49 +18,24 @@ class MK_XML_Convert {
      *
      * @var String
      */
-    private $_xmlSrc;
+    private $xmlSrc;
 
     /**
      * Przechowuje XML'a w przypadku próby prezentacji obiektu jako XML
      *
      * @var SimpleXMLElement
      */
-    private  $_xmlResult;
+    private  $xmlResult;
 
     /**
      * Konstruktor
      *
-     * @param String/null $xmlSrc - scieżka do pliku xml albo ciąg zawierający XML
+     * @param String|null $xmlSrc - scieżka do pliku xml albo ciąg zawierający XML
      */
     public function __construct($xmlSrc=null) {
         if($xmlSrc !== null){
-            $this->_xmlSrc = $xmlSrc;
+            $this->xmlSrc = $xmlSrc;
         }
-    }
-
-    /**
-     * Zwraca wewnętrzny XML
-     *
-     * @param string $name - nazwa elementu w którym znajduje się zagnieżdzony XML
-     * @return bool|string
-     */
-    public function getInnerXML($name){
-        $xmlReader = $this->getXMLReader();
-
-        while ($xmlReader->read()) {
-            switch ($xmlReader->nodeType) {
-                case XMLReader::ELEMENT:
-                    if($xmlReader->name == $name){
-                        $xml = $xmlReader->readInnerXML();
-                        $xmlReader->close();
-                        return html_entity_decode($xml);
-                    }
-                break;
-            }
-        }
-
-        $xmlReader->close();
-        return false;
     }
 
     /**
@@ -83,6 +58,18 @@ class MK_XML_Convert {
     	}
     }
 
+	/**
+	 * Tworzy obiekt XMLReader i ładuje do niego xml'a z pliku albo stringa w zależności co podano podczas tworzenia obiektu klasy
+	 *
+	 * @return XMLReader
+	 */
+	private function getXMLReader(){
+		$xmlReader = new XMLReader();
+		$method = (is_file($this->xmlSrc)) ? 'open' : 'XML';
+		$xmlReader->$method($this->xmlSrc);
+
+		return $xmlReader;
+	}
 
     /**
      * Parsuje XML'a na Obiekt
@@ -114,18 +101,30 @@ class MK_XML_Convert {
         return $tree;
     }
 
-    /**
-     * Tworzy obiekt XMLReader i ładuje do niego xml'a z pliku albo stringa w zależności co podano podczas tworzenia obiektu klasy
-     *
-     * @return XMLReader
-     */
-    private function getXMLReader(){
-        $xmlReader = new XMLReader();
-        $method = (is_file($this->_xmlSrc)) ? 'open' : 'XML';
-        $xmlReader->$method($this->_xmlSrc);
+	/**
+	 * Zwraca wewnętrzny XML
+	 *
+	 * @param string $name - nazwa elementu w którym znajduje się zagnieżdzony XML
+	 * @return bool|string
+	 */
+	public function getInnerXML($name){
+		$xmlReader = $this->getXMLReader();
 
-        return $xmlReader;
-    }
+		while ($xmlReader->read()) {
+			switch ($xmlReader->nodeType) {
+				case XMLReader::ELEMENT:
+					if($xmlReader->name == $name){
+						$xml = $xmlReader->readInnerXML();
+						$xmlReader->close();
+						return html_entity_decode($xml);
+					}
+				break;
+			}
+		}
+
+		$xmlReader->close();
+		return false;
+	 }
 
     /**
      * Zwraca przekazany obiekt w formie XML
@@ -136,9 +135,9 @@ class MK_XML_Convert {
      * @return mixed
      */
     public function getAsXml($object, $rootNode='root'){
-        $this->_xmlResult = new SimpleXMLElement("<$rootNode></$rootNode>");
-        $this->iteratechildren($object, $this->_xmlResult);
-        return $this->_xmlResult->asXML();
+        $this->xmlResult = new SimpleXMLElement("<$rootNode></$rootNode>");
+        $this->iteratechildren($object, $this->xmlResult);
+        return $this->xmlResult->asXML();
     }
 
     /**
@@ -150,22 +149,23 @@ class MK_XML_Convert {
     public function getAsObject($xml=null){
         spl_autoload_register('MK_XML_Convert::autoloadProxyClass');
 
-        $tmpXML = $this->_xmlSrc;
-        $this->_xmlSrc = $xml;
+        $tmpXML = $this->xmlSrc;
+        $this->xmlSrc = $xml;
         $xml = $this->getXMLReader();
         $res = $this->xml2obj($xml);
         $xml->close();
-        $this->_xmlSrc = $tmpXML;
+        $this->xmlSrc = $tmpXML;
 
         spl_autoload_unregister('MK_XML_Convert::autoloadProxyClass');
 
         return (object)$res;
     }
 
-
     /**
      * Autoload dla klas Proxy (jeżeli klasa nie istnieje zostanie utworzona dynamicznie)
      *
+     * @final
+     * @static
      * @param String $className
      * @return bool
      */
@@ -173,19 +173,18 @@ class MK_XML_Convert {
         eval("Final Class {$className} extends MK_XML_ProxyClassAbstract { }");
         return true;
     }
-    
+
     /**
      * Zmienia typ obiektu na inny
-     *  
-     * @param object $obj
+     *
+     * @static
+     * @param stdClass $obj
      * @param string $toClass
-     * 
-     * @return Mixed
+     * @return bool|mixed
      */
     public static function cast($obj, $toClass) {
     	
 		if(class_exists($toClass)) {
-			
 			$objArray = explode(":", serialize($obj));
 			$objArray[1] = strlen($toClass);
 			$objArray[2] = '"'.$toClass.'"';
