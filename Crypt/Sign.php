@@ -193,7 +193,7 @@ class MK_Crypt_Sign {
             
 			$command = '/opt/java/bin/java -jar "'.$this->pathToJarSign.'" -in "' .$tempFileName. '" -sign -type enveloped -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' -saveFile '.$tempFileName.' 2>&1';
             exec($command, $output, $returnCode);
-//            $output = file_get_contents($tempFileName);
+            $output = file_get_contents($tempFileName);
 			
 			if ($returnCode != '0'){
 				throw new Exception('Niepowiodło się podpisanie dokumentu, output:' . MK_EOL . $output);
