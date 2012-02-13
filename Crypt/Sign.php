@@ -180,7 +180,12 @@ class MK_Crypt_Sign {
 	            throw new Exception("Nie udało się zapisać pliku tymczasowego do podpisu: {$tempFileName}");
             }
 
-            $command = 	$this->pathToJava.' -jar "'.$this->pathToJarSign.'" '.
+            /*
+             * mhytry: dodałem parametr -Xmx500m do podpisywania większych plików xml (większych to znaczy max ok 45 MB)
+             *
+             */
+
+            $command = 	$this->pathToJava.' -Xmx500m -jar "'.$this->pathToJarSign.'" '.
             			'-sign -dsig -in "'.$tempFileName.'" -out system '.
             			' -pkcs12 "'.$this->pfxFile.'" -kspass "'.$this->password.'" -keyalias "'.$this->keyAlias.'"';
             
@@ -191,7 +196,7 @@ class MK_Crypt_Sign {
             
             //exec($command, $output, $returnCode);
             
-			$command = '/opt/java/bin/java -jar "'.$this->pathToJarSign.'" -in "' .$tempFileName. '" -sign -type enveloped -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' -saveFile '.$tempFileName.' 2>&1';
+			$command = '/opt/java/bin/java -Xmx500m -jar "'.$this->pathToJarSign.'" -in "' .$tempFileName. '" -sign -type enveloped -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' -saveFile '.$tempFileName.' 2>&1';
             exec($command, $output, $returnCode);
             $output = file_get_contents($tempFileName);
 			
