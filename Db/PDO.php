@@ -396,7 +396,7 @@ class MK_Db_PDO {
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql, $params);
+		$this->_debugToFile($sql);
 
 		return $resValue;
 	}
@@ -532,10 +532,10 @@ class MK_Db_PDO {
      * Jeżeli debugowanie jest włączone, to zapisuje wykonane zapytanie SQL do pliku *.log
      *
      * @param $sql
-     * @param $params
+     * @param $params (default:array())
      * @internal param bool $debug (default: true)
      */
-	private function _debugToFile(&$sql, &$params) {
+	private function _debugToFile($sql, $params=array()) {
 		if (MK_Db_PDO_Singleton::debug() === true) {
 			if (is_null($this->_mkLogs)) {
 				$this->_mkLogs = new MK_Logs(APP_PATH);
