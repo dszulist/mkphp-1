@@ -540,7 +540,8 @@ class MK_Db_PDO {
 			if (is_null($this->_mkLogs)) {
 				$this->_mkLogs = new MK_Logs(APP_PATH);
 			}
-			$this->_mkLogs->saveToFile($this->_debugFileName, $this->_prepareFullQuery($sql, $params));
+			$devMsg = $this->_prepareFullQuery($sql, $params);
+			$this->_mkLogs->saveToFile($this->_debugFileName, $devMsg);
 		}
 	}
 
