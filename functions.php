@@ -84,3 +84,38 @@ function validate_directory($dirPath) {
 		}
 	}
 }
+
+/**
+ * Podgląd danych w wybranej metodzie print_r/var_dump
+ *
+ * @param mixed $data
+ * @param boolean $exit
+ * @param string $method
+ * @throws MK_Exception
+ */
+function printr($data, $exit=true, $method='print_r') {
+	$output = '<pre>';
+	switch ($method) {
+		case 'var_dump':
+			ob_start();
+			var_dump($data);
+			$output .= ob_get_contents();
+			ob_end_clean();
+			break;
+		case 'var_export':
+			ob_start();
+			var_export($data);
+			$output .= ob_get_contents();
+			ob_end_clean();
+			break;
+		default:
+			$output .= print_r($data, true);
+			break;
+	}
+	$output .= '</pre>';
+	if ($exit) {
+		throw new MK_Exception($output);
+	} else {
+		echo $output;
+	}
+}

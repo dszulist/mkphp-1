@@ -19,7 +19,8 @@ class MK_Error {
 	private static $_traceIgnorePath = array(
 		'MK_Error::handler',
 		'MK_Error::getExtendedTrace',
-		'MK::shutdownFunction'
+		'MK::shutdownFunction',
+		'printr'
 	);
 
     /**
