@@ -88,9 +88,9 @@ function validate_directory($dirPath) {
 /**
  * Podgląd danych w wybranej metodzie print_r/var_dump
  *
- * @param mixed $data
- * @param boolean $exit
- * @param string $method
+ * @param mixed $data - dane do wyświetlenia, może być string/array/object
+ * @param boolean $exit (default: true) - domyślnie wyrzuca wyjątek MK_Exception()
+ * @param string $method (default: print_r) - domyślnie zwraca wynik przy użyciu funkcji print_r
  * @throws MK_Exception
  */
 function printr($data, $exit=true, $method='print_r') {
