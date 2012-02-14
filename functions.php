@@ -89,11 +89,11 @@ function validate_directory($dirPath) {
  * Podgląd danych w wybranej metodzie print_r/var_dump
  *
  * @param mixed $data - dane do wyświetlenia, może być string/array/object
- * @param boolean $exit (default: true) - domyślnie wyrzuca wyjątek MK_Exception()
+ * @param boolean $throwException (default: true) - domyślnie wyrzuca wyjątek MK_Exception()
  * @param string $method (default: print_r) - domyślnie zwraca wynik przy użyciu funkcji print_r
  * @throws MK_Exception
  */
-function printr($data, $exit=true, $method='print_r') {
+function printr($data, $throwException=true, $method='print_r') {
 	$output = '<pre>';
 	switch ($method) {
 		case 'var_dump':
@@ -113,7 +113,7 @@ function printr($data, $exit=true, $method='print_r') {
 			break;
 	}
 	$output .= '</pre>';
-	if ($exit) {
+	if ($throwException) {
 		throw new MK_Exception($output);
 	} else {
 		echo $output;
