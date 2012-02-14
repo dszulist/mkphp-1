@@ -4,7 +4,6 @@
  * MK_Files
  *
  * Klasa do obsługi plików/katalogów
- * Bazowane na zalacznik_helper z DOcFlow
  *
  * @category MK
  * @package	MK_Files
