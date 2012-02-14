@@ -11,8 +11,45 @@
  */
 class MK_Files {
 
+	/**
+	 * Standaryzuje nazwę - wyrzuca specjalne znaki i polskie znaki
+	 *
+	 * @static
+	 * @param String $name
+	 * @param bool $removePLCharacters
+	 * @return string
+	 */
+	static public function unifyName($name, $removePLCharacters = true) {
+
+		$characterMap = array(
+			"?"  => "",
+			"/"  => "_",
+			":"  => "_",
+			"\\" => "",
+			"*"  => "",
+			"|"  => "",
+			"<"  => "",
+			">"  => "",
+			"'"  => "",
+			" "  => "_",
+			"\"" => "",
+			"("  => "",
+			")"  => ""
+		);
+
+		if ($removePLCharacters === true) {
+			$characterMap = array_merge($characterMap,  array(
+			    "ą" => "a", "ę" => "e", "ó" => "o", "ł" => "l", "ś" => "s", "ż" => "z", "ź" => "z",
+			    "ć" => "c", "ń" => "n", "Ą" => "A", "Ę" => "E", "Ó" => "O", "Ł" => "L", "Ś" => "S",
+			    "Ż" => "Z", "Ź" => "Z", "Ć" => "C", "Ń" => "N"
+			));
+		}
+
+		return strtr($name, $characterMap);
+	}
+
     /**
-     * metoda, ktora zwraca dzien, miesiac lub rok
+     * Metoda, ktora zwraca dzien, miesiac lub rok
      * z daty wg wzoru YYYY-mm-dd hh:mm:ss
      *
      * metoda wykorzystywana przy tworzeniu sciezki dostepu
