@@ -1,5 +1,12 @@
 <?php
 
+// Ustawienie uprawnień użytkownika/grupy "www-data"
+$posixInfo = posix_getpwnam('www-data');
+if ($posixInfo !== false) {
+	posix_setgid($posixInfo['gid']);
+	posix_setuid($posixInfo['uid']);
+}
+
 require_once ('defines.php');
 require_once (MK_PATH . DIRECTORY_SEPARATOR . 'functions.php');
 require_once (MK_PATH . DIRECTORY_SEPARATOR . 'MK.php');
@@ -57,7 +64,7 @@ session_set_cookie_params(0, MK_COOKIES_PATH);
 session_start();
 
 // #Debuging
-define('MK_DEBUG_FIREPHP',	isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI ? true : false);
+define('MK_DEBUG_FIREPHP', isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI ? true : false);
 if (MK_DEBUG_FIREPHP) {
 	require (DIR_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
 	require (DIR_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
@@ -67,5 +74,5 @@ if (MK_DEBUG_FIREPHP) {
 
 // Uruchomienie kontrollera konsoli jezeli wywołanie jest z konsoli
 if (MK_IS_CLI) {
-    MK::executeCLICommand($argv);
+	MK::executeCLICommand($argv);
 }
