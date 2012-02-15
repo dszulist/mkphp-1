@@ -2,217 +2,333 @@
 /**
  * MK_Crypt_Sign
  *
- * @TODO klasa do Opisania - brak komentarzy
+ * Umożliwia podpisywanie plików, za pomocą aplikacji JAVA ;)
  *
  * @category MK
  * @package	MK_Crypt_Sign
+ * @author bskrzypkowiak
  */
 class MK_Crypt_Sign {
-	
-	private $toSign = '';
-	private $pfxFile = '';
-	private $password = '';
-    private $fileName = '';
 
-    /**
-     * Ścieżka do jar'a podpisującego
-     * @var string
-     */
-    private $pathToJarSign = '';
+	/**
+	 * Scieżka do pliku jar
+	 * @var #DMK_PATH|string
+	 */
+	protected $jarFilePath = MK_PATH;
 
-    /**
-     * Ścieżka do javy na srv
-     * @var string
-     */
-    private $pathToJava = EXEC_JAVA;
+	/**
+	 * Rodzaj podpisu (dsig|xades|xadest)
+	 * @var string
+	 */
+	private $type = '-dsig';
 
-    /**
-     * Alias dla klucza (urzędu w certyfikacie (potrzebne do odczytania dancyh z certyfikatu))
-     * @var string
-     */
-    private $keyAlias = '';
+	/**
+	 * Hasło do keystore
+	 * @var string
+	 */
+	private $kspass = '';
 
-    /**
-     * Zawiera weentualne komunikaty błędu podczas podpisywania
-     * @var string
-     */
-    private $errorMsg = '';
+	/**
+	 * Alias w keystore
+	 * @var string
+	 */
+	private $ksalias = '';
 
-    /**
-     * Konstruktor
-     *
-     * @param null $toSign
-     * @param null $pfxFile
-     * @param null $password
-     */
-    public function __construct($toSign = null, $pfxFile = null, $password = null){
+	/**
+	 * Port do HSM'a
+	 * @var string
+	 */
+	private $hsmslot = '';
 
-        $this->signingXmlBufforDirectory = MK_DIR_TEMP . DIRECTORY_SEPARATOR . 'signingXmlBuffor';
-        $this->pathToJarSign = MK_PATH . DIRECTORY_SEPARATOR . 'Crypt/Sign/jar/Signer.jar';
+	/**
+	 * Plik źródłowy, który chcemy podpisać
+	 * @var string
+	 */
+	private $input = '';
 
-		if ($toSign !== null){
-            $this->toSign = str_replace('"','\"',$toSign); //todo addslashes() ?
-        }
+	/**
+	 * Plik wyjściowy podpisu
+	 * @var string
+	 */
+	private $output = '';
 
-		if ($pfxFile !== null){
-            $this->pfxFile = $pfxFile;
-        }
-		if ($password !== null) {
-            $this->password = $password;
-        }
+	/**
+	 * Plik pkcs12 którym będziemy podpisywać
+	 * @var string
+	 */
+	private $pkcs12 = '';
 
+	/**
+	 * Adres to serwera ze znacznikiem czasu (url)
+	 * @var string
+	 */
+	private $timeserver = '';
+
+	/**
+	 * Lista plików dłączonych do podpisu
+	 * @var string
+	 */
+	private $reflist = '';
+
+	/**
+	 * Scieżka do tymczasowego katalogu
+	 * @var string
+	 */
+	private $tempDir = DIR_TEMP;
+
+	/**
+	 * Lista utworzonych plików tymczaoswych
+	 * @var array
+	 */
+	private $tempFileList = array();
+
+	/**
+	 * Ustawia scieżki do plików i katalogów
+	 * Sprawdza i tworzy katalog tymczasowy jeżeli nie istnieje
+	 *
+	 * @throw Exception
+	 */
+	public function __construct(){
+	    $this->jarFilePath .= DIRECTORY_SEPARATOR . 'Crypt' . DIRECTORY_SEPARATOR . 'Sign' . DIRECTORY_SEPARATOR . 'jar' . DIRECTORY_SEPARATOR . 'Signer.jar';
+		$this->tempDir .= DIRECTORY_SEPARATOR . 'MK_Crypt_Sign' . DIRECTORY_SEPARATOR . uniqid();
+
+		validate_directory($this->tempDir);
 	}
 
-    /**
-     *
-     * @throws Exception
-     */
-	private function checkParameters(){
+	/**
+	 * Uruchamia proces podpisywania
+	 *
+	 * @throw Exception
+	 * @return string
+	 */
+	public function run(){
+		$output = null;
 
-        if (!is_dir($this->signingXmlBufforDirectory)){
-            if (!mkdir($this->signingXmlBufforDirectory, 0775)){
-                throw new Exception('Nie udało się stworzyć katalogu do przechowywania wersji roboczych podpisywanych plików xml');
-            }
-        }
-
-		if (empty($this->toSign)){
-			throw new Exception('Nie przekazano danych do podpisu');
-		}
-		
-		if (empty($this->pfxFile)){
-			throw new Exception('Nie przekazano pliku z kluczami');
-		}
-		
-		if (empty($this->password)){
-			throw new Exception('Nie przekazano hasła do klucza prywatnego');
-		}
-
-        if (empty($this->fileName)){
-			throw new Exception('Nie przekazano nazwy pliku tymczasowego');
-		}
-		
-		if(empty($this->pathToJarSign)){
-			throw new Exception('Nie przekazano ścieżki do pliku jar');
-		}
-		
-		if(empty($this->pathToJava)){
-			throw new Exception('Nie przekazano ścieżki do javy na serwerze');
-		}
-		
-		if(empty($this->keyAlias)){
-			throw new Exception('Nie przekazano aliasu dla klucza');
-		}
-	}
-
-    private function clear($tempFileName){
-        if (is_file($tempFileName)){
-            unlink($tempFileName);
-        }
-    }
-
-    public function setTosig($canonizedXML){
-        $this->toSign = $canonizedXML;
-        return $this;
-    }
-
-    public function setFilename($name){
-        $this->fileName = $name;
-        return $this;
-    }
-
-    /**
-     * Ustawia ściężkę do pliku JAR
-     *
-     * @param string $pathToJarSign
-     * @return \MK_Crypt_Sign
-     */
-    public function setPathToJarSign($pathToJarSign){
-    	$this->pathToJarSign = $pathToJarSign;
-        return $this;
-    }
-    
-    /**
-     * Ustawia ścieżkę do javy na serwerze
-     *
-     * @param string $pathToJava
-     * @return \MK_Crypt_Sign
-     */
-    public function setPathToJava($pathToJava){
-    	$this->pathToJava = $pathToJava;
-        return $this;
-    }
-    
-    /**
-     * Ustawia alias dla klucza
-     *
-     * @param string $keyAlias
-     * @return \MK_Crypt_Sign
-     */
-    public function setKeyAlias($keyAlias){
-    	$this->keyAlias = $keyAlias;
-        return $this;
-    }
-    
-    /**
-     * Zwraca komunikat błędu jeśli wystąpił
-     *
-     * @return string
-     */
-    public function getErrorMsg(){
-    	return $this->errorMsg;
-    }
-	
-    /**
-     * Podpisanie XMLa
-     * TODO sparametryzować pozostale opcje do jar'a
-     * 
-     * @return string|bool
-     */
-	public function sign(){
-	
 		try {
-			
-			$this->checkParameters();
-	        
-			$tempFileName = $this->signingXmlBufforDirectory . DIRECTORY_SEPARATOR . $this->fileName;
+			if(APP_DEBUG){
+				if(empty($this->pkcs12) && empty($this->hsmslot)){
+					throw new Exception('Nie podano magaznu certyfikacji. Użyj: usePkcs12(); | useHSM();');
+				}
 
-	        if (file_put_contents($tempFileName, $this->toSign) === false){
-	            throw new Exception("Nie udało się zapisać pliku tymczasowego do podpisu: {$tempFileName}");
-            }
+				if(empty($this->input)){
+					throw new Exception('Nie podano żródła do podpisania. Użyj: setInput();');
+				}
 
-            /*
-             * mhytry: dodałem parametr -Xmx500m do podpisywania większych plików xml (większych to znaczy max ok 45 MB)
-             *
-             */
+				if(empty($this->kspass)){
+					throw new Exception('Nie podano hasła. Użyj: setKeyStorePassword();');
+				}
 
-            $command = 	$this->pathToJava.' -Xmx500m -jar "'.$this->pathToJarSign.'" '.
-            			'-sign -dsig -in "'.$tempFileName.'" -out system '.
-            			' -pkcs12 "'.$this->pfxFile.'" -kspass "'.$this->password.'" -keyalias "'.$this->keyAlias.'"';
-            
-            /* TODO podpisywanie za pomoca HSMa (na podstawie konfiguracji urzedu budowac polecenie) 
-            $command = 	$this->pathToJava.' -jar "'.$this->pathToJarSign.'" '.
-            			'-sign -dsig -in "'.$tempFileName.'" -out system '.
-            			' -hsm -slot "CZYTAJ Z KONF" -kspass "'.$this->password.'" -keyalias "'.$this->keyAlias.'"';*/
-            
-            //exec($command, $output, $returnCode);
-            
-			$command = '/opt/java/bin/java -Xmx500m -jar "'.$this->pathToJarSign.'" -in "' .$tempFileName. '" -sign -type enveloped -p12 "' .$this->pfxFile. '" -p12pass "' .$this->password. '" -keyalias '.$this->keyAlias.' -saveFile '.$tempFileName.' 2>&1';
-            exec($command, $output, $returnCode);
-            $output = file_get_contents($tempFileName);
-			
-			if ($returnCode != '0'){
-				throw new Exception('Niepowiodło się podpisanie dokumentu, output:' . MK_EOL . $output);
+				if(empty($this->ksalias)){
+					throw new Exception('Nie podano aliasu. Użyj: setKeyStoreAlias();');
+				}
 			}
-			
-	        $this->clear($tempFileName);
-	        
-			return $output;
-			//return implode("", $output);
+			$cmd = EXEC_JAVA .
+				   "-Xmx512m -jar {$this->jarFilePath} -sign " .
+				   "{$this->type} '{$this->kspass}' '{$this->ksalias}' {$this->pkcs12} {$this->hsmslot} {$this->input} {$this->output} {$this->timeserver} {$this->reflist} 2>&1";
+
+			exec($cmd, $output, $returnCode);
+
+			if ($returnCode != '0'){
+				throw new Exception("Błąd polecenia: '{$cmd}' Wynik: {$output}");
+			}
+
+			if(!empty($this->output)){
+				$output = file_get_contents(str_replace('-out ', '', $this->output));
+			}
+
 		}
 		catch (Exception $e){
-			$this->errorMsg = $e->getMessage();
+			throw new Exception("Nie można podpisać pliku. " . (APP_DEBUG) ? MK_EOL . $e->getMessage() : '');
 		}
-		
-		return false;
+
+		return $output;
 	}
+
+	/**
+	 * Sprawdza czy podany typ jest prawidłowy
+	 *
+	 * @param String $val
+	 * @return bool
+	 */
+	private function isValidType($val){
+		return in_array($val, array('dsig', 'xades', 'xadest'));
+	}
+
+	/**
+	 * Tworzy tymczasowy plik i zwraca sciezke do niego
+	 *
+	 * @param string $fileName
+	 * @param string $content
+	 *
+	 * @return string - scieżka do utworzonego pliku
+	 */
+	private function createTempFile($fileName, $content){
+		$fileName = $this->tempDir . $fileName;
+		file_put_contents($fileName, $content);
+		$this->tempFileList[] = $fileName;
+		return $fileName;
+	}
+
+	/**
+	 * Ustawia typ/rodzaj podpisu
+	 *
+	 * @param String $val
+	 *
+	 * @throw Exception
+	 * @return MK_Crypt_Sign
+	 */
+	public function setType($val){
+		if(!$this->isValidType($val)){
+			throw new Exception('Podano nieprawidłowy typ podpisu');
+		}
+		$this->type = "-{$val}";
+		return $this;
+	}
+
+	/**
+	 * Ustawia hasło dostępu do miejsa w którym jest przechowywany klucz
+	 *
+	 * @param String $val
+	 * @return MK_Crypt_Sign
+	 */
+	public function setKeyStorePassword($val){
+		$this->kspass = "-kspass {$val}";
+		return $this;
+	}
+
+	/**
+	 * Ustawia nazwe klucza
+	 *
+	 * @param String $val
+	 * @return MK_Crypt_Sign
+	 */
+	public function setKeyStoreAlias($val){
+		$this->ksalias = "-ksalias {$val}";
+		return $this;
+	}
+
+	/**
+	 * Ustawia miejsce przetrzymywania podpisów na HSM, oraz ustawia nr slotu HSM w którym się znajduje
+	 *
+	 * @param integer $slot
+	 * @return MK_Crypt_Sign
+	 */
+	public function useHSM($slot){
+		$this->hsmslot = "-hsm -slot {$slot}";
+		$this->pkcs12 = '';
+		return $this;
+	}
+
+	/**
+	 * Ustawia żródło do pliku pksc12
+	 *
+	 * @param String $val
+	 * @return MK_Crypt_Sign
+	 */
+	public function usePKCS12($val){
+		$this->pkcs12 = "-pkcs12 {$val}";
+		$this->hsmslot = '';
+		return $this;
+	}
+
+	/**
+	 * Ustawia ardes do serwera znacznika czasu
+	 *
+	 * @param String $val (URL lub IP)
+	 * @return MK_Crypt_Sign
+	 */
+	public function useTimeStampServer($val){
+
+		if(!MK_Validator::urlOrIp($val)){
+			throw new Exception("Niepoprawny adres serwera znacznika czasu. {$val}");
+		}
+		$this->timeserver = "-tsaurl {$val}";
+		return $this;
+	}
+
+	/**
+	 * Ustawia ścieżke do pliku który chemy podpisać, lub tworzy odpowiedni plik na podstawie treści przekazanej do funkcji
+	 *
+	 * @param String $val - sciezka do pliku lub jego zawartość
+	 * @param bool $fromFile - czy z pliku czy z treści
+	 *
+	 * @throw Exception
+	 * @return MK_Crypt_Sign
+	 */
+	public function setInput($val, $fromFile=false){
+
+		if($fromFile === false){
+			$val = $this->createTempFile(uniqid() . '.tosig', $val);
+		}
+		else if(!file_exists($val)){
+			throw new Exception("Plik do podpisania ({$val}) nie istnieje.");
+		}
+
+		$this->input = "-in '{$val}'";
+
+		return $this;
+	}
+
+	/**
+	 * Ustawia scieżke do pliku w którym ma zostać zapisany podpis
+	 *
+	 * @param String $val
+	 * @return MK_Crypt_Sign
+	 */
+	public function setOutput($val){
+		$this->output = '-out ' . $this->tempDir . DIRECTORY_SEPARATOR . $val;
+		return $this;
+	}
+
+	/**
+	 * Ustawia liste plików dołączanych do podpisu
+	 *
+	 * @param Mixed $val - sciezka do pliku \ sciezki do plików oddzielone przecinkami \ scieżki do plików w tablicy \ nazwy plików w kluczach i treść w wartościach tablicy
+	 * @return MK_Crypt_Sign
+	 */
+	public function setRefList($val){
+		if(is_array($val)){
+			if(count(array_filter(array_keys($val), 'is_string')) == count($val)){
+				foreach ($val as $fileName => $content) {
+					$this->createTempFile($fileName, $content);
+				}
+				$val = array_flip($val);
+			}
+			$val = implode(",", $val);
+		}
+
+		$this->reflist = "-reflist {$val}";
+		return $this;
+	}
+
+	/**
+	 * Destruktor klasy ustawia właściwości na stan początkowy
+	 * Usuwa pliki stworzone na potrzebe podpisu
+	 *
+	 * @throw Exception
+	 */
+	public function __destruct(){
+
+		$this->type = '-dsig';
+		$this->kspass = '';
+		$this->ksalias = '';
+		$this->hsmslot = '';
+		$this->input = '';
+		$this->output = '';
+		$this->pkcs12 = '';
+		$this->timeserver = '';
+		$this->reflist = '';
+
+		try {
+			foreach($this->tempFileList as $fileName){
+				unlink($fileName);
+			}
+			unset($fileName);
+			rmdir($this->tempDir);
+		}
+		catch(Exception $e){
+			throw new Exception("Nie udało się usunąć plików tymczasowych podpisu");
+		}
+	}
+
 }

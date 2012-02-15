@@ -32,7 +32,6 @@ Abstract Class MK_Crypt_KeyCert {
         $this->jarFilePath .= DIRECTORY_SEPARATOR . 'Crypt' . DIRECTORY_SEPARATOR . 'KeyCert' . DIRECTORY_SEPARATOR . 'jar' . DIRECTORY_SEPARATOR . 'KeyCert.jar';
     }
 
-
     /**
      * Uruchamia jara z podanymi parametrami
      *
@@ -72,7 +71,7 @@ Abstract Class MK_Crypt_KeyCert {
      * @param $slot
      * @param $kspass
      * @param bool $json
-     * @return array|JsonString
+     * @return array|String
      */
      public function getList($slot, $kspass, $json=false){
          $output = null;
@@ -121,6 +120,7 @@ Abstract Class MK_Crypt_KeyCert {
 
 
     /**
+     * @todo to nie moze tak byc :)
      *
      * @param $name
      * @param $localization
