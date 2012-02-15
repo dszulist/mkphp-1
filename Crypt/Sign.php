@@ -290,6 +290,9 @@ class MK_Crypt_Sign {
 	 * @return MK_Crypt_Sign
 	 */
 	public function setRefList($val){
+		if(empty($val)){
+			return $this;
+		}
 		if(is_array($val)){
 			if(count(array_filter(array_keys($val), 'is_string')) == count($val)){
 				foreach ($val as $fileName => $content) {
