@@ -32,7 +32,7 @@ class MK_Crypt_Sign {
 	 * Alias w keystore
 	 * @var string
 	 */
-	private $ksalias = '';
+	private $keyalias = '';
 
 	/**
 	 * Port do HSM'a
@@ -118,13 +118,13 @@ class MK_Crypt_Sign {
 					throw new Exception('Nie podano hasła. Użyj: setKeyStorePassword();');
 				}
 
-				if(empty($this->ksalias)){
+				if(empty($this->keyalias)){
 					throw new Exception('Nie podano aliasu. Użyj: setKeyStoreAlias();');
 				}
 			}
 			$cmd = EXEC_JAVA .
-				   "-Xmx512m -jar {$this->jarFilePath} -sign " .
-				   "{$this->type} '{$this->kspass}' '{$this->ksalias}' {$this->pkcs12} {$this->hsmslot} {$this->input} {$this->output} {$this->timeserver} {$this->reflist} 2>&1";
+				   " -Xmx512m -jar {$this->jarFilePath} -sign " .
+				   "{$this->type} {$this->kspass} {$this->keyalias} {$this->pkcs12} {$this->hsmslot} {$this->input} {$this->output} {$this->timeserver} {$this->reflist} 2>&1";
 
 			exec($cmd, $output, $returnCode);
 
@@ -134,6 +134,9 @@ class MK_Crypt_Sign {
 
 			if(!empty($this->output)){
 				$output = file_get_contents(str_replace('-out ', '', $this->output));
+			}
+			else {
+				$output = file_get_contents(str_replace(array('-in ', "'"), '', $this->input));
 			}
 
 		}
@@ -163,7 +166,7 @@ class MK_Crypt_Sign {
 	 * @return string - scieżka do utworzonego pliku
 	 */
 	private function createTempFile($fileName, $content){
-		$fileName = $this->tempDir . $fileName;
+		$fileName = $this->tempDir . DIRECTORY_SEPARATOR . $fileName;
 		file_put_contents($fileName, $content);
 		$this->tempFileList[] = $fileName;
 		return $fileName;
@@ -203,7 +206,7 @@ class MK_Crypt_Sign {
 	 * @return MK_Crypt_Sign
 	 */
 	public function setKeyStoreAlias($val){
-		$this->ksalias = "-ksalias {$val}";
+		$this->keyalias = "-keyalias {$val}";
 		return $this;
 	}
 
@@ -311,7 +314,7 @@ class MK_Crypt_Sign {
 
 		$this->type = '-dsig';
 		$this->kspass = '';
-		$this->ksalias = '';
+		$this->keyalias = '';
 		$this->hsmslot = '';
 		$this->input = '';
 		$this->output = '';
