@@ -102,6 +102,7 @@ class MK_Crypt_Sign {
 	 * @return string
 	 */
 	public function run(){
+		
 		$output = null;
 
 		try {
@@ -127,7 +128,7 @@ class MK_Crypt_Sign {
 				   "{$this->type} {$this->kspass} {$this->keyalias} {$this->pkcs12} {$this->hsmslot} {$this->input} {$this->output} {$this->timeserver} {$this->reflist} 2>&1";
 
 			exec($cmd, $output, $returnCode);
-
+			
 			if ($returnCode != '0'){
 				throw new Exception("Błąd polecenia: '{$cmd}' Wynik: {$output}");
 			}
@@ -295,10 +296,11 @@ class MK_Crypt_Sign {
 		}
 		if(is_array($val)){
 			if(count(array_filter(array_keys($val), 'is_string')) == count($val)){
+				$tmp = array();
 				foreach ($val as $fileName => $content) {
-					$this->createTempFile($fileName, $content);
+					$tmp[] = $this->createTempFile($fileName, $content);
 				}
-				$val = array_flip($val);
+				$val = $tmp;				
 			}
 			$val = implode(",", $val);
 		}
