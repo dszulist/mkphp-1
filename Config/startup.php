@@ -15,7 +15,7 @@ validate_directory(MK_DIR_SESSION);
 
 spl_autoload_register('MK::_autoload');
 
-use_soap_error_handler(APP_DEBUG);
+use_soap_error_handler(MK_DEBUG);
 
 MK::checkApplicationState();
 
@@ -66,7 +66,7 @@ session_set_cookie_params(0, MK_COOKIES_PATH);
 session_start();
 
 // #Debuging
-define('MK_DEBUG_FIREPHP',	isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI ? true : false);
+define('MK_DEBUG_FIREPHP', (isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI));
 if (MK_DEBUG_FIREPHP) {
 	require (DIR_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
 	require (DIR_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');

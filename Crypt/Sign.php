@@ -106,7 +106,7 @@ class MK_Crypt_Sign {
 		$output = null;
 
 		try {
-			if(APP_DEBUG){
+			if(MK_DEBUG){
 				if(empty($this->pkcs12) && empty($this->hsmslot)){
 					throw new Exception('Nie podano magaznu certyfikacji. Użyj: usePkcs12(); | useHSM();');
 				}
@@ -142,7 +142,7 @@ class MK_Crypt_Sign {
 
 		}
 		catch (Exception $e){
-			throw new Exception("Nie można podpisać pliku. " . (APP_DEBUG) ? MK_EOL . $e->getMessage() : '');
+			throw new Exception("Nie można podpisać pliku. " . (MK_DEBUG) ? MK_EOL . $e->getMessage() : '');
 		}
 
 		return $output;
