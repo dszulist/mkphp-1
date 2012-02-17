@@ -52,12 +52,20 @@ if (MK_ERROR_JS_ENABLED) {
 	MK_Error::fromJavaScript();
 }
 
+// Nadpisanie php.ini
+ini_set("memory_limit", "512M");
+ini_set("max_execution_time", "600");
+ini_set("default_socket_timeout", "600");
+
 // #SessionHandling
 ini_set('session.entropy_length', 16);
 ini_set('session.entropy_file', '/dev/urandom');
 ini_set('session.hash_function', 1);
 ini_set('session.hash_bits_per_character', 6);
 ini_set('session.save_handler', SESSION_SAVE_HANDLER);
+ini_set('session.gc_maxlifetime', 0);
+ini_set('session.cookie_lifetime', 0);
+ini_set('session.cache_expire', 480);
 
 session_save_path(MK_DIR_SESSION);
 session_set_cookie_params(0, MK_COOKIES_PATH);
