@@ -11,7 +11,15 @@
  * @throws		MK_Db_Exception
  */
 class MK_Db_PDO {
+
+	/**
+	 * Komunikat pomyslnego zapisania danych
+	 */
 	CONST MESSAGE_SUCCESS_SAVE = 'Pomyślnie zapisano zmiany';
+
+	/**
+	 * Komunikat pomyslnego usuniecia rekordu
+	 */
 	CONST MESSAGE_SUCCESS_DELETE = 'Pomyślnie usunięto rekord';
 
 	/**
@@ -61,6 +69,9 @@ class MK_Db_PDO {
      */
     protected $_tableName;
 
+	/**
+	 * Konstruktor
+	 */
 	public function __construct() {
 		// Uruchomienie licznika uruchamiania zapytania SQL
 		$timeStart = microtime(true);
