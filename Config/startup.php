@@ -1,8 +1,17 @@
 <?php
+// Ustawienie uprawnień użytkownika/grupy "www-data"
+$posixInfo = posix_getpwnam('www-data');
+if ($posixInfo !== false) {
+    posix_setgid($posixInfo['gid']);
+    posix_setuid($posixInfo['uid']);
+}
 
 require_once ('defines.php');
 require_once (MK_PATH . DIRECTORY_SEPARATOR . 'functions.php');
 require_once (MK_PATH . DIRECTORY_SEPARATOR . 'MK.php');
+
+validate_directory(MK_DIR_TEMP);
+validate_directory(MK_DIR_SESSION);
 
 spl_autoload_register('MK::_autoload');
 
@@ -50,7 +59,7 @@ ini_set('session.hash_function', 1);
 ini_set('session.hash_bits_per_character', 6);
 ini_set('session.save_handler', SESSION_SAVE_HANDLER);
 
-session_save_path(DIR_SESSION);
+session_save_path(MK_DIR_SESSION);
 session_set_cookie_params(0, MK_COOKIES_PATH);
 
 // Uruchomienie sesji

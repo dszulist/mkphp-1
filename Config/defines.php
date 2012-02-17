@@ -4,6 +4,7 @@ define('MK_PATH',		realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIR
 
 // Ścieżki do katalogów wykorzystywanych przez bibliotekę
 define('MK_DIR_TEMP',		defined('DIR_TEMP') ? DIR_TEMP : realpath(sys_get_temp_dir()));
+define('MK_DIR_SESSION',	defined('DIR_SESSION') ? DIR_SESSION : realpath(session_save_path()));
 
 // Konfiguracja startowa aplikacji
 define('MK_LANG',			'pl');
