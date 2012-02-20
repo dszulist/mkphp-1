@@ -1,22 +1,15 @@
 <?php
-
-// włączenie na sztywno wyświetlania błędów
-header("Content-type: text/html; charset=utf-8");
-error_reporting (E_ALL);
-ini_set('display_errors','on');
-
 /**
- * MK_RemoteExec
+ * MK_Console_Remote
  *
  * Klasa do zdalnego uruchamiania poleceń za pomocą ssh na podstawie pliku CSV
  * (nie wymaga pełnego wykorzystania mkphp w projekcie)
  *
- * @category MK_RemoteExec
- * @package	MK_RemoteExec
+ * @category MK_Console_Remote
+ * @package	MK_Console_Remote
  * @author	dszulist
  */
-class RemoteExec
-{
+class MK_Console_Remote {
 
     /**
      * Tablica z $this->SourceCsvFile
@@ -66,13 +59,18 @@ class RemoteExec
      */
     private $now;
 
-    public function __construct()
-    {
-        // uruchamianie tylko z linii poleceń
-        // (tylko z linii poleceń skrypt można skutecznie zatrzymać przez CTRL+C)
-        if (php_sapi_name() !== 'cli'){
+	/**
+	 * Uruchamianie tylko z linii poleceń
+	 * (tylko z linii poleceń skrypt można skutecznie zatrzymać przez CTRL+C)
+	 */
+    public function __construct(){
+
+        if (!MK_IS_CLI){
             die('CMD Line Only');
         }
+		// włączenie na sztywno wyświetlania błędów
+		header("Content-type: text/html; charset=utf-8");
+
         $this->now = date('Y-m-d H:i:s');
     }
 
@@ -240,12 +238,12 @@ class RemoteExec
 
     /**
      * Uruchomienie poleceń na zdalnych serwerach
+     *
      * @param bool $printOutput (wypisanie wyniku zdalnych poleceń)
      * @param bool $exitOnRemoteError (zatrzymanie wykonywania poleceń jeśli wystąpi błąd na 1 serwerze)
      */
-    public function exec($printOutput, $exitOnRemoteError)
-    {
-        try{
+    public function exec($printOutput, $exitOnRemoteError) {
+        try {
 
             // walidacja ustawionej nazwy hosta, usera i hasła
             // (walidacja powinna być przed uruchomieniem całości)
