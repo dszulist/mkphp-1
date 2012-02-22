@@ -83,7 +83,6 @@ class MK_XML_Convert {
         while($xml->read()) {
             switch ($xml->nodeType) {
                 case XMLReader::END_ELEMENT:
-                    //var_dump($tree);
                     return $tree;
                 case XMLReader::ELEMENT:
                     if($xml->isEmptyElement) {
