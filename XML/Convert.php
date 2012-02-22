@@ -83,6 +83,7 @@ class MK_XML_Convert {
         while($xml->read()) {
             switch ($xml->nodeType) {
                 case XMLReader::END_ELEMENT:
+                    //var_dump($tree);
                     return $tree;
                 case XMLReader::ELEMENT:
                     if($xml->isEmptyElement) {
@@ -95,7 +96,7 @@ class MK_XML_Convert {
 
                         //UWAGA MYK!!!
                         //TODO: PRZEMYSLEC PROBLEM TWORZENIA KLAS DLA TYPOW OPISANYCH W XSD (nzawy zastrzezone np. return)
-                        if((is_string($elem) || is_numeric($elem))){
+                        if((is_string($elem) || is_numeric($elem) || is_null($elem))){
                             $tree[$xml->name] = $elem;
                         }
                         else {
@@ -106,7 +107,20 @@ class MK_XML_Convert {
                             if ($className === 'payments'){
                                 $className = 'frontOfficeEPackagePayment';
                             }
-                            $tree[$xml->name] = new $className($elem);
+                            $tmp = new $className($elem);
+                            if(isset($tree[$xml->name])){
+                                if (is_array($tree[$xml->name])){
+                                    $tree[$xml->name][] = $tmp;
+                                }
+                                else {
+                                    $tree[$xml->name] = array($tree[$xml->name], $tmp);
+
+                                }
+                            }
+                            else {
+                                $tree[$xml->name] = $tmp;
+                            }
+
                         }
 
 
