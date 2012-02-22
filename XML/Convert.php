@@ -103,6 +103,9 @@ class MK_XML_Convert {
                             if ($className === 'return') {
                                 $className = "backOfficeSyncResult";
                             }
+                            if ($className === 'payments'){
+                                $className = 'frontOfficeEPackagePayment';
+                            }
                             $tree[$xml->name] = new $className($elem);
                         }
 
@@ -146,7 +149,7 @@ class MK_XML_Convert {
     /**
      * Zwraca przekazany obiekt w formie XML
      *
-     * @param $object
+     * @param stdClass $object
      * @param string $rootNode
      *
      * @return mixed
