@@ -90,7 +90,24 @@ class MK_XML_Convert {
                     }
                     else {
                         $elem = $this->xml2obj($xml);
-                        $tree[$xml->name] = (is_string($elem) || is_numeric($elem)) ? $elem : new $xml->name($elem);
+                        //przed mykiem
+                        //$tree[$xml->name] = (is_string($elem) || is_numeric($elem)) ? $elem : new $xml->name($elem);
+
+                        //UWAGA MYK!!!
+                        //TODO: PRZEMYSLEC PROBLEM TWORZENIA KLAS DLA TYPOW OPISANYCH W XSD (nzawy zastrzezone np. return)
+                        if((is_string($elem) || is_numeric($elem))){
+                            $tree[$xml->name] = $elem;
+                        }
+                        else {
+                            $className = $xml->name;
+                            if ($className === 'return') {
+                                $className = "backOfficeSyncResult";
+                            }
+                            $tree[$xml->name] = new $className($elem);
+                        }
+
+
+                        //KONIEC MYKU
                     }
                     break;
                 case XMLReader::TEXT:
@@ -129,7 +146,7 @@ class MK_XML_Convert {
     /**
      * Zwraca przekazany obiekt w formie XML
      *
-     * @param stdClass $object
+     * @param $object
      * @param string $rootNode
      *
      * @return mixed
