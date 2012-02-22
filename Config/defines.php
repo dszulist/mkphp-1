@@ -16,7 +16,7 @@ define('MK_HTML_HEADER',	'Content-Type: text/html; charset=utf-8');
 define('MK_COOKIES_PATH',	dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
 define('MK_IS_CLI',			defined('STDIN'));
 define('MK_CHMOD_DIR',		0775);
-define('MK_EOL',            (!empty($_SERVER['SERVER_SOFTWARE'])) ? "<br/>" : PHP_EOL);
+define('MK_EOL',            (!empty($_SERVER['SERVER_SOFTWARE'])) ? '<br/>' : PHP_EOL);
 
 // Konfigruacja zgłaszania i zapisywania błędów
 define('MK_DEBUG',		        defined('APP_DEBUG') ? APP_DEBUG : false);
