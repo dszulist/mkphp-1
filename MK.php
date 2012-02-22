@@ -16,9 +16,8 @@ class MK {
 	 * @return Boolean
 	 */
 	public static function _autoload($className) {
-		if (substr($className, 0, 3) == 'MK_') {
-			$file = substr(MK_PATH, 0, -3) . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-			include $file;
+		if (substr($className, 0, 3) == 'MK_') { //todo tu jest błąd bo nie załaduje MK::someMethod(); :)
+			include (substr(MK_PATH, 0, -3) . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php');
 			return true;
 		}
 		return false;
