@@ -72,7 +72,7 @@ class MK_XML_Convert {
 	}
 
     /**
-     * Parsuje XML'a na Obiekt
+     * Parsuje XML'a na Objekt
      *
      * @param XMLReader $xml
      * @return array|null|string
