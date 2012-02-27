@@ -86,6 +86,25 @@ function validate_directory($dirPath) {
 }
 
 /**
+ * Blokuje dostęp do katalogu za pomocą pliku .hteccess.
+ *
+ * Sprawdza czy istnieje plik .htaccess w podanym katalogu jeżeli nie to :
+ * Sprawdza czy istnieje podany katalog jeżeli nie to tworzy go i tworzy w nim plik .htaccess
+ * Jeżeli utworzy plik htacces zwróci true, w przeciwnym wypadku false
+ *
+ * @param string $dirPath
+ * @return bool
+ */
+function block_directory_htaccess($dirPath){
+	if(!file_exists("{$dirPath}.htaccess")){
+		validate_directory($dirPath);
+	    file_put_contents("{$dirPath}.htaccess", "Order Deny,Allow " . PHP_EOL . "Deny from all " . PHP_EOL . "Allow from 127.0.0.1 " . PHP_EOL);
+		return true;
+	}
+	return false;
+}
+
+/**
  * Podgląd danych w wybranej metodzie print_r/var_dump
  *
  * @param mixed $data - dane do wyświetlenia, może być string/array/object
