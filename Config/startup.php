@@ -12,6 +12,7 @@ require_once (MK_PATH . DIRECTORY_SEPARATOR . 'MK.php');
 
 validate_directory(MK_DIR_TEMP);
 validate_directory(MK_DIR_SESSION);
+block_directory_htaccess(MK_DIR_SESSION);
 
 spl_autoload_register('MK::_autoload');
 
