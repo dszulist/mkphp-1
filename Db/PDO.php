@@ -47,27 +47,27 @@ class MK_Db_PDO {
 	 */
 	private $_sqlIgnoreClass = array('MK_Db_PDO');
 
-    /**
-     * @var String
-     */
-    protected $_debugFileName;
+	/**
+	 * @var String
+	 */
+	protected $_debugFileName;
 
-    /**
-     * @var Array
-     */
-    protected $_tableColumns;
+	/**
+	 * @var Array
+	 */
+	protected $_tableColumns;
 
-    /**
-     * @var Array
-     */
-    protected $fieldsCanBeSearched;
+	/**
+	 * @var Array
+	 */
+	protected $fieldsCanBeSearched;
 
-    /**
-     * Nazwa tabeli modelu bazy danych
-     *
-     * @var String
-     */
-    protected $_tableName;
+	/**
+	 * Nazwa tabeli modelu bazy danych
+	 *
+	 * @var String
+	 */
+	protected $_tableName;
 
 	/**
 	 * Konstruktor
@@ -83,7 +83,7 @@ class MK_Db_PDO {
 		$execTime = microtime(true) - $timeStart;
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("MK_Db_PDO_Singleton::getInstance()", '', array(), $execTime);
 		}
 	}
@@ -121,7 +121,7 @@ class MK_Db_PDO {
 	 * Zwracany ilość zmienionych rekordów.
 	 *
 	 * @param String	 $sql - zapytanie sql'owe
-	 * @param Array	 $params (default: array()) - parametry zapytania
+	 * @param Array      $params (default: array()) - parametry zapytania
 	 *
 	 * @throws MK_Db_Exception
 	 * @return integer
@@ -135,15 +135,15 @@ class MK_Db_PDO {
 
 		// Jeżeli zostały podany parametry, to wykonujemy zapytanie przy pomocy prepare/execute
 		// W przeciwnym wypadku uruchiamy zapytanie poprzez exec(), które umożliwia wykonanie wielu zapytań SQL
-		if (count($params) > 0) {
+		if(count($params) > 0) {
 			$pdoObj = $this->db->prepare($sql);
-			if ($pdoObj->execute($params) === false) {
+			if($pdoObj->execute($params) === false) {
 				throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 			}
 			$affectedRows = $pdoObj->rowCount();
 		} else {
 			$results = $this->db->exec($sql);
-			if ($results === false) {
+			if($results === false) {
 				throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 			}
 			$affectedRows = $results;
@@ -153,7 +153,7 @@ class MK_Db_PDO {
 		$execTime = microtime(true) - $timeStart;
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("DbExecute", $sql, $params, $execTime);
 		}
 
@@ -168,7 +168,7 @@ class MK_Db_PDO {
 	 * Odczytanie tylko pojedynczej wartości (pierwszej kolumny w zapytaniu).
 	 * Brany jest pod uwagę tylko jeden rekord, a zwracana wartość typu string.
 	 *
-	 * @param String $sql - zapytanie sql'owe
+	 * @param String    $sql - zapytanie sql'owe
 	 * @param Array	 $params (default: array()) - parametry zapytania
 	 *
 	 * @throws MK_Db_Exception
@@ -186,7 +186,7 @@ class MK_Db_PDO {
 		$timeStart = microtime(true);
 
 		// Wykonanie zapytania SQL
-		if ($pdoObj->execute($params) === false) {
+		if($pdoObj->execute($params) === false) {
 			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 
@@ -195,7 +195,7 @@ class MK_Db_PDO {
 
 		// Jeżeli odpowiedź będzie false, to powinien zwrócić pusty string
 		// W aplikacji będziemy się spodziewać pustego stringa, a nie 'false'
-		if ($resString === false) {
+		if($resString === false) {
 			$resString = '';
 		}
 
@@ -203,7 +203,7 @@ class MK_Db_PDO {
 		$execTime = microtime(true) - $timeStart;
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("DbGetOne", $sql, $params, $execTime);
 		}
 
@@ -218,7 +218,7 @@ class MK_Db_PDO {
 	 * Odczytane dane są w postaci tablicy jednowymiarowej, indeksowanej od zera.
 	 *
 	 * @param String	 $sql
-	 * @param Array	 $params (default: array())
+	 * @param Array      $params (default: array())
 	 *
 	 * @throws MK_Db_Exception
 	 * @return array
@@ -235,7 +235,7 @@ class MK_Db_PDO {
 		$timeStart = microtime(true);
 
 		// Wykonanie zapytania SQL
-		if ($pdoObj->execute($params) === false) {
+		if($pdoObj->execute($params) === false) {
 			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 		// Odczytanie odpowiedzi (array)
@@ -244,7 +244,7 @@ class MK_Db_PDO {
 		// Jeżeli odpowiedź będzie false, to powinien zwrócić pustą tablicę
 		// W aplikacji będziemy się spodziewać pustej tablicy, a nie 'false'
 		// WARNING: count(false) == 1 [co sugerowałoby, że jest to tablica!]
-		if ($resArray === false) {
+		if($resArray === false) {
 			$resArray = array();
 		}
 
@@ -252,7 +252,7 @@ class MK_Db_PDO {
 		$execTime = microtime(true) - $timeStart;
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("DbGetCol", $sql, $params, $execTime);
 		}
 
@@ -266,7 +266,7 @@ class MK_Db_PDO {
 	 * Odczytanie tylko jednego wiersza z podanego zapytania SQL.
 	 *
 	 * @param String	 $sql - zapytanie sql'owe
-	 * @param Array	 $params (default: array()) - parametry zapytania
+	 * @param Array      $params (default: array()) - parametry zapytania
 	 *
 	 * @throws MK_Db_Exception
 	 * @return array
@@ -283,7 +283,7 @@ class MK_Db_PDO {
 		$timeStart = microtime(true);
 
 		// Wykonanie zapytania SQL
-		if ($pdoObj->execute($params) === false) {
+		if($pdoObj->execute($params) === false) {
 			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 		// Odczytanie odpowiedzi (array)
@@ -292,7 +292,7 @@ class MK_Db_PDO {
 		// Jeżeli odpowiedź będzie false, to powinien zwrócić pustą tablicę
 		// W aplikacji będziemy się spodziewać pustej tablicy, a nie 'false'
 		// WARNING: count(false) == 1 [co sugerowałoby, że jest to tablica!]
-		if ($resArray === false) {
+		if($resArray === false) {
 			$resArray = array();
 		}
 
@@ -300,7 +300,7 @@ class MK_Db_PDO {
 		$execTime = microtime(true) - $timeStart;
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("DbGetRow", $sql, $params, $execTime);
 		}
 
@@ -316,8 +316,8 @@ class MK_Db_PDO {
 	 * której kluczem (indeksem) będzie wartość podanej kolumny, np. sid
 	 *
 	 * @param String	 $sql - zapytanie sql'owe
-	 * @param Array	 $params (default: array()) - parametry zapytania
-	 * @param String $columnAsKey (default:'') - nazwa kolumny jako klucz
+	 * @param Array      $params (default: array()) - parametry zapytania
+	 * @param String     $columnAsKey (default:'') - nazwa kolumny jako klucz
 	 *
 	 * @throws MK_Db_Exception
 	 * @return array
@@ -334,15 +334,15 @@ class MK_Db_PDO {
 		$timeStart = microtime(true);
 
 		// Wykonanie zapytania SQL
-		if ($pdoObj->execute($params) === false) {
+		if($pdoObj->execute($params) === false) {
 			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 
 		// Odczytanie odpowiedzi (array)
 		$resArray = array();
-		if (strlen($columnAsKey) > 0) {
+		if(strlen($columnAsKey) > 0) {
 			$sqlDumpName = "DbGetRows['{$columnAsKey}']";
-			while ($row = $pdoObj->fetch(PDO::FETCH_ASSOC)) {
+			while($row = $pdoObj->fetch(PDO::FETCH_ASSOC)) {
 				$resArray[$row[$columnAsKey]] = $row;
 			}
 		} else {
@@ -353,7 +353,7 @@ class MK_Db_PDO {
 		// Jeżeli odpowiedź będzie false, to powinien zwrócić pustą tablicę
 		// W aplikacji będziemy się spodziewać pustej tablicy, a nie 'false'
 		// WARNING: count(false) == 1 [co sugerowałoby, że jest to tablica!]
-		if ($resArray === false) {
+		if($resArray === false) {
 			$resArray = array();
 		}
 
@@ -361,7 +361,7 @@ class MK_Db_PDO {
 		$execTime = microtime(true) - $timeStart;
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump($sqlDumpName, $sql, $params, $execTime);
 		}
 
@@ -369,6 +369,21 @@ class MK_Db_PDO {
 		$this->_debugToFile($sql, $params);
 
 		return $resArray;
+	}
+
+	/**
+	 * Sprawdzenie ilości powiązań dla podanego klucza podstawowego w schemacie "public".
+	 * Jako wynik zwracana ilość rekordów w tabelach powiązanych w schemacie "public" dla wartości kolumny równej "pkey_value".
+	 *
+	 * @param $primaryKeyName
+	 * @param $primaryKeyValue
+	 *
+	 * @return int
+	 */
+	protected function countKeyUsage($primaryKeyName, $primaryKeyValue) {
+		// Przygotowanie zapytania SQL
+		$sql = "SELECT mk_count_pkey('{$primaryKeyName}', {$primaryKeyValue})";
+		return (int) $this->GetOne($sql);
 	}
 
 	/**
@@ -387,7 +402,7 @@ class MK_Db_PDO {
 		$pdoObj->setFetchMode(PDO::FETCH_ASSOC);
 
 		// Wykonanie zapytania SQL
-		if ($pdoObj->execute() === false) {
+		if($pdoObj->execute() === false) {
 			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
 		}
 
@@ -397,12 +412,12 @@ class MK_Db_PDO {
 		// Jeżeli odpowiedź będzie false, to operacja powinna być wstrzymana,
 		// ponieważ wartość sekwencji jest nieprawidłowa przez co dane zostałyby
 		// zapisane w bazie danych w nieodpowiedni sposób.
-		if ($resValue === false) {
+		if($resValue === false) {
 			throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_SEQUENCE);
 		}
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("setNextVal", $sql);
 		}
 
@@ -429,15 +444,15 @@ class MK_Db_PDO {
 	 * 4. Wywołanie metody CompleteTrans() śledzi błędy, więc jeśli wystąpił jakiś błąd SQL
 	 * lub została wywołana wcześniej metoda FailTrans(), to zostanie uruchomiony ROLLBACK.
 	 *
-     * @return bool
-     */
+	 * @return bool
+	 */
 	public function transStart() {
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("transStart");
 		}
 
-		if (MK_Db_PDO_Singleton::transCount() > 0) {
+		if(MK_Db_PDO_Singleton::transCount() > 0) {
 			MK_Db_PDO_Singleton::transCount(1);
 			return true;
 		}
@@ -448,7 +463,7 @@ class MK_Db_PDO {
 		 */
 		MK_Db_PDO_Singleton::transOk(false);
 		$transOk = $this->db->beginTransaction();
-		if (!$transOk) {
+		if(!$transOk) {
 			throw new MK_Db_Exception('Baza danych nie obsługuje transakcji');
 		}
 
@@ -458,39 +473,39 @@ class MK_Db_PDO {
 		return $transOk;
 	}
 
-    /**
-     * Zatwierdzenie SQL-i głównego bloku transakcji, gdy $this->transOff == 1
-     * oraz gdy nie wystąpiły żadne błędy SQL-owe.
-     *
-     * @param boolean $commit
-     *   true  - monitoruje błędy SQL,
-     *   false - wymuszenie odrzucenia wszystkich SQL-i w transakcji
-     *
-     * @return bool
-     */
+	/**
+	 * Zatwierdzenie SQL-i głównego bloku transakcji, gdy $this->transOff == 1
+	 * oraz gdy nie wystąpiły żadne błędy SQL-owe.
+	 *
+	 * @param boolean $commit
+	 *   true  - monitoruje błędy SQL,
+	 *   false - wymuszenie odrzucenia wszystkich SQL-i w transakcji
+	 *
+	 * @return bool
+	 */
 	public function transComplete($commit = true) {
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("transComplete(" . ($commit ? 'true' : 'false') . ")");
 		}
 
 		$_transCount = MK_Db_PDO_Singleton::transCount();
 
-		if ($_transCount > 1) {
+		if($_transCount > 1) {
 			// Transakcja jest w innej transakcji, zamykanie bloku transakcji
 			MK_Db_PDO_Singleton::transCount(-1);
 			return true;
-		} else if ($_transCount == 1) {
+		} else if($_transCount == 1) {
 			// Jeśli transakcja nie została przerwana, to należy zamknąć logi
-			if ($commit == true) {
-                if(class_exists('TableLogsDb')){
-                    $tableLogsDb = new TableLogsDb();
-                    $tableLogsDb->closeConnectionForTableLog();
-                }
+			if($commit == true) {
+				if(class_exists('TableLogsDb')) {
+					$tableLogsDb = new TableLogsDb();
+					$tableLogsDb->closeConnectionForTableLog();
+				}
 			}
 			// Transakcja jest do zamknięcia
 			MK_Db_PDO_Singleton::transCount(0, true);
-		} else if ($_transCount == 0) {
+		} else if($_transCount == 0) {
 			// Transakcja nie była uruchomiona
 			return false;
 		} else {
@@ -502,8 +517,8 @@ class MK_Db_PDO {
 		 * true  - COMMIT
 		 * false - ROLLBACK
 		 */
-		if ($commit && MK_Db_PDO_Singleton::transOk()) {
-			if (!$this->db->commit()) {
+		if($commit && MK_Db_PDO_Singleton::transOk()) {
+			if(!$this->db->commit()) {
 				MK_Db_PDO_Singleton::transOk(false);
 				throw new MK_Db_Exception('Transakcja nie powiodła się');
 			}
@@ -530,25 +545,26 @@ class MK_Db_PDO {
 	 * Zapisywanie zapytań SQL do pliku /temp/errors/sql-debug.log i upload do logs.madkom.pl (od Klienta)
 	 *
 	 * @param boolean $debug (default: true)
-	 * @param string $fileName (default:'sql-debug')
+	 * @param string  $fileName (default:'sql-debug')
 	 */
-	public function debug($debug=true, $fileName='sql-debug') {
+	public function debug($debug = true, $fileName = 'sql-debug') {
 		MK_Db_PDO_Singleton::debug($debug);
-		if ($debug === true) {
+		if($debug === true) {
 			$this->_debugFileName = $fileName;
 		}
 	}
 
-    /**
-     * Jeżeli debugowanie jest włączone, to zapisuje wykonane zapytanie SQL do pliku *.log
-     *
-     * @param $sql
-     * @param $params (default:array())
-     * @internal param bool $debug (default: true)
-     */
-	private function _debugToFile($sql, $params=array()) {
-		if (MK_Db_PDO_Singleton::debug() === true) {
-			if (is_null($this->_mkLogs)) {
+	/**
+	 * Jeżeli debugowanie jest włączone, to zapisuje wykonane zapytanie SQL do pliku *.log
+	 *
+	 * @param $sql
+	 * @param $params (default:array())
+	 *
+	 * @internal param bool $debug (default: true)
+	 */
+	private function _debugToFile($sql, $params = array()) {
+		if(MK_Db_PDO_Singleton::debug() === true) {
+			if(is_null($this->_mkLogs)) {
 				$this->_mkLogs = new MK_Logs(APP_PATH);
 			}
 			$devMsg = $this->_prepareFullQuery($sql, $params);
@@ -556,24 +572,24 @@ class MK_Db_PDO {
 		}
 	}
 
-    /**
-     * Metodę SelectLimit. Jeżeli podamy id klucza i nazwę, to pobiera numer strony na której znajduje się rekord.
-     *
-     * @param String     $sql - zapytanie sql'owe
-     * @param Array     $params (default: array()) - parametry zapytania
-     * @param String     $primaryName (default: null) - nazwa klucza
-     * @param int|\String $primaryVal (default: 0) - wartość klucza
-     * @param bool|int $start (default: false) - start
-     * @param bool|int $limit (default: false) - limit
-     *
-     * @throws MK_Db_Exception
-     * @return Array
-     *  Dodatkowo:
-     *   $res[start] - początek pobieranych wierszy
-     *   $res[limit] - ilość wierszy na stronę
-     *   $res[totalCount] - maksymalna ilość wierszy
-     *   $res[results] - wynik zapytania
-     */
+	/**
+	 * Metodę SelectLimit. Jeżeli podamy id klucza i nazwę, to pobiera numer strony na której znajduje się rekord.
+	 *
+	 * @param String      $sql - zapytanie sql'owe
+	 * @param Array       $params (default: array()) - parametry zapytania
+	 * @param String      $primaryName (default: null) - nazwa klucza
+	 * @param int|\String $primaryVal (default: 0) - wartość klucza
+	 * @param bool|int    $start (default: false) - start
+	 * @param bool|int    $limit (default: false) - limit
+	 *
+	 * @throws MK_Db_Exception
+	 * @return Array
+	 *  Dodatkowo:
+	 *   $res[start] - początek pobieranych wierszy
+	 *   $res[limit] - ilość wierszy na stronę
+	 *   $res[totalCount] - maksymalna ilość wierszy
+	 *   $res[results] - wynik zapytania
+	 */
 	protected function SelectLimit($sql, array $params = array(), $primaryName = null, $primaryVal = 0, $start = false, $limit = false) {
 		$limit = ($limit === false) ? MK_Registry::get('limit') : $limit;
 		$start = ($start === false) ? MK_Registry::get('start') : $start;
@@ -582,22 +598,22 @@ class MK_Db_PDO {
 		$timeStart = microtime(true);
 		$resCount = $this->_getCount($sql, $params);
 		//jeżeli interesuje nas, na której stronie znajduje się rekord
-		if ($primaryName !== null && $primaryVal > 0) {
+		if($primaryName !== null && $primaryVal > 0) {
 			$preparedSqlToGetRowNumber = self::_replaceSelectColumnsFromQuery($sql, $primaryName);
 			$countExclamation = substr_count($preparedSqlToGetRowNumber, '?');
 			$countParams = array_slice($params, -$countExclamation);
 
 			$preparedSqlToGetRowNumber = 'SELECT row_number'
-					. ' FROM ( ' . $preparedSqlToGetRowNumber . ' ) oldtable'
-					. ' CROSS JOIN ('
-					. ' SELECT ARRAY( ' . $preparedSqlToGetRowNumber . ' ) AS id) AS oldids'
-					. ' CROSS JOIN generate_series(1, ' . $resCount . ') AS row_number'
-					. ' WHERE oldids.id[row_number] = oldtable.key_column AND oldtable.key_column = ?'
-					. ' LIMIT 1';
+				. ' FROM ( ' . $preparedSqlToGetRowNumber . ' ) oldtable'
+				. ' CROSS JOIN ('
+				. ' SELECT ARRAY( ' . $preparedSqlToGetRowNumber . ' ) AS id) AS oldids'
+				. ' CROSS JOIN generate_series(1, ' . $resCount . ') AS row_number'
+				. ' WHERE oldids.id[row_number] = oldtable.key_column AND oldtable.key_column = ?'
+				. ' LIMIT 1';
 
 			$rowNumber = (int) $this->GetOne($preparedSqlToGetRowNumber, array_merge($countParams, $countParams, array($primaryVal)));
 
-			$start = ( ceil($rowNumber / $limit) - 1 ) * $limit;
+			$start = (ceil($rowNumber / $limit) - 1) * $limit;
 		}
 
 		$resArray = $this->_selectLimit($sql, $limit, $start, $params);
@@ -605,7 +621,7 @@ class MK_Db_PDO {
 		$execTime = microtime(true) - $timeStart;
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
-		if (MK_DEBUG_FIREPHP) {
+		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("DbSelectLimit", $sql, $params, $execTime);
 		}
 
@@ -620,60 +636,60 @@ class MK_Db_PDO {
 		);
 	}
 
-    /**
-     * Pomocnicza funkcja do SelectLimit
-     *
-     * @param type $sql
-     * @param type $nrows (default: -1)
-     * @param type $offset (default: -1)
-     * @param bool|\type $inputarr (default: false)
-     *
-     * @return array
-     */
-	private function _selectLimit($sql, $nrows=-1, $offset=-1, $inputarr=false) {
+	/**
+	 * Pomocnicza funkcja do SelectLimit
+	 *
+	 * @param string        $sql
+	 * @param integer       $nrows (default: -1)
+	 * @param integer       $offset (default: -1)
+	 * @param bool|array    $inputarr (default: false)
+	 *
+	 * @return array
+	 */
+	private function _selectLimit($sql, $nrows = -1, $offset = -1, $inputarr = false) {
 		$offsetStr = ($offset >= 0) ? " OFFSET " . ((integer) $offset) : '';
 		$limitStr = ($nrows >= 0) ? " LIMIT " . ((integer) $nrows) : '';
 		return $this->GetRows($sql . "{$limitStr}{$offsetStr}", $inputarr);
 	}
 
-    /**
-     * Zlicza wiersze na podstawie podanego zapytania i parametrów
-     *
-     * @param type $sql
-     * @param array|\type $params
-     *
-     * @return integer
-     */
+	/**
+	 * Zlicza wiersze na podstawie podanego zapytania i parametrów
+	 *
+	 * @param string        $sql
+	 * @param array         $params
+	 *
+	 * @return integer
+	 */
 	private function _getCount($sql, array $params) {
 		$qryRecs = 0;
 		$rewritesql = $this->_stripOrderBy($sql);
 		$rewritesql = "SELECT COUNT(*) FROM ({$rewritesql}) _MK_ALIAS_";
 
-		if (isset($rewritesql) && $rewritesql != $sql) {
-			if (preg_match('/\sLIMIT\s+[0-9]+/i', $sql, $limitarr)) {
+		if(isset($rewritesql) && $rewritesql != $sql) {
+			if(preg_match('/\sLIMIT\s+[0-9]+/i', $sql, $limitarr)) {
 				$rewritesql .= $limitarr[0];
 			}
 
 			$qryRecs = $this->GetOne($rewritesql, $params);
 
-			if ($qryRecs !== false) {
+			if($qryRecs !== false) {
 				return $qryRecs;
 			}
 		}
 
 		// strip off unneeded ORDER BY if no UNION
-		if (preg_match('/\s*UNION\s*/is', $sql)) {
+		if(preg_match('/\s*UNION\s*/is', $sql)) {
 			$rewritesql = $sql;
 		} else {
 			$rewritesql = $this->_stripOrderBy($sql);
 		}
 
-		if (preg_match('/\sLIMIT\s+[0-9]+/i', $sql, $limitarr)) {
+		if(preg_match('/\sLIMIT\s+[0-9]+/i', $sql, $limitarr)) {
 			$rewritesql .= $limitarr[0];
 		}
 
 		$resValue = $this->GetOne($rewritesql, $params);
-		if (!$resValue) {
+		if(!$resValue) {
 			$resValue = $this->GetOne($sql, $params);
 		}
 
@@ -685,21 +701,22 @@ class MK_Db_PDO {
 	 * Skopiowane z Ado
 	 *
 	 * @param string $sql
+	 *
 	 * @return string
 	 */
 	private function _stripOrderBy($sql) {
 		preg_match('/(\sORDER\s+BY\s[^)]*)/is', $sql, $arr);
-		if ($arr) {
-			if (strpos($arr[0], '(') !== false) {
+		if($arr) {
+			if(strpos($arr[0], '(') !== false) {
 				$at = strpos($sql, $arr[0]);
 				$cntin = 0;
-				for ($i = $at, $max = strlen($sql); $i < $max; $i++) {
+				for($i = $at, $max = strlen($sql); $i < $max; $i++) {
 					$ch = $sql[$i];
-					if ($ch == '(') {
+					if($ch == '(') {
 						$cntin += 1;
-					} elseif ($ch == ')') {
+					} elseif($ch == ')') {
 						$cntin -= 1;
-						if ($cntin < 0) {
+						if($cntin < 0) {
 							break;
 						}
 					}
@@ -716,38 +733,38 @@ class MK_Db_PDO {
 	 *
 	 * Tworzy łańcuch dla zapytania typu INSERT
 	 *
-	 * @param Array	 $data - tablica wartości które mają być włożone do wiersza, klucze muszą mieć takie same nazwy jak pola w tabeli
+	 * @param Array      $data - tablica wartości które mają być włożone do wiersza, klucze muszą mieć takie same nazwy jak pola w tabeli
 	 * @param String	 $table - nazwa tabeli
 	 *
 	 * @return String
 	 */
 	protected function createInsert(array $data, $table) {
 		return 'INSERT INTO ' . $table . '(' . implode(', ', array_keys($data)) . ')'
-				. ' VALUES(' . self::arrayToQueryIn($data) . ')';
+			. ' VALUES(' . self::arrayToQueryIn($data) . ')';
 	}
 
 	/**
 	 * Tworzy łańcuch dla zapytania typu UPDATE
 	 *
-	 * @param Array	 $data - tablica wartości które mają być włożone do wiersza, klucze muszą mieć takie same nazwy jak pola w tabeli
+	 * @param Array      $data - tablica wartości które mają być włożone do wiersza, klucze muszą mieć takie same nazwy jak pola w tabeli
 	 * @param String	 $table - nazwa tabeli
-	 * @param Array	 $where - tablica z wartościamy na podstawie których maja być aktualizowane rekordy, klucze muszą mieć takie same nazwy jak pola w tabeli
+	 * @param Array      $where - tablica z wartościamy na podstawie których maja być aktualizowane rekordy, klucze muszą mieć takie same nazwy jak pola w tabeli
 	 *
 	 * @return String
 	 */
 	protected function createUpdate(array $data, $table, array $where) {
 		$sql = 'UPDATE ' . $table . ' SET ';
 
-		foreach ($data as $key => $value) {
+		foreach($data as $key => $value) {
 			$sql .= ' ' . $key . ' = ?,';
 		}
 
 		$sql = substr($sql, 0, -1);
 
-		if (is_array($where) && count($where) > 0) {
+		if(is_array($where) && count($where) > 0) {
 			$sql .= ' WHERE ';
 
-			foreach ($where as $key => $val) {
+			foreach($where as $key => $val) {
 				$sql .= ' ' . $key . ' = ? AND';
 			}
 
@@ -760,22 +777,22 @@ class MK_Db_PDO {
 	/**
 	 * Metoda przygotowująca warunki wyszukiwania
 	 *
-	 * @param mixed $fields
-	 * @param string $query
-	 * @param string $logicalExpression
-	 * @param array &$whereSql
-	 * @param array &$whereValue
+	 * @param mixed   $fields
+	 * @param string  $query
+	 * @param string  $logicalExpression
+	 * @param array   &$whereSql
+	 * @param array   &$whereValue
 	 * @param boolean $fullText (default: false)
 	 */
 	protected function prepareQueryWhere($fields, $query, $logicalExpression, &$whereSql, &$whereValue, $fullText = false) {
-		if (!empty($fields) && $query != '') {
+		if(!empty($fields) && $query != '') {
 			$whereSql_tmp = array();
 			$fields = (json_decode($fields) == NULL) ? $fields : json_decode($fields);
 			$query = ($fullText) ? '%' . $query . '%' : $query;
 
 			//jesli pole fields nie jest tablica to tworzymy z niego tablice 1 elementowa
 			$fields = (!is_array($fields)) ? array($fields) : $fields;
-			foreach ($fields as $v) {
+			foreach($fields as $v) {
 				$whereSql_tmp[] = 'UPPER(CAST(' . $v . ' AS text)) ' . ((strstr($query, '%') !== false) ? 'LIKE' : '=') . ' ?';
 				$whereValue[] = mb_convert_case($query, MB_CASE_UPPER, 'UTF-8');
 			}
@@ -791,6 +808,7 @@ class MK_Db_PDO {
 	 * żeby zapytanie SQL się nie wysypało.
 	 *
 	 * @param Array $data
+	 *
 	 * @return String
 	 */
 	public function arrayToQueryIn(array $data) {
@@ -815,30 +833,30 @@ class MK_Db_PDO {
 
 		// Sprawdzenie pierwszego elementu tablicy
 		// Pobranie z rejestru, jeśli jest pusty
-		if ($sortArray[0] === false) {
+		if($sortArray[0] === false) {
 			$this->_prepareSortParam();
 			$sortArray[0] = MK_Registry::get('sort');
-			if (empty($sortArray[0])) {
+			if(empty($sortArray[0])) {
 				return '';
 			}
 		}
 
 		// Sprawdzenie pierwszego elementu tablicy
 		// Pobranie z rejestru, jeśli jest pusty
-		if ($dirArray[0] === false) {
+		if($dirArray[0] === false) {
 			$dirArray[0] = MK_Registry::get('dir');
 		}
 
 		// Przygotowanie zapytania SQL
 		$orderBy = '';
-		foreach ($sortArray as $i => $sort) {
-			if (empty($sort)) {
+		foreach($sortArray as $i => $sort) {
+			if(empty($sort)) {
 				continue;
 			}
-			if ($orderBy != '') {
+			if($orderBy != '') {
 				$orderBy .= ', ';
 			}
-			$orderBy .= $sort . ( isset($dirArray[$i]) ? ' ' . $dirArray[$i] : '' );
+			$orderBy .= $sort . (isset($dirArray[$i]) ? ' ' . $dirArray[$i] : '');
 		}
 
 		// Sprawdzenie czy została dodana jakakolwiek kolumna do sortowania
@@ -861,6 +879,7 @@ class MK_Db_PDO {
 	 *
 	 * @param String	 $sql
 	 * @param String	 $param
+	 *
 	 * @return String
 	 */
 	private function _replaceSelectColumnsFromQuery($sql, $param) {
@@ -869,7 +888,7 @@ class MK_Db_PDO {
 
 		$tempSql = $sql;
 
-		foreach ($brackets[0] as $key => $val) {
+		foreach($brackets[0] as $key => $val) {
 			$tempSql = str_replace($val, 'brackets_' . $key, $tempSql);
 		}
 
@@ -877,7 +896,7 @@ class MK_Db_PDO {
 		preg_match('#^SELECT\s[\w\W]+\sFROM#i', $tempSql, $columns);
 		$tempSql = $columns[0];
 
-		foreach ($brackets[0] as $key => $val) {
+		foreach($brackets[0] as $key => $val) {
 			$tempSql = str_replace('brackets_' . $key, $val, $tempSql);
 		}
 
@@ -885,26 +904,27 @@ class MK_Db_PDO {
 		return str_replace($tempSql, 'SELECT ' . $param . ' AS key_column FROM', $sql);
 	}
 
-    /**
-     *     Metoda dzieli, długą listę (powyżej 1000 elementów) występującą w zapytaniu SQL na mniejsze
-     *  czesci, po 1000 elementow i zwraca spreparowanego SQLa
-     *
-     * @param $columnName string - Nazwa kolumny z tabeli
-     * @param $arrayValues array - Tablica wartosci z kolumny
-     * @param $delimiter string  - Delimiter, którym oddzielone beda dane
-     *
-     * @param $quote
-     * @return String
-     */
+	/**
+	 *     Metoda dzieli, długą listę (powyżej 1000 elementów) występującą w zapytaniu SQL na mniejsze
+	 *  czesci, po 1000 elementow i zwraca spreparowanego SQLa
+	 *
+	 * @param $columnName string - Nazwa kolumny z tabeli
+	 * @param $arrayValues array - Tablica wartosci z kolumny
+	 * @param $delimiter string  - Delimiter, którym oddzielone beda dane
+	 *
+	 * @param $quote
+	 *
+	 * @return String
+	 */
 	static function splitSqlList($columnName, array $arrayValues, $delimiter, $quote) {
 		$maxListSize = 1000;
 		$splittedSql = '(';
 		$count = count($arrayValues);
 		$numParts = floor($count / $maxListSize);
-		for ($i = 0; $i <= $numParts; $i++) {
+		for($i = 0; $i <= $numParts; $i++) {
 			$part = array_slice($arrayValues, $i * $maxListSize, $maxListSize);
 			$splittedSql .= $columnName . ' IN (' . $quote . implode($quote . $delimiter . $quote, $part) . $quote . ')';
-			if ($i < $numParts) {
+			if($i < $numParts) {
 				$splittedSql .= ' OR ';
 			}
 		}
@@ -919,21 +939,22 @@ class MK_Db_PDO {
 	 * Trzeba pamiętać aby klasa, z której wywoływana jest metoda musi zawierać atrybut "_tableName" ustawiony na protected
 	 *
 	 * Dynamiczne metody:
-	 * 	- findRowBy - zwraca jeden wiersz np findRowByIdAndState
-	 * 	- findRowsBy - zwraca wiersze spełniające warunki np findRowsByIdAndState
+	 *	 - findRowBy - zwraca jeden wiersz np findRowByIdAndState
+	 *	 - findRowsBy - zwraca wiersze spełniające warunki np findRowsByIdAndState
 	 *
 	 * Kolejne parametry rozdzialamy słowem And
 	 *
 	 * @param string $name - nazwa wywoływanej metody
-	 * @param array $arguments - parametry przekazywane do wywoływanej metody
+	 * @param array  $arguments - parametry przekazywane do wywoływanej metody
+	 *
 	 * @return array
 	 */
 	public function __call($name, $arguments) {
-		if (!preg_match('/^(find[a-zA-Z]+)By/', $name, $match)) {
+		if(!preg_match('/^(find[a-zA-Z]+)By/', $name, $match)) {
 			throw new Exception('Nie odnaleziono funkcji ' . $name);
 		}
 		$methodName = '_' . $match[1];
-		if (method_exists($this, $methodName)) {
+		if(method_exists($this, $methodName)) {
 			return $this->{$methodName}($name, $arguments);
 		}
 
@@ -949,12 +970,13 @@ class MK_Db_PDO {
 	 * zwróci wyniki na podstawie zapytania: SELECT * FROM swpirb_resolution WHERE id = ? AND state = ?
 	 *
 	 * @param string $name
-	 * @param array $arguments
+	 * @param array  $arguments
+	 *
 	 * @return array
 	 */
 	private function _findRows($name, array $arguments) {
 		$sql = $this->_prepareSql(
-				str_replace('findRowsBy', '', $name), $arguments
+			str_replace('findRowsBy', '', $name), $arguments
 		);
 		return $this->GetRows($sql, $arguments);
 	}
@@ -968,13 +990,14 @@ class MK_Db_PDO {
 	 * zwróci wyniki na podstawie zapytania: SELECT * FROM swpirb_resolution WHERE id = ? AND state = ? LIMIT 1
 	 *
 	 * @param string $name
-	 * @param array $arguments
+	 * @param array  $arguments
+	 *
 	 * @return array
 	 */
 	private function _findRow($name, array $arguments) {
 		$sql = $this->_prepareSql(
-						str_replace('findRowBy', '', $name), $arguments
-				) . ' LIMIT 1';
+			str_replace('findRowBy', '', $name), $arguments
+		) . ' LIMIT 1';
 		return $this->GetRow($sql, $arguments);
 	}
 
@@ -982,14 +1005,15 @@ class MK_Db_PDO {
 	 * Zwraca tablicę zawierająca tylko te elementy, które pokrywają się z kolumnami tabeli
 	 *
 	 * @param array $args
+	 *
 	 * @return array
 	 */
 	protected function _getDataForColumns(array $args) {
 		$data = array_intersect_key($args, array_flip($this->_tableColumns));
 
 		//puste string'i zamieniamy na null'e
-		foreach ($data as &$colValue) {
-			if (is_null($colValue) || (empty($colValue) && strlen($colValue) === 0)) {
+		foreach($data as &$colValue) {
+			if(is_null($colValue) || (empty($colValue) && strlen($colValue) === 0)) {
 				$colValue = null;
 			}
 		}
@@ -1009,12 +1033,12 @@ class MK_Db_PDO {
 	protected function _prepareFieldsFromQueryParams(array $ia_queryParams) {
 		$oa_fields = array();
 
-		if (!empty($ia_queryParams['fields']) && !empty($ia_queryParams['query']) && mb_strlen($ia_queryParams['query']) > 0) {
+		if(!empty($ia_queryParams['fields']) && !empty($ia_queryParams['query']) && mb_strlen($ia_queryParams['query']) > 0) {
 			$a_fieldsTmp = json_decode($ia_queryParams['fields']);
 
-			if (is_array($a_fieldsTmp) && count($a_fieldsTmp) > 0) {
-				foreach ($a_fieldsTmp as $s_field) {
-					if (in_array($s_field, $this->fieldsCanBeSearched)) {
+			if(is_array($a_fieldsTmp) && count($a_fieldsTmp) > 0) {
+				foreach($a_fieldsTmp as $s_field) {
+					if(in_array($s_field, $this->fieldsCanBeSearched)) {
 						$oa_fields[] = $s_field;
 					}
 				}
@@ -1029,9 +1053,9 @@ class MK_Db_PDO {
 	 * to ustawiamy ją na podstawie stałej SORT_COLUMN pochodzącej z klasy dziecka
 	 */
 	private function _prepareSortParam() {
-		if (!MK_Registry::isRegistered('sort') || MK_Registry::get('sort') === null) {
+		if(!MK_Registry::isRegistered('sort') || MK_Registry::get('sort') === null) {
 			$const = get_class($this) . '::SORT_COLUMN';
-			if (defined($const)) {
+			if(defined($const)) {
 				MK_Registry::set('sort', constant($const));
 			}
 		}
@@ -1042,6 +1066,7 @@ class MK_Db_PDO {
 	 * Np: A -> _a
 	 *
 	 * @param array $match
+	 *
 	 * @return string
 	 */
 	private function _replaceUppercase($match) {
@@ -1052,7 +1077,8 @@ class MK_Db_PDO {
 	 * Przygotowuje SQL'a na podstawie podstawie podanych nazw parametrów w f-cji.
 	 *
 	 * @param string $name
-	 * @param array $arguments
+	 * @param array  $arguments
+	 *
 	 * @return string
 	 */
 	private function _prepareSql($name, array $arguments) {
@@ -1061,13 +1087,13 @@ class MK_Db_PDO {
 		$sqlAnd = '';
 
 		$i = 0;
-		foreach ($paramsNames as $paramName) {
+		foreach($paramsNames as $paramName) {
 			$paramName{0} = strtolower($paramName{0});
 			$paramName = preg_replace_callback('/([A-Z]{1})/', array($this, '_replaceUppercase'), $paramName);
 			$sql .= $sqlAnd . strtolower($paramName) . ' = ? ';
 			$sqlAnd = ' AND ';
 
-			if (!array_key_exists($i, $arguments)) {
+			if(!array_key_exists($i, $arguments)) {
 				throw new InvalidArgumentException('Podano nieprawidłową liczbę parametrów');
 			}
 			$i++;
@@ -1084,6 +1110,7 @@ class MK_Db_PDO {
 	 *
 	 * @param Array $newIds Identyfikatory do sprawdzenia
 	 * @param Array $oldIds Identyfikatory pobrane z bazy danych
+	 *
 	 * @return Array
 	 */
 	public function groupIdsBySql(array $newIds, array $oldIds) {
@@ -1093,17 +1120,17 @@ class MK_Db_PDO {
 			'delete' => array()
 		);
 
-		foreach ($newIds as $nValue) {
+		foreach($newIds as $nValue) {
 			$notInArray = true;
-			foreach ($oldIds as $oKey => $oValue) {
-				if ($nValue == $oValue) {
+			foreach($oldIds as $oKey => $oValue) {
+				if($nValue == $oValue) {
 					$ret['update'][] = $nValue;
 					unset($oldIds[$oKey]);
 					$notInArray = false;
 					break;
 				}
 			}
-			if ($notInArray) {
+			if($notInArray) {
 				$ret['insert'][] = $nValue;
 			}
 		}
@@ -1112,15 +1139,15 @@ class MK_Db_PDO {
 		return $ret;
 	}
 
-    /**
-     * Zrzucenie SQL-a i jego parametrów do okna firebuga
-     *
-     * @param String $dumpName - nazwa wyświetlanej operacji
-     * @param String $sql - zapytanie SQL
-     * @param Array $params - parametry zapytania (dane)
-     * @param int $execTime
-     */
-	public function fireBugSqlDump($dumpName, $sql="", array $params=array(), $execTime=0) {
+	/**
+	 * Zrzucenie SQL-a i jego parametrów do okna firebuga
+	 *
+	 * @param String $dumpName - nazwa wyświetlanej operacji
+	 * @param String $sql - zapytanie SQL
+	 * @param Array  $params - parametry zapytania (dane)
+	 * @param int    $execTime
+	 */
+	public function fireBugSqlDump($dumpName, $sql = "", array $params = array(), $execTime = 0) {
 		// Odczytanie klasy i metody, w której wyświetlony zostanie komunikat
 		$className = get_class($this);
 		$methodName = '';
@@ -1128,42 +1155,42 @@ class MK_Db_PDO {
 		$lineNumber = '';
 		$traceList = debug_backtrace();
 		$traceArr = array();
-		foreach ($traceList as $trace) {
-			if (!isset($trace['class']) || in_array($trace['class'], $this->_sqlIgnoreClass)) {
+		foreach($traceList as $trace) {
+			if(!isset($trace['class']) || in_array($trace['class'], $this->_sqlIgnoreClass)) {
 				continue;
 			}
-			if (count($traceArr) == 0) {
+			if(count($traceArr) == 0) {
 				$className = $trace['class'];
 				$methodName = isset($trace['function']) ? $trace['function'] : '';
 				$filePath = isset($trace['file']) ? str_replace(APP_PATH, '', $trace['file']) : '';
 				$lineNumber = isset($trace['line']) ? $trace['line'] : -1;
 			}
-			if (isset($trace['object'])) {
+			if(isset($trace['object'])) {
 				unset($trace['object']);
 			}
 			$traceArr[] = $trace;
 		}
 		// Czas generowania SQL-a
 		$sqlTime = microtime(true);
-		$sqlTimeDiff = round($sqlTime - ( isset($_SESSION['sql_last_time']) ? $_SESSION['sql_last_time'] : 0 ), 4);
+		$sqlTimeDiff = round($sqlTime - (isset($_SESSION['sql_last_time']) ? $_SESSION['sql_last_time'] : 0), 4);
 		$execTime = round($execTime, 4);
 		// Wyświetlenie komunikatu debug-a
-		if (empty($sql)) {
+		if(empty($sql)) {
 			// Debugowanie dodatkowych informacji (utworzenie połączenia, otwarcie/zamknięcie transakcji)
-			if (DB_DEBUG) {
+			if(DB_DEBUG) {
 				FB::info((object) array(
-							'OPERATION' => $dumpName,
-							'BACKTRACE' => $traceArr
-						), "INFO ({$sqlTime} [+{$sqlTimeDiff}]) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
+					'OPERATION' => $dumpName,
+					'BACKTRACE' => $traceArr
+				), "INFO ({$sqlTime} [+{$sqlTimeDiff}]) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
 			}
 		} else {
 			FB::warn((object) array(
-						'OPERATION' => $dumpName,
-						'SQL+PARAMS' => $this->_sqlFormat($this->_prepareFullQuery($sql, $params)),
-						'SQL' => "\n" . $sql . "\n",
-						'PARAMS' => $params,
-						'BACKTRACE' => $traceArr
-					), "SQL ({$sqlTime} [+{$sqlTimeDiff}ms] {{$execTime}ms}) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
+				'OPERATION' => $dumpName,
+				'SQL+PARAMS' => $this->_sqlFormat($this->_prepareFullQuery($sql, $params)),
+				'SQL' => "\n" . $sql . "\n",
+				'PARAMS' => $params,
+				'BACKTRACE' => $traceArr
+			), "SQL ({$sqlTime} [+{$sqlTimeDiff}ms] {{$execTime}ms}) :: {$filePath}:{$lineNumber} :: {$className}->{$methodName}");
 		}
 	}
 
@@ -1171,12 +1198,13 @@ class MK_Db_PDO {
 	 * Przełamuje ciagi sql
 	 *
 	 * @param String $query
+	 *
 	 * @return String
 	 */
 	private function _sqlFormat($query) {
 		$keywords = array("select ", " from ", " left join ", " right join ", " inner join ", " where ", " order by ", " group by ", "insert into ", "update ");
-		foreach ($keywords as $keyword) {
-			if (preg_match("#($keyword*)#i", $query, $matches)) {
+		foreach($keywords as $keyword) {
+			if(preg_match("#($keyword*)#i", $query, $matches)) {
 				$query = str_replace($matches[1], "\n" . mb_convert_case($matches[1], MB_CASE_UPPER, 'UTF-8') . "  \t", $query);
 			}
 		}
@@ -1188,18 +1216,19 @@ class MK_Db_PDO {
 	 * Pozwala podglądnąć całe zapytanie SQL i skopiować do dalszej analizy.
 	 *
 	 * @param String $sql - zapytanie SQL
-	 * @param Array $params - parametry zapytania
+	 * @param Array  $params - parametry zapytania
+	 *
 	 * @return String
 	 */
 	private function _prepareFullQuery($sql, array $params) {
-		if (count($params) == 0) {
+		if(count($params) == 0) {
 			return $sql;
 		}
 
-		foreach ($params as $param) {
-			if (is_null($param)) {
+		foreach($params as $param) {
+			if(is_null($param)) {
 				$param = 'NULL';
-			} elseif (!is_numeric($param)) {
+			} elseif(!is_numeric($param)) {
 				$param = "'" . str_replace("'", "''", $param) . "'";
 			}
 			$sql = preg_replace('#\?#', $param, $sql, 1);
