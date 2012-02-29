@@ -18,14 +18,15 @@ class MK_Licence {
 	 * Odczytanie daty wygaśnięcia licencji
 	 *
 	 * @param string $licence
+	 *
 	 * @return string
 	 */
 	private function _expireDate($licence) {
-		if( isset($this->_expireDate) ) {
+		if(isset($this->_expireDate)) {
 			return $this->_expireDate;
 		}
 
-		if (!preg_match('#^([0-9]{4})([0-9]{2})([0-9]{2})#', $licence, $matches)) {
+		if(!preg_match('#^([0-9]{4})([0-9]{2})([0-9]{2})#', $licence, $matches)) {
 			throw new MK_Exception('Nieprawidłowa licencja. Proszę o kontakt z administratorem.');
 		}
 
@@ -38,20 +39,22 @@ class MK_Licence {
 	 *
 	 * @param String $licence
 	 * @param String $statusInconsistencyLicenseKey
-	 * @return type
+	 *
+	 * @return bool
 	 */
 	function verify($licence, $statusInconsistencyLicenseKey) {
-		if (MK_DEVELOPER === true) {
+		if(MK_DEVELOPER === true) {
 			return true;
 		}
 
 		$expireDate = $this->_expireDate($licence);
 
-		if (!$this->isValidSignature($licence)
-				|| ( $statusInconsistencyLicenseKey == 'stop_application' && strtotime($expireDate) < strtotime(date('Y-m-d')))) {
+		if(!$this->isValidSignature($licence)
+			|| ($statusInconsistencyLicenseKey == 'stop_application' && strtotime($expireDate) < strtotime(date('Y-m-d')))
+		) {
 			throw new MK_Exception('Błąd krytyczny. Niezgodna sygnatura licencji! <br/> Skontaktuj się z administratorem.');
 		}
-        return true;
+		return true;
 	}
 
 	/**
@@ -59,16 +62,17 @@ class MK_Licence {
 	 *
 	 * @param String $taskListPathFile
 	 * @param String $licence
+	 *
 	 * @throws MK_Exception
 	 */
 	function canUpgrade($taskListPathFile, $licence) {
-		if (!empty($taskListPathFile)) {
+		if(!empty($taskListPathFile)) {
 
-			if ($this->isSupportActive($licence)) {
+			if($this->isSupportActive($licence)) {
 				throw new MK_Exception('Wygasło wsparcie techniczne. Proszę o kontakt z administratorem');
 			}
 
-			if (!$this->isValidSignature($licence)) {
+			if(!$this->isValidSignature($licence)) {
 				throw new MK_Exception('Błąd krytyczny. Niezgodna sygnatura licencji!');
 			}
 		}
@@ -78,6 +82,7 @@ class MK_Licence {
 	 * Sprawdza czy jest aktywne wsparcie techniczne dla daty umieszocznej w kluczu licencyjnym
 	 *
 	 * @param String $licence
+	 *
 	 * @return Boolean
 	 */
 	function isSupportActive($licence) {
@@ -88,6 +93,7 @@ class MK_Licence {
 	 * Sprawdza popeawność sygnatury licencji
 	 *
 	 * @param String $licence
+	 *
 	 * @return Boolean
 	 */
 	function isValidSignature($licence) {
