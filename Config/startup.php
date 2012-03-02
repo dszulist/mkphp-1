@@ -76,15 +76,9 @@ session_start();
 
 //myk na swfUpload który sessid podaje w gecie
 if (!empty($_GET['PHPSESSID'])) {
-	$mk_session_id = session_id($_GET['PHPSESSID']);
+	session_id($_GET['PHPSESSID']);
 	$_COOKIE[session_name()] = $_GET['PHPSESSID'];
-} else {
-	$mk_session_id = session_id();
 }
-if ($mk_session_id == "") {
-	session_start();
-}
-
 
 // #Debuging
 define('MK_DEBUG_FIREPHP', (isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI));
