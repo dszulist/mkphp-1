@@ -71,14 +71,14 @@ ini_set('session.cache_expire', 480);
 session_save_path(MK_DIR_SESSION);
 session_set_cookie_params(0, MK_COOKIES_PATH);
 
-// Uruchomienie sesji
-session_start();
-
 //myk na swfUpload który sessid podaje w gecie
 if (!empty($_GET['PHPSESSID'])) {
 	session_id($_GET['PHPSESSID']);
 	$_COOKIE[session_name()] = $_GET['PHPSESSID'];
 }
+
+// Uruchomienie sesji
+session_start();
 
 // #Debuging
 define('MK_DEBUG_FIREPHP', (isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI));
