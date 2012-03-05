@@ -162,7 +162,7 @@ class MK_Error {
 	 */
 	public static function handler($type, $message = "", $file = "", $line = "", $errContext = array(), $debugBacktrace = "") {
 		// W przypadku tego błędu nie logujemy ponieważ nie ma on się pojawiać
-		if ($type == 2 && preg_match('#pg_fetch_array\(\) \[[^]]+\]: Unable to jump to row [0-9]+ on PostgreSQL result index [0-9]+#i', $message)) {
+		if (preg_match('#pg_fetch_array\(\)( \[[^]]+\])*: Unable to jump to row [0-9]+ on PostgreSQL result index [0-9]+#i', $message)) {
 			return true;
 		}
 
