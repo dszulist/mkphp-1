@@ -119,21 +119,19 @@ class MK_Validator {
 	 */
 	public static function stringArgument($argName, array $args, $min = null, $max = null) {
 
-		$isValid = self::isDefined($argName, $args);
+		if( !self::isDefined($argName, $args) ) {
+            return false;
+        }
 
-		if ($isValid === true && !is_string($args[$argName])) {
-			$isValid = false;
+		if ($min !== null && mb_strlen($args[$argName]) < $min) {
+            return false;
 		}
 
-		if ($isValid === true && $min !== null && mb_strlen($args[$argName]) < $min) {
-			$isValid = false;
+		if ($max !== null && mb_strlen($args[$argName]) > $max) {
+            return false;
 		}
 
-		if ($isValid === true && $max !== null && mb_strlen($args[$argName]) > $max) {
-			$isValid = false;
-		}
-
-		return $isValid;
+		return true;
 	}
 
 	/**
