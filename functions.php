@@ -79,8 +79,8 @@ function file_exists_in_app($filePath, $appPath = '') {
  */
 function validate_directory($dirPath) {
 	if (!file_exists($dirPath) || !is_dir($dirPath)) {
-		if (!@mkdir($dirPath, MK_CHMOD_DIR, true)) {
-			exit('Nie można utworzyć katalogu ' . $dirPath);
+		if (!mkdir($dirPath, MK_CHMOD_DIR, true)) {
+			exit("Nie można utworzyć katalogu {$dirPath}");
 		}
 	}
 }
