@@ -45,31 +45,31 @@ class MK_XML_Convert {
      * @param SimpleXMLElement $xml
      */
     private function iteratechildren($object, SimpleXMLElement $xml){
-    	if(!empty($object)){
-	        foreach ($object as $name => $value){
-	            if (is_string($value) || is_numeric($value)) {
-	               $xml->$name = $value;
-	            }
-	            else {
-	               $xml->$name = null;
-	               $this->iteratechildren($value, $xml->$name);
-	            }
-	        }
-    	}
+        if(!empty($object)){
+            foreach ($object as $name => $value){
+                if (is_string($value) || is_numeric($value)) {
+                    $xml->$name = $value;
+                }
+                else {
+                    $xml->$name = null;
+                    $this->iteratechildren($value, $xml->$name);
+                }
+            }
+        }
     }
 
-	/**
-	 * Tworzy obiekt XMLReader i ładuje do niego xml'a z pliku albo stringa w zależności co podano podczas tworzenia obiektu klasy
-	 *
-	 * @return XMLReader
-	 */
-	private function getXMLReader(){
-		$xmlReader = new XMLReader();
-		$method = (is_file($this->xmlSrc)) ? 'open' : 'XML';
-		$xmlReader->$method($this->xmlSrc);
+    /**
+     * Tworzy obiekt XMLReader i ładuje do niego xml'a z pliku albo stringa w zależności co podano podczas tworzenia obiektu klasy
+     *
+     * @return XMLReader
+     */
+    private function getXMLReader(){
+        $xmlReader = new XMLReader();
+        $method = (is_file($this->xmlSrc)) ? 'open' : 'XML';
+        $xmlReader->$method($this->xmlSrc);
 
-		return $xmlReader;
-	}
+        return $xmlReader;
+    }
 
     /**
      * Parsuje XML'a na Objekt
@@ -134,30 +134,30 @@ class MK_XML_Convert {
         return $tree;
     }
 
-	/**
-	 * Zwraca wewnętrzny XML
-	 *
-	 * @param string $name - nazwa elementu w którym znajduje się zagnieżdzony XML
-	 * @return bool|string
-	 */
-	public function getInnerXML($name){
-		$xmlReader = $this->getXMLReader();
+    /**
+     * Zwraca wewnętrzny XML
+     *
+     * @param string $name - nazwa elementu w którym znajduje się zagnieżdzony XML
+     * @return bool|string
+     */
+    public function getInnerXML($name){
+        $xmlReader = $this->getXMLReader();
 
-		while ($xmlReader->read()) {
-			switch ($xmlReader->nodeType) {
-				case XMLReader::ELEMENT:
-					if($xmlReader->name == $name){
-						$xml = $xmlReader->readInnerXML();
-						$xmlReader->close();
-						return html_entity_decode($xml);
-					}
-				break;
-			}
-		}
+        while ($xmlReader->read()) {
+            switch ($xmlReader->nodeType) {
+                case XMLReader::ELEMENT:
+                    if($xmlReader->name == $name){
+                        $xml = $xmlReader->readInnerXML();
+                        $xmlReader->close();
+                        return html_entity_decode($xml);
+                    }
+                    break;
+            }
+        }
 
-		$xmlReader->close();
-		return false;
-	 }
+        $xmlReader->close();
+        return false;
+    }
 
     /**
      * Zwraca przekazany obiekt w formie XML
@@ -216,15 +216,15 @@ class MK_XML_Convert {
      * @return bool|mixed
      */
     public static function cast($obj, $toClass) {
-    	
-		if(class_exists($toClass)) {
-			$objArray = explode(":", serialize($obj));
-			$objArray[1] = strlen($toClass);
-			$objArray[2] = '"'.$toClass.'"';
-			return unserialize(implode(':', $objArray));
-		}
-    	return false;
-	}
-    
-    
+
+        if(class_exists($toClass)) {
+            $objArray = explode(":", serialize($obj));
+            $objArray[1] = strlen($toClass);
+            $objArray[2] = '"'.$toClass.'"';
+            return unserialize(implode(':', $objArray));
+        }
+        return false;
+    }
+
+
 }
