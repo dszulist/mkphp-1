@@ -179,17 +179,4 @@ class MK_Filter {
 		return $value . '%';
 	}
 
-	/**
-	 * Formatowanie daty do urzędowej formy.
-	 * Z "2011-06-29 03:52:92" na "29 czerwca 2011 roku".
-	 *
-	 * @param String $dateText
-	 * @return String
-	 */
-	public static function getFormatDate($dateText) {
-		$dateTime = strtotime($dateText);
-		$monthText = array('', 'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia');
-		return date('d', $dateTime) . ' ' . $monthText[date('n', $dateTime)] . ' ' . date('Y', $dateTime) . ' roku';
-	}
-
 }
