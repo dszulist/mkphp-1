@@ -55,12 +55,15 @@ class MK_Logs {
 	 *
 	 * @param string $type - 'php', 'exception', 'db', 'js' itp.
 	 * @param string $devMessage - komunikat błędu do zapisania
+	 * @param string $md5
 	 *
 	 * @return string
 	 */
-	public function saveToFile($type, &$devMessage) {
+	public function saveToFile($type, &$devMessage, $md5='') {
 		$errorFile = $this->_dirErrors . DIRECTORY_SEPARATOR . strtolower($type) . '.log';
-		$msgMd5 = md5($devMessage);
+		if(empty($md5)) {
+			$md5 = md5($devMessage);
+		}
 
 		// Czy błąd się powtórzył?
 		if(file_exists($errorFile) && is_writable($errorFile)) {
@@ -73,10 +76,10 @@ class MK_Logs {
 					while(!feof($fr)) {
 						$fewLines .= fgets($fr, $fewBytes);
 					}
-					if(preg_match("#([0-9]+)\t@\t{$msgMd5}#", $fewLines, $matches)) {
+					if(preg_match("#([0-9]+)\t@\t{$md5}#", $fewLines, $matches)) {
 						fseek($fr, $fpos);
 						ftruncate($fr, $fpos + $fewBytes);
-						fputs($fr, str_replace($matches[0], (intval($matches[1]) + 1) . "\t@\t" . $msgMd5, $fewLines));
+						fputs($fr, str_replace($matches[0], (intval($matches[1]) + 1) . "\t@\t" . $md5, $fewLines));
 						fclose($fr);
 						return;
 					}
@@ -87,7 +90,7 @@ class MK_Logs {
 		// Jest to nowy błąd
 		list($usec, $sec) = explode(' ', microtime());
 		$msgHeader = "#^#\t" . date("Y-m-d H:i:s", $sec) . "\t" . bcadd($sec, $usec, 8) . "\t\"{$type}\"\t#^#\n";
-		$msgFooter = "\n#$#$#\t" . "1\t@\t" . $msgMd5 . "\t#$#$#" . "\n\n\n\n";
+		$msgFooter = "\n#$#$#\t" . "1\t@\t" . $md5 . "\t#$#$#" . "\n\n\n\n";
 		error_log($msgHeader . $devMessage . $msgFooter, 3, $errorFile);
 	}
 
