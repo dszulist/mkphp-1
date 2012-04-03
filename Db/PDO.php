@@ -79,12 +79,9 @@ class MK_Db_PDO {
 		// Połączenie z bazą danych (singleton)
 		$this->db = MK_Db_PDO_Singleton::getInstance();
 
-		// Odczytanie i obliczenie czasu wykonania zapytania SQL
-		$execTime = microtime(true) - $timeStart;
-
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if(MK_DEBUG_FIREPHP) {
-			$this->fireBugSqlDump("MK_Db_PDO_Singleton::getInstance()", '', array(), $execTime);
+			$this->fireBugSqlDump("MK_Db_PDO_Singleton::getInstance()", '', array(), microtime(true) - $timeStart);
 		}
 	}
 
@@ -149,12 +146,9 @@ class MK_Db_PDO {
 			$affectedRows = $results;
 		}
 
-		// Odczytanie i obliczenie czasu wykonania zapytania SQL
-		$execTime = microtime(true) - $timeStart;
-
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if(MK_DEBUG_FIREPHP) {
-			$this->fireBugSqlDump("DbExecute", $sql, $params, $execTime);
+			$this->fireBugSqlDump("DbExecute", $sql, $params, microtime(true) - $timeStart);
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
@@ -199,12 +193,9 @@ class MK_Db_PDO {
 			$resString = '';
 		}
 
-		// Odczytanie i obliczenie czasu wykonania zapytania SQL
-		$execTime = microtime(true) - $timeStart;
-
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if(MK_DEBUG_FIREPHP) {
-			$this->fireBugSqlDump("DbGetOne", $sql, $params, $execTime);
+			$this->fireBugSqlDump("DbGetOne", $sql, $params, microtime(true) - $timeStart);
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
@@ -248,12 +239,9 @@ class MK_Db_PDO {
 			$resArray = array();
 		}
 
-		// Odczytanie i obliczenie czasu wykonania zapytania SQL
-		$execTime = microtime(true) - $timeStart;
-
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if(MK_DEBUG_FIREPHP) {
-			$this->fireBugSqlDump("DbGetCol", $sql, $params, $execTime);
+			$this->fireBugSqlDump("DbGetCol", $sql, $params, microtime(true) - $timeStart);
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
@@ -296,12 +284,9 @@ class MK_Db_PDO {
 			$resArray = array();
 		}
 
-		// Odczytanie i obliczenie czasu wykonania zapytania SQL
-		$execTime = microtime(true) - $timeStart;
-
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if(MK_DEBUG_FIREPHP) {
-			$this->fireBugSqlDump("DbGetRow", $sql, $params, $execTime);
+			$this->fireBugSqlDump("DbGetRow", $sql, $params, microtime(true) - $timeStart);
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
@@ -357,12 +342,9 @@ class MK_Db_PDO {
 			$resArray = array();
 		}
 
-		// Odczytanie i obliczenie czasu wykonania zapytania SQL
-		$execTime = microtime(true) - $timeStart;
-
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if(MK_DEBUG_FIREPHP) {
-			$this->fireBugSqlDump($sqlDumpName, $sql, $params, $execTime);
+			$this->fireBugSqlDump($sqlDumpName, $sql, $params, microtime(true) - $timeStart);
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
@@ -618,11 +600,9 @@ class MK_Db_PDO {
 
 		$resArray = $this->_selectLimit($sql, $limit, $start, $params);
 
-		$execTime = microtime(true) - $timeStart;
-
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if(MK_DEBUG_FIREPHP) {
-			$this->fireBugSqlDump("DbSelectLimit", $sql, $params, $execTime);
+			$this->fireBugSqlDump("DbSelectLimit", $sql, $params, microtime(true) - $timeStart);
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
