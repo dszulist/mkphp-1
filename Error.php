@@ -170,9 +170,9 @@ class MK_Error {
 		if (count($errContext) > 0) {
 			$devMessage .= "Informacje szczegółowe:\n " . print_r($errContext, true) . "\n\n";
 		}
-		// $devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
 		if (MK_DEBUG === true) {
+			$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 			return "Błąd \"php\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
 		if (!class_exists('MK_Logs')) {
@@ -201,9 +201,9 @@ class MK_Error {
 	 */
 	public static function fromException($message = "", $file = "", $line = "", $debugBacktrace = "") {
 		$devMessage = self::_prepareMessage($file, $line) . "Komunikat:\n " . $message . "\n\n";
-		// $devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 
 		if (MK_DEBUG === true) {
+			$devMessage .= "Backtrace:\n" . ( empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace ) . "\n";
 			return "Błąd \"exception\"\t" . md5($devMessage) . "\n" . $devMessage;
 		}
 
