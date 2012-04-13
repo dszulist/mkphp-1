@@ -862,27 +862,50 @@ class MK_Db_PDO {
 	 *
 	 * @return String
 	 */
-	private function _replaceSelectColumnsFromQuery($sql, $param) {
-		// Zamiana nawiasów na tekst
-		preg_match_all('#\(.*\)#im', $sql, $brackets);
+    private function _replaceSelectColumnsFromQuery($sql, $param)
+    {
+        $from = $this->_truncateSqlAfterFrom( $sql );
 
-		$tempSql = $sql;
+        if( empty($from) ) {
 
-		foreach($brackets[0] as $key => $val) {
-			$tempSql = str_replace($val, 'brackets_' . $key, $tempSql);
-		}
+            throw new MK_Db_Exception('Preparowanie zapytania SQL zakończone niepowodzeniem.');
+        }
+        return 'SELECT '.$param.' AS key_column FROM '.$from;
+    }
 
-		// Odczytanie listy kolumn
-		preg_match('#^SELECT\s[\w\W]+\sFROM#i', $tempSql, $columns);
-		$tempSql = $columns[0];
+    /**
+     * Wycina z zapytania SQL jedynie to co się znajduje po głównym 'FROM'
+     *
+     * Przykład:
+     * "SELECT trim(name), (SELECT '(id:'||id||')' FROM table1) FROM table2 WHERE field=true AND (SELECT COUNT(id) FROM test) > 5"
+     *
+     * Dla powyższego SQL zostanie zwrócona część:
+     * " table2 WHERE field=true AND (SELECT COUNT(id) FROM test) > 5"
+     *
+     * @param String $sql Zapytanie SQL
+     * @return String Wycięta część z zapytania
+     */
+    private function _truncateSqlAfterFrom( $sql )
+    {
+        $upperSql = strtoupper( $sql );
+        $sqlLength = strlen( $upperSql );
+        $dQuotes = $sQuotes = false;
+        $deep = 0;
+        for( $idx=0; $idx<$sqlLength; $idx++ ){
 
-		foreach($brackets[0] as $key => $val) {
-			$tempSql = str_replace('brackets_' . $key, $val, $tempSql);
-		}
+            if( $upperSql[$idx] == "'" ) { $sQuotes = !$sQuotes; }
+            if( $upperSql[$idx] == '"' ) { $dQuotes = !$dQuotes; }
 
-		// Przywrócenie nawiasów z tekstu
-		return str_replace($tempSql, 'SELECT ' . $param . ' AS key_column FROM', $sql);
-	}
+            if( !$sQuotes && !$dQuotes ) {
+                if( $upperSql[$idx] == '(' ){ $deep++; }
+                if( $upperSql[$idx] == ')' ){ $deep--; }
+            }
+            if( $deep == 0 && strpos( substr( $upperSql, $idx, 6), ' FROM ' ) === 0 ) {
+                return substr( $sql, $idx+6);
+            }
+        }
+        return null;
+    }
 
 	/**
 	 *     Metoda dzieli, długą listę (powyżej 1000 elementów) występującą w zapytaniu SQL na mniejsze
