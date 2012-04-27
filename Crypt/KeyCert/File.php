@@ -14,6 +14,6 @@ Class MK_Crypt_KeyCert_File extends MK_Crypt_KeyCert {
     /**
      * @var string
      */
-    private $srcTupe = 'pcks12';
+    private $srcType = 'pcks12';
 
 }
