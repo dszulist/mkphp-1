@@ -24,7 +24,8 @@ define('MK_DEVELOPER',			defined('DEVELOPER') ? DEVELOPER : false);
 define('MK_ERROR_JS_ENABLED',	defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
 
 // Ścieżki do plików wykorzystywanych przez aplikację
-define('APP_FILE_LOCK',		'under_construction.txt');
+define('APP_FILE_LOCK',		(defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . 'under_construction.txt');
+define('APP_STATUS_LOG',	(defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . 'upgrade/log/status.log');
 define('MTM_FILE_LIST',		'/var/lib/mtm/task.list');
 define('MTM_FILE_LOG',		'/var/log/mtm/mtm.log');
 define('MTM_FILE_LOCK',		'/tmp/mtm_task.lock');
