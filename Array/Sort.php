@@ -16,7 +16,7 @@ class MK_Array_Sort {
 	// Porzadek sortowania
 	public static $_sortOrder = "ASC";
 
-	/*
+	/**
 	 * Sortowanie tablicy po kluczach, 
 	 * z uwzglednieniem polskich znakow
 	 * oraz z zachowaniem wartosci kluczy
@@ -26,7 +26,6 @@ class MK_Array_Sort {
 	 * @param Array     $array
 	 * @param String    $order 
 	 */
-
 	public static function byKeys(array &$array, $order = '') {
 		setlocale(LC_COLLATE, 'pl_PL.utf8', 'pl');
 		uksort($array, 'strcoll');
@@ -36,7 +35,7 @@ class MK_Array_Sort {
 		}
 	}
 
-	/*
+	/**
 	 * Sortowanie tablicy po wartosciach, 
 	 * z uwzglednieniem polskich znakow 
 	 * oraz z zachowaniem wartosci kluczy
@@ -46,7 +45,6 @@ class MK_Array_Sort {
 	 * @param Array     $array
 	 * @param String    $order 
 	 */
-
 	public static function byValues(array &$array, $order = '') {
 		setlocale(LC_COLLATE, 'pl_PL.utf8', 'pl');
 		uasort($array, 'strcoll');
