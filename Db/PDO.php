@@ -857,9 +857,10 @@ class MK_Db_PDO {
 	/**
 	 * Podmieniam kolumny z selecta w podanym zapytaniu na podany indeks
 	 *
-	 * @param String	 $sql
-	 * @param String	 $param
+	 * @param String     $sql
+	 * @param String     $param
 	 *
+	 * @throws MK_Db_Exception
 	 * @return String
 	 */
     private function _replaceSelectColumnsFromQuery($sql, $param)
@@ -942,14 +943,15 @@ class MK_Db_PDO {
 	 * Trzeba pamiętać aby klasa, z której wywoływana jest metoda musi zawierać atrybut "_tableName" ustawiony na protected
 	 *
 	 * Dynamiczne metody:
-	 *	 - findRowBy - zwraca jeden wiersz np findRowByIdAndState
-	 *	 - findRowsBy - zwraca wiersze spełniające warunki np findRowsByIdAndState
+	 *     - findRowBy - zwraca jeden wiersz np findRowByIdAndState
+	 *     - findRowsBy - zwraca wiersze spełniające warunki np findRowsByIdAndState
 	 *
 	 * Kolejne parametry rozdzialamy słowem And
 	 *
 	 * @param string $name - nazwa wywoływanej metody
 	 * @param array  $arguments - parametry przekazywane do wywoływanej metody
 	 *
+	 * @throws Exception
 	 * @return array
 	 */
 	public function __call($name, $arguments) {
