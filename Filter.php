@@ -174,9 +174,7 @@ class MK_Filter {
 			return $value;
 		}
 
-		$value = number_format($value * 100, MK_PRECISION_PERCENT, ',', '');
-
-		return $value . '%';
+		return number_format(round($value * 100, MK_PRECISION_PERCENT), MK_PRECISION_PERCENT, ',', '') . '%';
 	}
 
 }
