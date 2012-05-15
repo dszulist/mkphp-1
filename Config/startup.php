@@ -82,7 +82,7 @@ if (!empty($_GET['PHPSESSID'])) {
 // Uruchomienie sesji
 session_start();
 
-// #Debuging
+// Debuging - wymagany dodatek do Firebuga (http://developercompanion.com/)
 define('MK_DEBUG_FIREPHP', (isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI));
 if (MK_DEBUG_FIREPHP) {
 	require (MK_PATH . DIRECTORY_SEPARATOR . 'Vendors' . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
