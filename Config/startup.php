@@ -1,7 +1,7 @@
 <?php
 // Ustawienie uprawnień użytkownika/grupy "www-data"
 $posixInfo = posix_getpwnam('www-data');
-if($posixInfo !== false) {
+if ($posixInfo !== false) {
 	posix_setgid($posixInfo['gid']);
 	posix_setuid($posixInfo['uid']);
 }
@@ -11,7 +11,7 @@ require_once (MK_PATH . DIRECTORY_SEPARATOR . 'functions.php');
 require_once (MK_PATH . DIRECTORY_SEPARATOR . 'MK.php');
 
 validate_directory(MK_DIR_TEMP);
-if(SESSION_SAVE_HANDLER == 'files') {
+if (SESSION_SAVE_HANDLER == 'files') {
 	validate_directory(MK_DIR_SESSION);
 	block_directory_htaccess(MK_DIR_SESSION);
 }
@@ -37,7 +37,7 @@ setlocale(LC_NUMERIC, MK_LOCALE_NUMERIC);
 // rejestracja wrapperów
 stream_wrapper_register("tcp", "MK_Stream_Tcp");
 
-if(MK_DEBUG || MK_IS_CLI) {
+if (MK_DEBUG || MK_IS_CLI) {
 	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', 'on');
 	set_time_limit(0);
@@ -51,7 +51,7 @@ if(MK_DEBUG || MK_IS_CLI) {
 	register_shutdown_function('MK::shutdownFunction');
 }
 
-if(MK_ERROR_JS_ENABLED) {
+if (MK_ERROR_JS_ENABLED) {
 	MK_Error::fromJavaScript();
 }
 
@@ -74,7 +74,7 @@ session_save_path(MK_DIR_SESSION);
 session_set_cookie_params(0, MK_COOKIES_PATH);
 
 //myk na swfUpload który sessid podaje w gecie
-if(!empty($_GET['PHPSESSID'])) {
+if (!empty($_GET['PHPSESSID'])) {
 	session_id($_GET['PHPSESSID']);
 	$_COOKIE[session_name()] = $_GET['PHPSESSID'];
 }
@@ -84,14 +84,15 @@ session_start();
 
 // #Debuging
 define('MK_DEBUG_FIREPHP', (isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI));
-if(MK_DEBUG_FIREPHP) {
-	require (DIR_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
-	require (DIR_LIBS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
+if (MK_DEBUG_FIREPHP) {
+	require (MK_PATH . DIRECTORY_SEPARATOR . 'Vendors' . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
+	require (MK_PATH . DIRECTORY_SEPARATOR . 'Vendors' . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
+
 	//@TODO sprawdzic ten klucz sesji i obsłużyć
 	$_SESSION['sql_last_time'] = microtime(true);
 }
 
 // Uruchomienie kontrollera konsoli jezeli wywołanie jest z konsoli
-if(MK_IS_CLI) {
+if (MK_IS_CLI) {
 	MK::executeCLICommand($argv);
 }
