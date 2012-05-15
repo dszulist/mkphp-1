@@ -426,6 +426,7 @@ class MK_Db_PDO {
 	 * 4. Wywołanie metody CompleteTrans() śledzi błędy, więc jeśli wystąpił jakiś błąd SQL
 	 * lub została wywołana wcześniej metoda FailTrans(), to zostanie uruchomiony ROLLBACK.
 	 *
+	 * @throws MK_Db_Exception
 	 * @return bool
 	 */
 	public function transStart() {
@@ -463,6 +464,7 @@ class MK_Db_PDO {
 	 *   true  - monitoruje błędy SQL,
 	 *   false - wymuszenie odrzucenia wszystkich SQL-i w transakcji
 	 *
+	 * @throws MK_Db_Exception
 	 * @return bool
 	 */
 	public function transComplete($commit = true) {
@@ -585,13 +587,14 @@ class MK_Db_PDO {
 			$countExclamation = substr_count($preparedSqlToGetRowNumber, '?');
 			$countParams = array_slice($params, -$countExclamation);
 
-			$preparedSqlToGetRowNumber = 'SELECT row_number'
-				. ' FROM ( ' . $preparedSqlToGetRowNumber . ' ) oldtable'
-				. ' CROSS JOIN ('
-				. ' SELECT ARRAY( ' . $preparedSqlToGetRowNumber . ' ) AS id) AS oldids'
-				. ' CROSS JOIN generate_series(1, ' . $resCount . ') AS row_number'
-				. ' WHERE oldids.id[row_number] = oldtable.key_column AND oldtable.key_column = ?'
-				. ' LIMIT 1';
+			$preparedSqlToGetRowNumber = "SELECT row_number
+				 FROM ( {$preparedSqlToGetRowNumber} ) oldtable
+				 	CROSS JOIN (
+				 		SELECT ARRAY( {$preparedSqlToGetRowNumber} ) AS id
+				 	) AS oldids
+			        CROSS JOIN generate_series(1, {$resCount}) AS row_number
+				 WHERE oldids.id[row_number] = oldtable.key_column AND oldtable.key_column = ?
+				 LIMIT 1";
 
 			$rowNumber = (int) $this->GetOne($preparedSqlToGetRowNumber, array_merge($countParams, $countParams, array($primaryVal)));
 
@@ -871,7 +874,7 @@ class MK_Db_PDO {
 
             throw new MK_Db_Exception('Preparowanie zapytania SQL zakończone niepowodzeniem.');
         }
-        return 'SELECT '.$param.' AS key_column FROM '.$from;
+        return "SELECT {$param} AS key_column FROM {$from}";
     }
 
     /**
@@ -1084,6 +1087,7 @@ class MK_Db_PDO {
 	 * @param string $name
 	 * @param array  $arguments
 	 *
+	 * @throws InvalidArgumentException
 	 * @return string
 	 */
 	private function _prepareSql($name, array $arguments) {
@@ -1240,6 +1244,21 @@ class MK_Db_PDO {
 		}
 
 		return $sql;
+	}
+
+	/**
+	 * Wstawia parametry do rejestru
+	 */
+	public static function setRegistryParams() {
+		$limit = MK_Validator::positiveIntegerArgument('limit', $_POST) ? (int) $_POST['limit'] : DB_DEFAULT_LIMIT;
+		$start = MK_Validator::positiveIntegerArgument('start', $_POST) ? (int) $_POST['start'] : DB_DEFAULT_START;
+		$sortDirection = MK_Validator::stringArgument('dir', $_POST) ? pg_escape_string($_POST['dir']) : DB_DEFAULT_SORT_DIRECTION;
+		$sortColumn = MK_Validator::stringArgument('sort', $_POST) ? pg_escape_string($_POST['sort']) : DB_DEFAULT_SORT_COLUMN;
+
+		MK_Registry::set('limit', $limit);
+		MK_Registry::set('start', $start);
+		MK_Registry::set('dir', $sortDirection);
+		MK_Registry::set('sort', $sortColumn);
 	}
 
 }
