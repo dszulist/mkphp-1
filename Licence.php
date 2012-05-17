@@ -19,6 +19,7 @@ class MK_Licence {
 	 *
 	 * @param string $licence
 	 *
+	 * @throws MK_Exception
 	 * @return string
 	 */
 	private function _expireDate($licence) {
@@ -40,6 +41,7 @@ class MK_Licence {
 	 * @param String $licence
 	 * @param String $statusInconsistencyLicenseKey
 	 *
+	 * @throws MK_Exception
 	 * @return bool
 	 */
 	function verify($licence, $statusInconsistencyLicenseKey) {
