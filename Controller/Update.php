@@ -35,25 +35,25 @@ class MK_Controller_Update {
 
 	/**
 	 * obecna licencja
-	 * @var null
+	 * @var String|null
 	 */
 	private $licence = null;
 
 	/**
 	 * obecna wersja
-	 * @var null
+	 * @var String|null
 	 */
 	private $currentVersion = null;
 
 	/**
 	 * dostepne wersje do upgradu
-	 * @var null
+	 * @var String|null
 	 */
 	private $allowVersion = null;
 
 	/**
 	 * numer najnowszej wersji z rejestru zmian
-	 * @var null
+	 * @var String|null
 	 */
 	private $releasedVersion = null;
 
@@ -69,6 +69,7 @@ class MK_Controller_Update {
 	);
 
 	/**
+	 * Konstruktor
 	 * @throws MK_Exception
 	 */
 	public function __construct() {
@@ -82,6 +83,8 @@ class MK_Controller_Update {
 	}
 
 	/**
+	 * Ustawia aktualny nr wersji aplikacji
+	 *
 	 * @param $v
 	 * @return MK_Controller_Update
 	 */
@@ -91,6 +94,7 @@ class MK_Controller_Update {
 	}
 
 	/**
+	 * Ustawia klucz licencji
 	 * @param $v
 	 * @return MK_Controller_Update
 	 */
@@ -100,6 +104,7 @@ class MK_Controller_Update {
 	}
 
 	/**
+	 * Ustawia nr wersji do której można wykonać aktualizację
 	 * @param $v
 	 * @return MK_Controller_Update
 	 */
@@ -109,6 +114,7 @@ class MK_Controller_Update {
 	}
 
 	/**
+	 * Ustawia nr wersji jaka została ostatnio wydana
 	 * @param $v
 	 * @return MK_Controller_Update
 	 */
@@ -118,6 +124,7 @@ class MK_Controller_Update {
 	}
 
 	/**
+	 * Ustawia czy zalogowany użytkownik to superadmin z możliwością wykonania aktualizacji z trunka
 	 * @param $v
 	 * @return MK_Controller_Update
 	 */
@@ -127,6 +134,7 @@ class MK_Controller_Update {
 	}
 
 	/**
+	 * Ustawia nazwe aplikacji w celu wprowadzania wpisów w mtm
 	 * @param $v
 	 * @return MK_Controller_Update
 	 */
