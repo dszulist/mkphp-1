@@ -11,9 +11,15 @@
  */
 class MK_Controller_Console {
 
-	// adres remote wbijany dla wywolania metoda CLI
-	private $_remoteAddress = '127.0.0.1';
+	/**
+	 * Adres remote wbijany dla wywolania metoda CLI
+	 * @var string
+	 */
+	private $remoteAddress = '127.0.0.1';
 
+	/**
+	 * Konstruktor
+	 */
 	public function __construct() {
 		$this->_setServerVariables();
 	}
@@ -22,10 +28,10 @@ class MK_Controller_Console {
 	 *  Ustawiam Remote_addr w przypadku gdy uruchamiam skrypt z konsoli
 	 */
 	private function _setServerVariables() {
-		putenv("REMOTE_ADDR=$this->_remoteAddress");
+		putenv("REMOTE_ADDR=$this->remoteAddress");
 		$_SERVER['HTTP_HOST'] = exec('hostname');
 		$_SERVER['SERVER_ADDR'] = 'localhost';
-		$_SERVER['REMOTE_ADDR'] = $this->_remoteAddress;
+		$_SERVER['REMOTE_ADDR'] = $this->remoteAddress;
 		$_SERVER['HTTP_USER_AGENT'] = 'madkom_console';
 		$_SERVER['REQUEST_URI'] = 'localhost';
 	}
@@ -55,7 +61,7 @@ class MK_Controller_Console {
      * @param array $argv
      */
 	public function applogs(array $argv) {
-		$debug = (isset($argv[0]) && $argv[0] == 'true') ? true : false;
+		$debug = (isset($argv[0]) && $argv[0] == 'true');
 		$logs = new MK_Logs(APP_PATH, $debug);
 		exit($logs->sendPackage() ? 'true' : 'false');
 	}
