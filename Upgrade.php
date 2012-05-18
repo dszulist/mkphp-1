@@ -369,8 +369,10 @@ Class MK_Upgrade extends MK_Db_PDO
 				self::writeToLog("BŁĄD PODZCZAS KOPIOWANIA PLIKU: {$source}  => {$destination}");
 			}
 		}
+		else {
+		    throw new exception('BŁĄD PODZCZAS KOPIOWANIA: ' . $source . ' NIE ISTNIEJE');
+		}
 
-		throw new exception("BŁĄD PODZCZAS KOPIOWANIA: {$source} NIE ISTNIEJE");
 
 	}
 
