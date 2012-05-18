@@ -273,8 +273,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	public static function prepareLogFile()
 	{
-		$logFile = MK_Registry::get("logFile");
-		if (empty($logFile)){
+		if (MK_Registry::isRegistered("logFile") == false){
 			MK_Registry::set("logFile", self::getUpgradeLogFolder() . DIRECTORY_SEPARATOR . self::getUpgradeBeginTime() . ".log");
 		}
 	}
