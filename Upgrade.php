@@ -370,7 +370,7 @@ Class MK_Upgrade extends MK_Db_PDO
 			}
 		}
 		else {
-		    throw new exception("BŁĄD PODZCZAS KOPIOWANIA: {$source} NIE ISTNIEJE");
+		    throw new Exception("BŁĄD PODZCZAS KOPIOWANIA: {$source} NIE ISTNIEJE");
 		}
 
 
