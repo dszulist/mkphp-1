@@ -437,7 +437,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	{
 		$res = $this->Execute('INSERT INTO upgrade_completed_task(app_version, patch_name) VALUES (?,?)', array($version, $patch_name));
 		if ($res == false) {
-			throw new Exception("BLAD PODCZAS DODAWANIA WYKONANEGO ZADANIA DO BAZY: {$this->db->ErrorMsg()}");
+			throw new Exception("BLAD PODCZAS DODAWANIA WYKONANEGO ZADANIA DO BAZY: {$this->getErrorMsg()}");
 		}
 	}
 
@@ -513,7 +513,7 @@ Class MK_Upgrade extends MK_Db_PDO
 													if (!empty($zawartosc)) {
 														$res = $this->Execute($zawartosc);
 														if ($res == false) {
-															throw new Exception($filesInfolderDatePath . DIRECTORY_SEPARATOR . $file . " " . $this->db->ErrorMsg());
+															throw new Exception($filesInfolderDatePath . DIRECTORY_SEPARATOR . $file . " " . $this->getErrorMsg());
 														} else {
 															$this->writeToLog("{$pathToFile} OK");
 														}
