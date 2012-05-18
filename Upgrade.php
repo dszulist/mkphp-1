@@ -41,14 +41,16 @@ Class MK_Upgrade extends MK_Db_PDO
 			self::setUpgradeBeginTime();
 			$this->begin();
 		} catch (Exception $e) {
-			$msg = "{$e->getMessage()} , Kod: {$e->getCode()}, Plik: {$e->getFile()}, Linia: {$e->getLine()}";
-			self::writeToLog($msg);
 			self::writeToLog('UPGRADE PRZERWANY!!!');
+			self::writeToLog($e->getMessage() . ', Kod: ' . $e->getCode() . ', Plik: ' . $e->getFile() . ', Linia: ' . $e->getLine());
+			self::writeToLog('Cofanie transakcji sql');
 			$this->transFail();
 			// ustawienie stanu aplikacji na działającą
+			self::writeToLog('Ustawianie aplikacji w stan: running');
 			$this->changeApplicationState('running');
+			self::writeToLog('Przywracanie backupu');
 			$this->restoreBackup();
-			die("false");
+			exit('false');
 		}
 	}
 
@@ -66,25 +68,26 @@ Class MK_Upgrade extends MK_Db_PDO
 		// ustawienie katalogu do plikow sql i parserow
 		$this->setUpgradeSourceFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'source');
 
-		$this->writeToLog('Ustanowienie połączenia do bazy danych');
+		self::writeToLog('Ustanowienie połączenia do bazy danych');
 		parent::__construct();
-		$this->writeToLog('Rozpoczynanie transakcji sql');
+		self::writeToLog('Rozpoczynanie transakcji sql');
 		$this->transStart();
 
 		// ustawienie stanu aplikacji na upgrade
-		$this->writeToLog('Ustawianie aplikacji w stan: upgrade');
+		self::writeToLog('Ustawianie aplikacji w stan: upgrade');
 		$this->changeApplicationState('upgrade');
 
 		// sprawdzenie licencji
 		$this->checkLicence();
-		self::writeToLog('UPGRADE ROZPOCZĘTY');
 
 		// czyszczenie sessji użytkowników
-		$this->writeToLog('Czyszczenie sesji użytkowników');
+		self::writeToLog('Czyszczenie sesji użytkowników');
 		$this->clearUserSessions();
 
-		// ustawienie glownego katalogu do upgradu
+		self::writeToLog('UPGRADE ROZPOCZĘTY');
 		$this->proceed();
+
+		// ustawienie glownego katalogu do upgradu
 		self::writeToLog('UPGRADE ZAKOŃCZONY');
 		$this->transComplete();
 
@@ -100,8 +103,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function changeApplicationState($state)
 	{
-
-		switch ($state) {
+		switch($state) {
 			case 'running':
 				removeDir('under_construction.txt');
 				break;
@@ -120,6 +122,30 @@ Class MK_Upgrade extends MK_Db_PDO
 		session_destroy();
 		removeDir(MK_DIR_SESSION);
 		@mkdir(MK_DIR_SESSION, 0755, true);
+	}
+
+	/**
+	 * Usunięcie komentarzy z kolumn i tabel
+	 * @throws Exception
+	 * @return
+	 */
+	private function clearDbComments() {
+		if($this->isDeveloper === true) {
+			self::writeToLog('Pomijanie usuwania komentarzy (developer)');
+			self::writeToLog('Nadanie uprawnień dla schematu, tabeli/widoku, sekwencji oraz funkcji/triggera (user:spirb)');
+			$this->Execute("SELECT grant_user_all('spirb', 'public'), grant_user_all('spirb', 'public_logs');");
+			return;
+		}
+		self::writeToLog('Usuwanie komentarzy w bazie danych');
+
+		$metaTables = $this->MetaTables('TABLES');
+		foreach($metaTables as $table) {
+			$this->Execute("COMMENT ON TABLE " . $table . " IS 'brak'");
+			$metaColumns = $this->MetaColumnNames($table, true, true);
+			foreach($metaColumns as $columnName) {
+				$this->Execute("COMMENT ON COLUMN " . $columnName . " IS 'brak'");
+			}
+		}
 	}
 
 	/**
@@ -442,10 +468,10 @@ Class MK_Upgrade extends MK_Db_PDO
 	private function checkLicence()
 	{
 		if($this->isDeveloper === true) {
-			$this->writeToLog('Pomijanie weryfikacji licencji (developer)');
+			self::writeToLog('Pomijanie weryfikacji licencji (developer)');
 			return;
 		}
-		$this->writeToLog('Weryfikacja licencji');
+		self::writeToLog('Weryfikacja licencji');
 
 		// Myk, dopóki nie będzie jednej tablicy konfiguracyjnej dla wszystkich aplikacji
 		switch(strtolower(APP_NAME)) {
