@@ -114,6 +114,24 @@ class MK_Db_PDO {
 	}
 
 	/**
+	 * Sprawdzenie czy tablica istnieje w bazie danych
+	 *
+	 * @param $tableName
+	 *
+	 * @return bool
+	 */
+	protected function tableExist($tableName) {
+		$sql = 'SELECT 1 FROM ' . $tableName;
+
+		$pdoObj = $this->db->prepare($sql);
+
+		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
+		$this->_debugToFile($sql);
+
+		return $pdoObj->execute();
+	}
+
+	/**
 	 * Wykonanie przygotowanego zapytania SQL. Nie są pobierane żadne dane.
 	 * Zwracany ilość zmienionych rekordów.
 	 *
