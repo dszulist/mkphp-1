@@ -24,12 +24,17 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private $patch = false;
 
-
 	/**
 	 * Sprawdzenie czy jest developerem
 	 * @var bool
 	 */
-	private $isDeveloper = false;
+	public $isDeveloper = false;
+
+	/**
+	 * Ignorowanie folderów/nazw
+	 * @var bool
+	 */
+	public $ignoreDir = array('.', '..', '.svn', '.idea');
 
 	/**
 	 * Konstruktor
@@ -70,7 +75,7 @@ Class MK_Upgrade extends MK_Db_PDO
 
 		self::writeToLog('Ustanowienie połączenia do bazy danych');
 		parent::__construct();
-		self::writeToLog('Rozpoczynanie transakcji sql');
+		self::writeToLog('Rozpoczynanie transakcji sql (BEGIN)');
 		$this->transStart();
 
 		// ustawienie stanu aplikacji na upgrade
@@ -87,12 +92,16 @@ Class MK_Upgrade extends MK_Db_PDO
 		self::writeToLog('UPGRADE ROZPOCZĘTY');
 		$this->proceed();
 
-		// ustawienie glownego katalogu do upgradu
-		self::writeToLog('UPGRADE ZAKOŃCZONY');
+		$this->clearDbComments();
+
+		self::writeToLog('Zamykanie transakcji sql (COMMIT)');
 		$this->transComplete();
 
 		// ustawienie stanu aplikacji na działającą
+		self::writeToLog('Ustawianie aplikacji w stan: running');
 		$this->changeApplicationState('running');
+
+		self::writeToLog('UPGRADE ZAKOŃCZONY');
 		die("true");
 	}
 
@@ -499,83 +508,80 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function proceed()
 	{
-		if ($this->getUpgradeSourceFolder()) {
+		if($this->getUpgradeSourceFolder()) {
 			//pobranie folderów wersji
 			$foldersVersion = scandir($this->getUpgradeSourceFolder());
-			if (count($foldersVersion) < 3) {
+			if(count($foldersVersion) < 3) {
 				throw new Exception("BRAK SQLi i PARSERÓW DO WYKONANIA");
 			}
 			$licznik = 1;
-			foreach ($foldersVersion as $folderVersion) {
-				if (!in_array($folderVersion, array('.', '..'))) {
-					//sprawdzenie czy jest poprawna nastepna wersja
-					$this->checkVersion(str_replace("_", "", $folderVersion), $licznik);
-					$licznik++;
-					self::writeToLog("BIEŻĄCA WERSJA {$folderVersion}");
-					// zapamiętanie która wersja jest upgradowana,
-					// potrzebne to jest do backupów
-					MK_Registry::set("currentVersion", str_replace("_", "", $folderVersion));
-					//pobranie folderów z datami w wersji
-					$foldersInVersion = scandir($this->getUpgradeSourceFolder() . DIRECTORY_SEPARATOR . $folderVersion);
-					if (!empty($foldersInVersion)) {
-						foreach ($foldersInVersion as $folderDate) {
-							if (!in_array($folderDate, array('.', '..'))) {
-								//pobranie plikow z folderów z datami w wersji
-								$filesInfolderDatePath = $this->getUpgradeSourceFolder() . DIRECTORY_SEPARATOR . $folderVersion . DIRECTORY_SEPARATOR . $folderDate;
-								$filesInfolderDate = scandir($filesInfolderDatePath);
-								if (!empty($filesInfolderDate)) {
-									foreach ($filesInfolderDate as $file) {
-										$pathToFile = $filesInfolderDatePath . DIRECTORY_SEPARATOR . $file;
-										// zadanie bylo juz wykonane
-										$completedUpgradeTaks = $this->getCompletedUpgradeTaks($folderVersion, $folderDate . DIRECTORY_SEPARATOR . $file);
-										if (!empty($completedUpgradeTaks)) {
-											continue;
-										}
-										if (is_file($pathToFile)) {
-											$fileName = explode(".", $file);
-											$extension = array_pop($fileName);
-											$fileName = implode(".", $fileName);
-											$setCompletedUpgradeTask = false;
-											// rozpoznawanie po typie
-											switch ($extension) {
-												default :
-												case 'sql':
-													$zawartosc = file_get_contents($pathToFile);
-													if (!empty($zawartosc)) {
-														$res = $this->Execute($zawartosc);
-														if ($res == false) {
-															throw new Exception($filesInfolderDatePath . DIRECTORY_SEPARATOR . $file . " " . $this->getErrorMsg());
-														} else {
-															self::writeToLog("{$pathToFile} OK");
-														}
-													} else {
-														self::writeToLog("{$pathToFile} PUSTA ZAWARTOŚĆ PLIKU");
-													}
-													// oznaczenie zadania jako wykonane
-													$setCompletedUpgradeTask = true;
-													unset($zawartosc);
-													break;
-												case 'php':
-													self::writeToLog("{$pathToFile} BEGIN");
-													// zapamiętanie scieżki zgrywanego pliku,
-													// aby później można było ją wykorzystać w includowanej klasie
-													MK_Registry::set("filesInfolderDatePath", $filesInfolderDatePath);
-													/** @noinspection PhpIncludeInspection */
-													include ($pathToFile);
-													// oznaczenie zadania jako wykonane
-													$setCompletedUpgradeTask = true;
-													self::writeToLog("{$pathToFile} END");
-													break;
-											}
-
-											if ($setCompletedUpgradeTask) {
-												$this->setCompletedUpgradeTask($folderVersion, $folderDate . DIRECTORY_SEPARATOR . $file);
-											}
-
-										}
-									}
+			foreach($foldersVersion as $folderVersion) {
+				if(in_array($folderVersion, $this->ignoreDir)) {
+					continue;
+				}
+				//sprawdzenie czy jest poprawna nastepna wersja
+				$this->checkVersion(str_replace("_", "", $folderVersion), $licznik);
+				$licznik++;
+				self::writeToLog("Bieżąca wersja: " . $folderVersion);
+				// zapamiętanie która wersja jest upgradowana,
+				// potrzebne to jest do backupów
+				MK_Registry::set("currentVersion", str_replace("_", "", $folderVersion));
+				//pobranie folderów z datami w wersji
+				$foldersInVersion = scandir($this->getUpgradeSourceFolder() . DIRECTORY_SEPARATOR . $folderVersion);
+				if(empty($foldersInVersion)) {
+					continue;
+				}
+				foreach($foldersInVersion as $folderDate) {
+					if(in_array($folderDate, $this->ignoreDir)) {
+						continue;
+					}
+					//pobranie plikow z folderów z datami w wersji
+					$filesInfolderDatePath = $this->getUpgradeSourceFolder() . DIRECTORY_SEPARATOR . $folderVersion . DIRECTORY_SEPARATOR . $folderDate;
+					$filesInfolderDate = scandir($filesInfolderDatePath);
+					if(empty($filesInfolderDate)) {
+						continue;
+					}
+					foreach($filesInfolderDate as $file) {
+						$pathToFile = $filesInfolderDatePath . DIRECTORY_SEPARATOR . $file;
+						// zadanie bylo juz wykonane
+						$completedUpgradeTaks = $this->getCompletedUpgradeTaks($folderVersion, $folderDate . DIRECTORY_SEPARATOR . $file);
+						if(!empty($completedUpgradeTaks) || !is_file($pathToFile)) {
+							continue;
+						}
+						$fileName = explode(".", $file);
+						$extension = array_pop($fileName);
+						$fileName = implode(".", $fileName);
+						$setCompletedUpgradeTask = false;
+						// rozpoznawanie po typie
+						switch($extension) {
+							default :
+							case 'sql':
+								self::writeToLog($pathToFile . ' BEGIN');
+								$zawartosc = file_get_contents($pathToFile);
+								if(!empty($zawartosc)) {
+									$affectedRows = $this->Execute($zawartosc);
+								} else {
+									self::writeToLog($pathToFile . ' PUSTA ZAWARTOŚĆ PLIKU');
 								}
-							}
+								// oznaczenie zadania jako wykonane
+								$setCompletedUpgradeTask = true;
+								unset($zawartosc);
+								self::writeToLog($pathToFile . ' END');
+								break;
+							case 'php':
+								self::writeToLog($pathToFile . ' BEGIN');
+								// zapamiętanie scieżki zgrywanego pliku,
+								// aby później można było ją wykorzystać w includowanej klasie
+								MK_Registry::set("filesInfolderDatePath", $filesInfolderDatePath);
+								/** @noinspection PhpIncludeInspection */
+								include ($pathToFile);
+								// oznaczenie zadania jako wykonane
+								$setCompletedUpgradeTask = true;
+								self::writeToLog($pathToFile . ' END');
+								break;
+						}
+						if($setCompletedUpgradeTask) {
+							$this->setCompletedUpgradeTask($folderVersion, $folderDate . DIRECTORY_SEPARATOR . $file);
 						}
 					}
 				}
