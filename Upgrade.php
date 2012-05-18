@@ -24,12 +24,19 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private $patch = false;
 
+
+	/**
+	 * Sprawdzenie czy jest developerem
+	 * @var bool
+	 */
+	private $isDeveloper = false;
+
 	/**
 	 * Konstruktor
 	 */
 	function __construct()
 	{
-		parent::__construct();
+		$this->isDeveloper = (defined('MK_DEVELOPER') && MK_DEVELOPER == true) || (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == 'developer');
 		try {
 			self::setUpgradeBeginTime();
 			$this->begin();
@@ -50,24 +57,30 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	public function begin()
 	{
-		// ustawienie stanu aplikacji na upgrade
-		$this->changeApplicationState('upgrade');
+		// ustawienie glownego katalogu do upgradu
+		$this->setUpgradeFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade');
+		// ustawienie katalogu do zapisywania logow
+		$this->setUpgradeLogFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'log');
+		// ustawienie katalogu do zapisywania backupu
+		$this->setUpgradeBackupFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . $this->getUpgradeBeginTime());
+		// ustawienie katalogu do plikow sql i parserow
+		$this->setUpgradeSourceFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'source');
+
+		$this->writeToLog('Ustanowienie połączenia do bazy danych');
+		parent::__construct();
+		$this->writeToLog('Rozpoczynanie transakcji sql');
 		$this->transStart();
 
-		// ustawienie glownego katalogu do upgradu
-		$this->setUpgradeFolder('upgrade');
-		// ustawienie katalogu do zapisywania logow
-		$this->setUpgradeLogFolder('upgrade' . DIRECTORY_SEPARATOR . 'log');
-		// ustawienie katalogu do zapisywania backupu
-		$this->setUpgradeBackupFolder('upgrade' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . $this->getUpgradeBeginTime());
-		// ustawienie katalogu do plikow sql i parserow
-		$this->setUpgradeSourceFolder('upgrade' . DIRECTORY_SEPARATOR . 'source');
+		// ustawienie stanu aplikacji na upgrade
+		$this->writeToLog('Ustawianie aplikacji w stan: upgrade');
+		$this->changeApplicationState('upgrade');
 
 		// sprawdzenie licencji
 		$this->checkLicence();
 		self::writeToLog('UPGRADE ROZPOCZĘTY');
 
 		// czyszczenie sessji użytkowników
+		$this->writeToLog('Czyszczenie sesji użytkowników');
 		$this->clearUserSessions();
 
 		// ustawienie glownego katalogu do upgradu
@@ -100,16 +113,17 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
-	 *
+	 * Czyszczenie sesji użytkowników
 	 */
 	private function clearUserSessions()
 	{
-		$session_path = 'temp' . DIRECTORY_SEPARATOR . 'sessions';
-		removeDir($session_path);
-		@mkdir($session_path, 0755, true);
+		session_destroy();
+		removeDir(MK_DIR_SESSION);
+		@mkdir(MK_DIR_SESSION, 0755, true);
 	}
 
 	/**
+	 * Backup pojedynczego pliku
 	 *
 	 * @param $file
 	 *
@@ -427,16 +441,27 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function checkLicence()
 	{
+		if($this->isDeveloper === true) {
+			$this->writeToLog('Pomijanie weryfikacji licencji (developer)');
+			return;
+		}
+		$this->writeToLog('Weryfikacja licencji');
 
-		$licence = $this->GetOne('SELECT get_app_license()');
+		// Myk, dopóki nie będzie jednej tablicy konfiguracyjnej dla wszystkich aplikacji
+		switch(strtolower(APP_NAME)) {
+			default: $licence = $this->GetOne('SELECT conf_value FROM system_config WHERE conf_key = ?', array('licence')); break;
+			case 'broker': $licence = $this->GetOne('SELECT conf_value FROM config WHERE conf_key = ?', array('bip_licence')); break;
+			case 'spirb': $licence = $this->GetOne('SELECT config_value FROM swpirb_config WHERE symbol = ?', array('spirb_licence')); break;
+			// (...)
+		}
+		// MYK
 
 		if (!empty($licence)) {
-
 			$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
 			if (strtotime($expireDate) < strtotime(date('Y-m-d'))) {
 				throw new Exception('Wygasło wsparcie techniczne. Proszę o kontakt z administratorem');
 			}
-			$generatedLicence = str_replace('-', '', $expireDate) . md5($expireDate . ' ' . exec('hostname') . ' ' . realpath(dirname(__FILE__)));
+			$generatedLicence = str_replace('-', '', $expireDate) . md5($expireDate . ' ' . exec('hostname') . ' ' . APP_PATH);
 			if (strlen($licence) != 40 || strcmp($generatedLicence, $licence) != 0) {
 				throw new Exception('Błąd krytyczny. Niezgodna sygnatura licencji!');
 			}
