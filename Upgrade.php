@@ -427,7 +427,8 @@ Class MK_Upgrade extends MK_Db_PDO
 	private function checkLicence()
 	{
 
-		$licence = $this->GetOne('SELECT conf_value FROM config WHERE conf_key = ?', array('bip_licence'));
+		$licence = $this->GetOne('SELECT get_app_license()');
+
 		if (!empty($licence)) {
 
 			$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
