@@ -206,7 +206,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		if (!is_dir($upgradeFolder)) {
 			mkdir($upgradeFolder);
 		}
-		MK_Registry::get("upgradeFolder", $upgradeFolder);
+		MK_Registry::set("upgradeFolder", $upgradeFolder);
 	}
 
 	/**
@@ -217,7 +217,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		if (!is_dir($upgradeLogFolder)) {
 			mkdir($upgradeLogFolder);
 		}
-		MK_Registry::get("upgradeLogFolder", $upgradeLogFolder);
+		MK_Registry::set("upgradeLogFolder", $upgradeLogFolder);
 	}
 
 	/**
@@ -228,7 +228,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		if (!is_dir($upgradeBackupFolder)) {
 			mkdir($upgradeBackupFolder, 0755, true);
 		}
-		MK_Registry::get("upgradeBackupFolder", $upgradeBackupFolder);
+		MK_Registry::set("upgradeBackupFolder", $upgradeBackupFolder);
 	}
 
 	/**
@@ -239,7 +239,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		if (!is_dir($upgradeSourceFolder)) {
 			mkdir($upgradeSourceFolder);
 		}
-		MK_Registry::get("upgradeSourceFolder", $upgradeSourceFolder);
+		MK_Registry::set("upgradeSourceFolder", $upgradeSourceFolder);
 	}
 
 	/**
