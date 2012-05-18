@@ -74,7 +74,7 @@ class MK_Db_PDO {
 	 */
 	public function __construct() {
 		// Uruchomienie licznika uruchamiania zapytania SQL
-		$timeStart = microtime(true);
+		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 
 		// Połączenie z bazą danych (singleton)
 		$this->db = MK_Db_PDO_Singleton::getInstance();
@@ -128,7 +128,7 @@ class MK_Db_PDO {
 		$params = array_values($params);
 
 		// Uruchomienie licznika uruchamiania zapytania SQL
-		$timeStart = microtime(true);
+		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 
 		// Jeżeli zostały podany parametry, to wykonujemy zapytanie przy pomocy prepare/execute
 		// W przeciwnym wypadku uruchiamy zapytanie poprzez exec(), które umożliwia wykonanie wielu zapytań SQL
@@ -177,7 +177,7 @@ class MK_Db_PDO {
 		// Ustawienie tablicy asocjacyjnej w odpowiedzi
 		$pdoObj->setFetchMode(PDO::FETCH_ASSOC);
 		// Uruchomienie licznika uruchamiania zapytania SQL
-		$timeStart = microtime(true);
+		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 
 		// Wykonanie zapytania SQL
 		if($pdoObj->execute($params) === false) {
@@ -223,7 +223,7 @@ class MK_Db_PDO {
 		// Ustawienie tablicy asocjacyjnej w odpowiedzi
 		$pdoObj->setFetchMode(PDO::FETCH_ASSOC);
 		// Uruchomienie licznika uruchamiania zapytania SQL
-		$timeStart = microtime(true);
+		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 
 		// Wykonanie zapytania SQL
 		if($pdoObj->execute($params) === false) {
@@ -268,7 +268,7 @@ class MK_Db_PDO {
 		// Ustawienie tablicy asocjacyjnej w odpowiedzi
 		$pdoObj->setFetchMode(PDO::FETCH_ASSOC);
 		// Uruchomienie licznika uruchamiania zapytania SQL
-		$timeStart = microtime(true);
+		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 
 		// Wykonanie zapytania SQL
 		if($pdoObj->execute($params) === false) {
@@ -316,7 +316,7 @@ class MK_Db_PDO {
 		// Ustawienie tablicy asocjacyjnej w odpowiedzi
 		$pdoObj->setFetchMode(PDO::FETCH_ASSOC);
 		// Uruchomienie licznika uruchamiania zapytania SQL
-		$timeStart = microtime(true);
+		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 
 		// Wykonanie zapytania SQL
 		if($pdoObj->execute($params) === false) {
@@ -579,7 +579,7 @@ class MK_Db_PDO {
 		$start = ($start === false) ? MK_Registry::get('start') : $start;
 		$primaryVal = (int) $primaryVal;
 
-		$timeStart = microtime(true);
+		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 		$resCount = $this->_getCount($sql, $params);
 		//jeżeli interesuje nas, na której stronie znajduje się rekord
 		if($primaryName !== null && $primaryVal > 0) {
