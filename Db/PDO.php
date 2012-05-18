@@ -113,6 +113,61 @@ class MK_Db_PDO {
 		return $this->GetOne('SELECT get_app_version()');
 	}
 
+
+	/**
+	 * Pobranie listy tabel/widoków w zależności od wybranej opcji i sposobu wyświetlenia.
+	 * Listę można filtrować przy pomocy `LIKE $mask`
+	 *
+	 * Przykłady:
+	 * // Wszystkie tabele, np. system_notification
+	 * $this->MetaTables('TABLE', false);
+	 * // Wszystkie tabele (pełna ścieżka), np. public.system_notification
+	 * $this->MetaTables('TABLE', true);
+	 * // Wszystkie tabele (pełna ścieżka, przefiltrowane), np. public.system_notification
+	 * $this->MetaTables('TABLE', true, 'system_%');
+	 * // Wszystkie widoki, np. view_users_1
+	 * $this->MetaTables('VIEW', false);
+	 * // Wszystkie widoki (pełna ścieżka), np. public.view_users_1
+	 * $this->MetaTables('VIEW', true);
+	 * // Wszystkie widoki (pełna ścieżka, przefiltrowane), np. public.view_users_1
+	 * $this->MetaTables('VIEW', true, 'view_%');
+	 * // Wszystkie tabele i widoki, np. system_notification, view_users_1
+	 * $this->MetaTables(false);
+	 * // Wszystkie tabele (pełna ścieżka), np. public.system_notification, public.view_users_1
+	 * $this->MetaTables(false, true);
+	 *
+	 * @param mixed          $tableType
+	 * @param bool           $showSchema
+	 * @param mixed          $mask
+	 *
+	 * @return array
+	 */
+	public function MetaTables($tableType = false, $showSchema = false, $mask = false) {
+		// SQL do pobierania listy tabel z bazy PostgreSQL
+		$sqlTables = "SELECT " . ($showSchema ? "schemaname||'.'||" : '') . "tablename"
+			. " FROM pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema')"
+			. ($mask !== false ? " AND tablename LIKE ?" : '');
+
+		// SQL do pobierania listy widoków z bazy PostgreSQL
+		$sqlViews = "SELECT " . ($showSchema ? "schemaname||'.'||" : '') . "viewname"
+			. " FROM pg_views WHERE schemaname NOT IN ('pg_catalog', 'information_schema')"
+			. ($mask !== false ? " AND viewname LIKE ?" : '');
+
+		switch($tableType{0}) {
+			case 'T': // TABLE
+				$sql = $sqlTables;
+				break;
+			case 'V': // VIEW
+				$sql = $sqlViews;
+				break;
+			default: // ALL
+				$sql = $sqlTables . ' UNION ' . $sqlViews;
+				break;
+		}
+
+		return $this->GetCol($sql, ($mask !== false ? array($mask) : array()));
+	}
+
 	/**
 	 * Sprawdzenie czy tablica istnieje w bazie danych
 	 *
