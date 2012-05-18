@@ -384,8 +384,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function getCompletedUpgradeTaks($version = '', $patch_name = '')
 	{
-		$tableExists = $this->MetaColumnNames('upgrade_completed_task');
-		if (empty($tableExists)) {
+		if (!$this->tableExist('upgrade_completed_task')) {
 			$this->Execute('CREATE TABLE upgrade_completed_task(
 						  id serial NOT NULL,
 						  app_version character varying(10) NOT NULL,
