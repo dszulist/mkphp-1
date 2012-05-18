@@ -25,23 +25,17 @@ Class MK_Upgrade extends MK_Db_PDO
 	private $patch = false;
 
 	/**
-	 * Przechowuje czas uruchomienia upgradu w formacie "Ymd_His"
-	 * @var string
-	 */
-	private $upgradeBeginTime = '';
-
-	/**
 	 * Konstruktor
 	 */
 	function __construct()
 	{
 		try {
-			$this->upgradeBeginTime = date("Ymd_His");
+			self::setUpgradeBeginTime();
 			$this->begin();
 		} catch (Exception $e) {
 			$msg = "{$e->getMessage()} , Kod: {$e->getCode()}, Plik: {$e->getFile()}, Linia: {$e->getLine()}";
-			$this->writeToLog($msg);
-			$this->writeToLog('UPGRADE PRZERWANY!!!');
+			self::writeToLog($msg);
+			self::writeToLog('UPGRADE PRZERWANY!!!');
 			$this->transFail();
 			// ustawienie stanu aplikacji na działającą
 			$this->changeApplicationState('running');
@@ -70,14 +64,14 @@ Class MK_Upgrade extends MK_Db_PDO
 
 		// sprawdzenie licencji
 		$this->checkLicence();
-		$this->writeToLog('UPGRADE ROZPOCZĘTY');
+		self::writeToLog('UPGRADE ROZPOCZĘTY');
 
 		// czyszczenie sessji użytkowników
 		$this->clearUserSessions();
 
 		// ustawienie glownego katalogu do upgradu
 		$this->proceed();
-		$this->writeToLog('UPGRADE ZAKOŃCZONY');
+		self::writeToLog('UPGRADE ZAKOŃCZONY');
 		$this->transComplete();
 
 		// ustawienie stanu aplikacji na działającą
@@ -95,10 +89,10 @@ Class MK_Upgrade extends MK_Db_PDO
 
 		switch ($state) {
 			case 'running':
-				$this->removeDir('under_construction.txt');
+				removeDir('under_construction.txt');
 				break;
 			case 'upgrade':
-				$this->removeDir('under_construction.txt');
+				removeDir('under_construction.txt');
 				file_put_contents('under_construction.txt', 'upgrade');
 				break;
 		}
@@ -110,7 +104,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	private function clearUserSessions()
 	{
 		$session_path = 'temp' . DIRECTORY_SEPARATOR . 'sessions';
-		$this->removeDir($session_path);
+		removeDir($session_path);
 		@mkdir($session_path, 0755, true);
 	}
 
@@ -127,7 +121,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		$debug_backtrace = "{$debug_backtrace['file']}: {$debug_backtrace ['line']}: {$debug_backtrace['class']} {$debug_backtrace['type']}{$debug_backtrace['function']}";
 
 		if (!file_exists($file)) {
-			$this->writeToLog("BACKUP PLIKU: {$file} PLIK NIE ISTNIEJE");
+			self::writeToLog("BACKUP PLIKU: {$file} PLIK NIE ISTNIEJE");
 			return true;
 		}
 
@@ -137,7 +131,7 @@ Class MK_Upgrade extends MK_Db_PDO
 
 		//wzgledna sciezka do pliku oryginalnego
 		$path = implode(DIRECTORY_SEPARATOR, $path);
-		$this->writeToLog("BACKUP PLIKU: {$file} OK {$debug_backtrace}");
+		self::writeToLog("BACKUP PLIKU: {$file} OK {$debug_backtrace}");
 		$dstToBackup = $this->getUpgradeBackupFolder() . DIRECTORY_SEPARATOR . $path;
 
 		if (!file_exists($dstToBackup . DIRECTORY_SEPARATOR . $file_name)) {
@@ -159,7 +153,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	private function restoreBackup()
 	{
 		$this->copyDirectory($this->getUpgradeBackupFolder(), '.');
-		$this->writeToLog('PRZYWRÓCENIE BACKUPU');
+		self::writeToLog('PRZYWRÓCENIE BACKUPU');
 	}
 
 	/**
@@ -167,7 +161,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	public function backupFolder($folder)
 	{
-		$this->writeToLog("BACKUP KATALOGU: {$folder} OK ");
+		self::writeToLog("BACKUP KATALOGU: {$folder} OK ");
 		$this->copyDirectory($folder, $this->getUpgradeBackupFolder() . DIRECTORY_SEPARATOR . $folder, false);
 	}
 
@@ -182,7 +176,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	/**
 	 * @return null
 	 */
-	private function getUpgradeLogFolder()
+	public static function getUpgradeLogFolder()
 	{
 		return MK_Registry::get("upgradeLogFolder");
 	}
@@ -248,30 +242,40 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
+	 * Ustawia wartość w rejestrze przechowującą czas uruchomienia upgradu w formacie "Ymd_His"
 	 * @return string
 	 */
-	function getUpgradeBeginTime()
+	public static function setUpgradeBeginTime()
 	{
-		return $this->upgradeBeginTime;
+		MK_Registry::set("upgradeBeginTime", date("Ymd_His"));
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function getUpgradeBeginTime()
+	{
+		return MK_Registry::get("upgradeBeginTime");
 	}
 
 	/**
 	 *
 	 */
-	public function writeToLog($text)
+	public static function writeToLog($text)
 	{
-		$this->prepareLogFile();
+		self::prepareLogFile();
 		file_put_contents(MK_Registry::get('logFile'), date("Y-m-d H:i:s") . ": " . $text . PHP_EOL, FILE_APPEND);
 	}
 
 	/**
-	 *
+	 * Ustawia nazwe pliku z logami
 	 */
-	private function prepareLogFile()
+	public static function prepareLogFile()
 	{
 		$logFile = MK_Registry::get("logFile");
-		if (empty($logFile))
-			MK_Registry::set("logFile", $this->getUpgradeLogFolder() . DIRECTORY_SEPARATOR . $this->getUpgradeBeginTime() . ".log");
+		if (empty($logFile)){
+			MK_Registry::set("logFile", self::getUpgradeLogFolder() . DIRECTORY_SEPARATOR . self::getUpgradeBeginTime() . ".log");
+		}
 	}
 
 	/**
@@ -314,32 +318,6 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
-	 * @param $dir
-	 * @todo uzyc innej funkcji z MKPHP
-	 * @return bool
-	 */
-	public function removeDir($dir)
-	{
-		if (!file_exists($dir)){
-			return true;
-		}
-
-		if (!is_dir($dir)){
-			return unlink($dir);
-		}
-
-		foreach (scandir($dir) as $item) {
-			if ($item == '.' || $item == '..'){
-				continue;
-			}
-			if (!$this->removeDir($dir . DIRECTORY_SEPARATOR . $item)){
-				return false;
-			}
-		}
-		return @rmdir($dir);
-	}
-
-	/**
 	 * @param $source
 	 * @param $destination
 	 * @param bool $replaceDestinationFile
@@ -372,7 +350,7 @@ Class MK_Upgrade extends MK_Db_PDO
 					$bool = copy($PathDir, $destination . DIRECTORY_SEPARATOR . $readdirectory);
 				}
 				if ($bool == false) {
-					$this->writeToLog("BŁĄD PODZCZAS KOPIOWANIA PLIKU: {$PathDir}  => {$destination}" . DIRECTORY_SEPARATOR . $readdirectory);
+					self::writeToLog("BŁĄD PODZCZAS KOPIOWANIA PLIKU: {$PathDir}  => {$destination}" . DIRECTORY_SEPARATOR . $readdirectory);
 				}
 			}
 			$directory->close();
@@ -388,7 +366,7 @@ Class MK_Upgrade extends MK_Db_PDO
 			}
 
 			if ($bool == false) {
-				$this->writeToLog("BŁĄD PODZCZAS KOPIOWANIA PLIKU: {$source}  => {$destination}");
+				self::writeToLog("BŁĄD PODZCZAS KOPIOWANIA PLIKU: {$source}  => {$destination}");
 			}
 		}
 
@@ -480,7 +458,7 @@ Class MK_Upgrade extends MK_Db_PDO
 					//sprawdzenie czy jest poprawna nastepna wersja
 					$this->checkVersion(str_replace("_", "", $folderVersion), $licznik);
 					$licznik++;
-					$this->writeToLog("BIEŻĄCA WERSJA {$folderVersion}");
+					self::writeToLog("BIEŻĄCA WERSJA {$folderVersion}");
 					// zapamiętanie która wersja jest upgradowana,
 					// potrzebne to jest do backupów
 					MK_Registry::set("currentVersion", str_replace("_", "", $folderVersion));
@@ -515,17 +493,17 @@ Class MK_Upgrade extends MK_Db_PDO
 														if ($res == false) {
 															throw new Exception($filesInfolderDatePath . DIRECTORY_SEPARATOR . $file . " " . $this->getErrorMsg());
 														} else {
-															$this->writeToLog("{$pathToFile} OK");
+															self::writeToLog("{$pathToFile} OK");
 														}
 													} else {
-														$this->writeToLog("{$pathToFile} PUSTA ZAWARTOŚĆ PLIKU");
+														self::writeToLog("{$pathToFile} PUSTA ZAWARTOŚĆ PLIKU");
 													}
 													// oznaczenie zadania jako wykonane
 													$setCompletedUpgradeTask = true;
 													unset($zawartosc);
 													break;
 												case 'php':
-													$this->writeToLog("{$pathToFile} BEGIN");
+													self::writeToLog("{$pathToFile} BEGIN");
 													// zapamiętanie scieżki zgrywanego pliku,
 													// aby później można było ją wykorzystać w includowanej klasie
 													MK_Registry::set("filesInfolderDatePath", $filesInfolderDatePath);
@@ -533,7 +511,7 @@ Class MK_Upgrade extends MK_Db_PDO
 													include ($pathToFile);
 													// oznaczenie zadania jako wykonane
 													$setCompletedUpgradeTask = true;
-													$this->writeToLog("{$pathToFile} END");
+													self::writeToLog("{$pathToFile} END");
 													break;
 											}
 
