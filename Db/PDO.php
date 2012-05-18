@@ -113,6 +113,19 @@ class MK_Db_PDO {
 		return $this->GetOne('SELECT get_app_version()');
 	}
 
+	/**
+	 * Odczytanie schematu z tablicy, np.
+	 * "public.system_table" => $tableName='system_table'; $schemaName='public';
+	 *
+	 * @param        $tableName
+	 * @param        $schemaName
+	 */
+	public function findSchema(&$tableName, &$schemaName) {
+		if(!$schemaName && ($pos = strpos($tableName, '.')) !== false) {
+			$schemaName = substr($tableName, 0, $pos);
+			$tableName = substr($tableName, $pos + 1);
+		}
+	}
 
 	/**
 	 * Pobranie listy tabel/widoków w zależności od wybranej opcji i sposobu wyświetlenia.
@@ -137,19 +150,19 @@ class MK_Db_PDO {
 	 * $this->MetaTables(false, true);
 	 *
 	 * @param mixed          $tableType
-	 * @param bool           $showSchema
+	 * @param bool           $showSchemaPath
 	 * @param mixed          $mask
 	 *
 	 * @return array
 	 */
-	public function MetaTables($tableType = false, $showSchema = false, $mask = false) {
+	public function MetaTables($tableType = false, $showSchemaPath = false, $mask = false) {
 		// SQL do pobierania listy tabel z bazy PostgreSQL
-		$sqlTables = "SELECT " . ($showSchema ? "schemaname||'.'||" : '') . "tablename"
+		$sqlTables = "SELECT " . ($showSchemaPath ? "schemaname||'.'||" : '') . "tablename"
 			. " FROM pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema')"
 			. ($mask !== false ? " AND tablename LIKE ?" : '');
 
 		// SQL do pobierania listy widoków z bazy PostgreSQL
-		$sqlViews = "SELECT " . ($showSchema ? "schemaname||'.'||" : '') . "viewname"
+		$sqlViews = "SELECT " . ($showSchemaPath ? "schemaname||'.'||" : '') . "viewname"
 			. " FROM pg_views WHERE schemaname NOT IN ('pg_catalog', 'information_schema')"
 			. ($mask !== false ? " AND viewname LIKE ?" : '');
 
@@ -166,6 +179,44 @@ class MK_Db_PDO {
 		}
 
 		return $this->GetCol($sql, ($mask !== false ? array($mask) : array()));
+	}
+
+	/**
+	 * Pobranie listy kolumn w danej tabeli.
+	 * Podanie drugiego parametru na true wyświetli tablicę z kluczami numerycznymi zamiast nazw kolumn wielkimi literami.
+	 *
+	 * @param      $tableName
+	 * @param bool $numericIndex
+	 * @param bool $showSchemaPath
+	 *
+	 * @return array
+	 */
+	public function MetaColumnNames($tableName, $numericIndex = false, $showSchemaPath = false) {
+		$this->findSchema($tableName, $schemaName);
+
+		$sql = "SELECT " . ($showSchemaPath ? "table_schema||'.'||table_name||'.'||" : '') . "column_name"
+			. " FROM information_schema.columns"
+			. " WHERE table_name = ?";
+		$params = array($tableName);
+
+		if(!empty($schemaName)) {
+			$sql .= " AND table_schema = ?";
+			$params[] = $schemaName;
+		}
+
+		$columnNames = $this->GetCol($sql, $params);
+
+		if($numericIndex === false) {
+			$columnArray = array();
+			foreach($columnNames as $columnName) {
+				$columnArray[strtoupper($columnName)] = $columnName;
+			}
+			return $columnArray;
+		}
+		else {
+			return $columnNames;
+		}
+
 	}
 
 	/**
