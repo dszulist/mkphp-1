@@ -113,7 +113,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 *
 	 * @param $file
 	 *
-	 * @throws exception
+	 * @throws Exception
 	 * @return bool
 	 */
 	public function backupFile($file)
@@ -141,7 +141,7 @@ Class MK_Upgrade extends MK_Db_PDO
 			}
 			$copy = copy($file, $dstToBackup . DIRECTORY_SEPARATOR . $file_name);
 			if ($copy == false) {
-				throw new exception("BACKUP PLIKU: {$file} ERROR {$debug_backtrace}");
+				throw new Exception("BACKUP PLIKU: {$file} ERROR {$debug_backtrace}");
 			}
 			return true;
 		}
@@ -291,7 +291,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 * @param $licznik
 	 *
 	 * @return bool
-	 * @throws exception
+	 * @throws Exception
 	 */
 	private function checkVersion($version, $licznik)
 	{
@@ -307,11 +307,11 @@ Class MK_Upgrade extends MK_Db_PDO
 			if (($currentVersion - 1) == $version) {
 				return true;
 			}
-			throw new exception("ZŁA WERSJA OCZEKIWANO: {$currentVersion} PODANO {$version}");
+			throw new Exception("ZŁA WERSJA OCZEKIWANO: {$currentVersion} PODANO {$version}");
 		}
 
 		if ($currentVersion != $version) {
-			throw new exception("ZŁA WERSJA OCZEKIWANO: {$currentVersion} PODANO {$version}");
+			throw new Exception("ZŁA WERSJA OCZEKIWANO: {$currentVersion} PODANO {$version}");
 		}
 
 		return false;
@@ -322,7 +322,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 * @param $destination
 	 * @param bool $replaceDestinationFile
 	 *
-	 * @throws exception
+	 * @throws Exception
 	 */
 	function copyDirectory($source, $destination, $replaceDestinationFile = true)
 	{
@@ -444,7 +444,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
-	 * @throws exception
+	 * @throws Exception
 	 */
 	private function proceed()
 	{
@@ -452,7 +452,7 @@ Class MK_Upgrade extends MK_Db_PDO
 			//pobranie folderów wersji
 			$foldersVersion = scandir($this->getUpgradeSourceFolder());
 			if (count($foldersVersion) < 3) {
-				throw new exception("BRAK SQLi i PARSERÓW DO WYKONANIA");
+				throw new Exception("BRAK SQLi i PARSERÓW DO WYKONANIA");
 			}
 			$licznik = 1;
 			foreach ($foldersVersion as $folderVersion) {
