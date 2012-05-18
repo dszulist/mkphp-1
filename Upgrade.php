@@ -29,6 +29,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	function __construct()
 	{
+		parent::__construct();
 		try {
 			self::setUpgradeBeginTime();
 			$this->begin();
