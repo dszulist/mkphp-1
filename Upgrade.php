@@ -147,7 +147,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		}
 		self::writeToLog('Usuwanie komentarzy w bazie danych');
 
-		$metaTables = $this->MetaTables('TABLES');
+		$metaTables = $this->MetaTables('TABLES', true);
 		foreach($metaTables as $table) {
 			$this->Execute("COMMENT ON TABLE {$table} IS 'brak'");
 			$metaColumns = $this->MetaColumnNames($table, true, true);
