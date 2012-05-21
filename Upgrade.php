@@ -69,7 +69,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		// ustawienie katalogu do zapisywania logow
 		$this->setUpgradeLogFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'log');
 		// ustawienie katalogu do zapisywania backupu
-		$this->setUpgradeBackupFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . $this->getUpgradeBeginTime());
+		$this->setUpgradeBackupFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . MK_Registry::get("upgradeBeginTime"));
 		// ustawienie katalogu do plikow sql i parserow
 		$this->setUpgradeSourceFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'source');
 
@@ -165,7 +165,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 * @throws Exception
 	 * @return bool
 	 */
-	public function backupFile($file)
+	public static function backupFile($file)
 	{
 		$debugBacktrace = debug_backtrace();
 		$debugBacktrace = array_shift($debugBacktrace);
@@ -183,7 +183,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		//wzgledna sciezka do pliku oryginalnego
 		$path = implode(DIRECTORY_SEPARATOR, $path);
 		self::writeToLog("BACKUP PLIKU: {$file} OK {$backtrace}");
-		$dstToBackup = $this->getUpgradeBackupFolder() . DIRECTORY_SEPARATOR . $path;
+		$dstToBackup = MK_Registry::get("upgradeBackupFolder") . DIRECTORY_SEPARATOR . $path;
 
 		if (!file_exists($dstToBackup . DIRECTORY_SEPARATOR . $file_name)) {
 			if (!is_dir($dstToBackup)) {
@@ -204,52 +204,20 @@ Class MK_Upgrade extends MK_Db_PDO
 	private function restoreBackup()
 	{
 		self::writeToLog('PRZYWRÓCENIE BACKUPU');
-		$this->copyDirectory($this->getUpgradeBackupFolder(), '.');
+		$this->copyDirectory(MK_Registry::get("upgradeBackupFolder"), '.');
 	}
 
 	/**
-	 *
+	 * @param $folder
 	 */
 	public function backupFolder($folder)
 	{
 		self::writeToLog("BACKUP KATALOGU: {$folder} OK ");
-		$this->copyDirectory($folder, $this->getUpgradeBackupFolder() . DIRECTORY_SEPARATOR . $folder, false);
+		$this->copyDirectory($folder, MK_Registry::get("upgradeBackupFolder") . DIRECTORY_SEPARATOR . $folder, false);
 	}
 
 	/**
-	 * @return null
-	 */
-	private function getUpgradeFolder()
-	{
-		return MK_Registry::get("upgradeFolder");
-	}
-
-	/**
-	 * @return null
-	 */
-	public static function getUpgradeLogFolder()
-	{
-		return MK_Registry::get("upgradeLogFolder");
-	}
-
-	/**
-	 * @return null
-	 */
-	private function getUpgradeBackupFolder()
-	{
-		return MK_Registry::get("upgradeBackupFolder");
-	}
-
-	/**
-	 * @return null
-	 */
-	function getUpgradeSourceFolder()
-	{
-		return MK_Registry::get("upgradeSourceFolder");
-	}
-
-	/**
-	 *
+	 * @param $upgradeFolder
 	 */
 	private function setUpgradeFolder($upgradeFolder)
 	{
@@ -260,7 +228,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
-	 *
+	 * @param $upgradeLogFolder
 	 */
 	private function setUpgradeLogFolder($upgradeLogFolder)
 	{
@@ -271,7 +239,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
-	 *
+	 * @param $upgradeBackupFolder
 	 */
 	private function setUpgradeBackupFolder($upgradeBackupFolder)
 	{
@@ -282,7 +250,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
-	 *
+	 * @param $upgradeSourceFolder
 	 */
 	function setUpgradeSourceFolder($upgradeSourceFolder)
 	{
@@ -302,15 +270,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
-	 * @return string
-	 */
-	public static function getUpgradeBeginTime()
-	{
-		return MK_Registry::get("upgradeBeginTime");
-	}
-
-	/**
-	 *
+	 * @param $text
 	 */
 	public static function writeToLog($text)
 	{
@@ -324,16 +284,8 @@ Class MK_Upgrade extends MK_Db_PDO
 	public static function prepareLogFile()
 	{
 		if (MK_Registry::isRegistered("logFile") == false){
-			MK_Registry::set("logFile", self::getUpgradeLogFolder() . DIRECTORY_SEPARATOR . "status.log");
+			MK_Registry::set("logFile", MK_Registry::get("upgradeLogFolder") . DIRECTORY_SEPARATOR . "status.log");
 		}
-	}
-
-	/**
-	 * @return null
-	 */
-	private function getLogFile()
-	{
-		return MK_Registry::get('logFile');
 	}
 
 	/**
@@ -509,9 +461,9 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function proceed()
 	{
-		if($this->getUpgradeSourceFolder()) {
+		if(MK_Registry::get("upgradeSourceFolder")) {
 			//pobranie folderów wersji
-			$foldersVersion = scandir($this->getUpgradeSourceFolder());
+			$foldersVersion = scandir(MK_Registry::get("upgradeSourceFolder"));
 			if(count($foldersVersion) < 3) {
 				throw new Exception("BRAK SQLi i PARSERÓW DO WYKONANIA");
 			}
@@ -528,7 +480,7 @@ Class MK_Upgrade extends MK_Db_PDO
 				// potrzebne to jest do backupów
 				MK_Registry::set("currentVersion", str_replace("_", "", $folderVersion));
 				//pobranie folderów z datami w wersji
-				$foldersInVersion = scandir($this->getUpgradeSourceFolder() . DIRECTORY_SEPARATOR . $folderVersion);
+				$foldersInVersion = scandir(MK_Registry::get("upgradeSourceFolder") . DIRECTORY_SEPARATOR . $folderVersion);
 				if(empty($foldersInVersion)) {
 					continue;
 				}
@@ -537,7 +489,7 @@ Class MK_Upgrade extends MK_Db_PDO
 						continue;
 					}
 					//pobranie plikow z folderów z datami w wersji
-					$filesInfolderDatePath = $this->getUpgradeSourceFolder() . DIRECTORY_SEPARATOR . $folderVersion . DIRECTORY_SEPARATOR . $folderDate;
+					$filesInfolderDatePath = MK_Registry::get("upgradeSourceFolder") . DIRECTORY_SEPARATOR . $folderVersion . DIRECTORY_SEPARATOR . $folderDate;
 					$filesInfolderDate = scandir($filesInfolderDatePath);
 					if(empty($filesInfolderDate)) {
 						continue;
