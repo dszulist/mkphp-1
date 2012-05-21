@@ -47,7 +47,7 @@ Class MK_Upgrade extends MK_Db_PDO
 			$this->begin();
 		} catch (Exception $e) {
 			self::writeToLog('UPGRADE PRZERWANY!!!');
-			self::writeToLog($e->getMessage() . ', Kod: ' . $e->getCode() . ', Plik: ' . $e->getFile() . ', Linia: ' . $e->getLine());
+			self::writeToLog("{$e->getMessage()}, Kod: {$e->getCode()}, Plik: {$e->getFile()}, Linia: {$e->getLine()}");
 			self::writeToLog('Cofanie transakcji sql');
 			$this->transFail();
 			// ustawienie stanu aplikacji na działającą
@@ -149,10 +149,10 @@ Class MK_Upgrade extends MK_Db_PDO
 
 		$metaTables = $this->MetaTables('TABLES');
 		foreach($metaTables as $table) {
-			$this->Execute("COMMENT ON TABLE " . $table . " IS 'brak'");
+			$this->Execute("COMMENT ON TABLE {$table} IS 'brak'");
 			$metaColumns = $this->MetaColumnNames($table, true, true);
 			foreach($metaColumns as $columnName) {
-				$this->Execute("COMMENT ON COLUMN " . $columnName . " IS 'brak'");
+				$this->Execute("COMMENT ON COLUMN {$columnName} IS 'brak'");
 			}
 		}
 	}
