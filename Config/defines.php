@@ -1,11 +1,4 @@
 <?php
-// Ścieżka do biblioteki MK(php)
-define('MK_PATH',		realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
-
-// Ścieżki do katalogów wykorzystywanych przez bibliotekę
-define('MK_DIR_TEMP',		defined('DIR_TEMP') ? DIR_TEMP : realpath(sys_get_temp_dir()));
-define('MK_DIR_SESSION',	defined('DIR_SESSION') ? DIR_SESSION : realpath(session_save_path()));
-define('MK_DIR_UPDATE_LOGS', APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'log');
 
 // Konfiguracja startowa aplikacji
 define('MK_LANG',			'pl');
@@ -17,10 +10,18 @@ define('MK_HTML_HEADER',	'Content-Type: text/html; charset=utf-8');
 define('MK_COOKIES_PATH',	dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost').'?'));
 define('MK_IS_CLI',			defined('STDIN'));
 define('MK_CHMOD_DIR',		0775);
-define('MK_EOL',            (!empty($_SERVER['SERVER_SOFTWARE'])) ? '<br/>' : PHP_EOL);
+define('MK_EOL',			(!empty($_SERVER['SERVER_SOFTWARE'])) ? '<br/>' : PHP_EOL);
+
+// Ścieżka do biblioteki MK(php)
+define('MK_PATH',			realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
+
+// Ścieżki do katalogów wykorzystywanych przez bibliotekę
+define('MK_DIR_TEMP',			defined('DIR_TEMP') ? DIR_TEMP : realpath(sys_get_temp_dir()));
+define('MK_DIR_SESSION',		defined('DIR_SESSION') ? DIR_SESSION : realpath(session_save_path()));
+define('MK_DIR_UPDATE_LOGS',	(defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'log');
 
 // Konfigruacja zgłaszania i zapisywania błędów
-define('MK_DEBUG',		        defined('APP_DEBUG') ? APP_DEBUG : false);
+define('MK_DEBUG',				defined('APP_DEBUG') ? APP_DEBUG : false);
 define('MK_DEVELOPER',			defined('DEVELOPER') ? DEVELOPER : false);
 define('MK_ERROR_JS_ENABLED',	defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
 
@@ -33,7 +34,7 @@ define('MTM_FILE_LOCK',		'/tmp/mtm_task.lock');
 
 // Ścieżki do aplikacji zewnętrznych
 define('EXEC_MINIFY',		'/opt/yuicompressor-2.4.6/build/yuicompressor-2.4.6.jar');
-define('EXEC_JAVA',         '/opt/java/bin/java');
+define('EXEC_JAVA',			'/opt/java/bin/java');
 
 // Domyślna konfiguracja systemu
 define('DB_DEFAULT_LIMIT',			40);
@@ -67,5 +68,4 @@ define('MK_PRECISION_FRACTION',	4); // wartość ułamkowa
  * Stałe pomocnicze:
  *	define('MK_DEBUG',			false);
  *	define('APP_ERROR_JS_ENABLED',	true);
- *
  */
