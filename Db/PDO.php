@@ -1183,12 +1183,16 @@ class MK_Db_PDO {
 	/**
 	 * Jeżeli w rejestrze nie ma ustawionej kolumny sortowania,
 	 * to ustawiamy ją na podstawie stałej SORT_COLUMN pochodzącej z klasy dziecka
+	 * @throws MK_Exception
 	 */
 	private function _prepareSortParam() {
 		if(!MK_Registry::isRegistered('sort') || MK_Registry::get('sort') === null) {
-			$const = get_class($this) . '::SORT_COLUMN';
-			if(defined($const)) {
-				MK_Registry::set('sort', constant($const));
+			$constName = get_class($this) . '::SORT_COLUMN';
+			$constValue = @constant($constName);
+			if(is_null($constValue)) {
+				throw new MK_Exception('Brak zdefiniowanej stałej w klasie ' . $constName);
+			} else {
+				MK_Registry::set('sort', $constValue);
 			}
 		}
 	}
