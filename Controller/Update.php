@@ -12,11 +12,6 @@
 class MK_Controller_Update {
 
 	/**
-	 *
-	 */
-	CONST LOG_TYPE = 0;
-
-	/**
 	 * Nazwa aplikacji
 	 * @var string
 	 */
@@ -73,7 +68,6 @@ class MK_Controller_Update {
 	 * @throws MK_Exception
 	 */
 	public function __construct() {
-
 		$this->preparePatchTaskList();
 
 		//@TODO sprawdzanie czy konto jest z uprawnieniami administratora
@@ -170,7 +164,8 @@ class MK_Controller_Update {
 	}
 
 	/**
-	 *  Ustawia dane w tabeli przechowującej możliwości do aktualizacji
+	 * Ustawia dane w tabeli przechowującej możliwości do aktualizacji
+	 * @return bool
 	 */
 	public function preparePatchTaskList() {
 		$this->patchTaskList['upgrade'] .= $this->allowVersion;
@@ -198,6 +193,8 @@ class MK_Controller_Update {
 			unset($this->patchTaskList['patch_dev']);
 			unset($this->patchTaskList['patch_rc']);
 		}
+
+		return true;
 	}
 
 	/**
@@ -249,7 +246,7 @@ class MK_Controller_Update {
 		fwrite($fh, "{$stringData} {$phpVersion} \n");
 		fclose($fh);
 
-		//@TODO dodawanie do logów : TableLogs::addLogDeprecated(self::LOG_TYPE, 'updateApplication', array( 'type' => $args['type'], 'msg' => $msg ));
+		//@TODO dodawanie do logów : TableLogs::addLogDeprecated(0, 'updateApplication', array( 'type' => $args['type'], 'msg' => $msg ));
 
 		return array(
 			"type" => $args['type'],
@@ -270,7 +267,8 @@ class MK_Controller_Update {
 	 * Odczytuje plik i zwraca wynik w postaci tablicy
 	 * @return Array
 	 */
-	public function readProgressFile() {
+	public function
+	readProgressFile() {
 		$rows = array();
 		if(file_exists(APP_STATUS_LOG)) {
 			preg_match_all($this->logRegExp, file_get_contents(APP_STATUS_LOG), $row);
