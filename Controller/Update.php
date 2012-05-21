@@ -267,8 +267,7 @@ class MK_Controller_Update {
 	 * Odczytuje plik i zwraca wynik w postaci tablicy
 	 * @return Array
 	 */
-	public function
-	readProgressFile() {
+	public function readProgressFile() {
 		$rows = array();
 		if(file_exists(APP_STATUS_LOG)) {
 			preg_match_all($this->logRegExp, file_get_contents(APP_STATUS_LOG), $row);
