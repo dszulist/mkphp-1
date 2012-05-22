@@ -124,7 +124,7 @@ class MK_Error {
 		$userId = 'Brak informacji';
 		$userLogin = 'Brak informacji';
 
-		$devMessage = " Host:\t{$_SERVER['HTTP_HOST']}\n"
+		$devMessage = " Host:\t" . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'brak danych') . "\n"
 			. " Plik:\t{$file}\n"
 			. " Linia:\t{$line}\n"
 			. "Baza danych:\n"
@@ -135,9 +135,9 @@ class MK_Error {
 			. " Id:\t{$userId}\n"
 			. " Login:\t{$userLogin}\n"
 			. "Informacje dodatkowe:\n"
-			. " REMOTE_ADDR:\t{$_SERVER['REMOTE_ADDR']}\n"
-			. " SERVER_ADDR:\t{$_SERVER['SERVER_ADDR']}\n"
-			. " REQUEST_URI:\t{$_SERVER['REQUEST_URI']}\n"
+			. " REMOTE_ADDR:\t" . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'brak danych') . "\n"
+			. " SERVER_ADDR:\t" . (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'brak danych') . "\n"
+			. " REQUEST_URI:\t" . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'brak danych') . "\n"
 			. " USER_AGENT:\t" . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'brak danych') . "\n";
 
 		if(defined('APP_PATH')) {
