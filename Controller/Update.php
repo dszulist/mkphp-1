@@ -206,7 +206,7 @@ class MK_Controller_Update {
 	 * @throws MK_Exception
 	 * @return array
 	 */
-	protected function run(array $args) {
+	public function run(array $args) {
 		if(!array_key_exists('type', $args) || empty($args['type'])){
 			throw new MK_Exception('Nie podano typu aktualizacji');
 		}

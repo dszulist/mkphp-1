@@ -101,4 +101,41 @@ class MK_Controller_Console {
 		exit;
 	}
 
+	/**
+	 * Uruchamia aktualizacje (dodaje zadanie do kolejki)
+	 *	 php index.php -mupdate [arg]
+	 *
+	 * @param array $args - parametry przekazywane w wywołaniu
+	 */
+	public function update(array $args) {
+		if(!isset($args[0])) {
+			die('Brak argumentu aktualizacji');
+		}
+
+		$update = new MK_Controller_Update();
+		$optionList = $update->getPatchTaskList();
+
+		if(!array_key_exists($args[0], $optionList)) {
+			echo PHP_EOL;
+			echo "Nieprawidłowy argument: " . $args[0] . PHP_EOL;
+			echo PHP_EOL;
+			echo "Wywołanie: php index.php -mupdate [arg]" . PHP_EOL;
+			echo " Dostępne argumenty to: " . PHP_EOL;
+			foreach($optionList as $k => $v) {
+				echo "\t" . $k . " - " . $v . PHP_EOL;
+			}
+			echo PHP_EOL . PHP_EOL;
+			die;
+		} else {
+			$update->run(array("type" => $args[0]));
+			//$updates->readProgressFileCLI();
+			echo "Pomyślnie dodano zadanie do kolejki." . PHP_EOL;
+			echo "Aby widzieć postęp wykonaj poniższą komende:" . PHP_EOL;
+			echo "\ttail -f " . MTM_FILE_LOCK . PHP_EOL;
+			echo "Szczegółowy podgląd zdarzeń:" . PHP_EOL;
+			echo "\ttail -n 25 -f " . MTM_FILE_LOG . PHP_EOL;
+			die;
+		}
+	}
+
 }
