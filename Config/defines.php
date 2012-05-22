@@ -23,6 +23,7 @@ define('MK_DIR_UPDATE_LOGS',	(defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARAT
 // Konfigruacja zgłaszania i zapisywania błędów
 define('MK_DEBUG',				defined('APP_DEBUG') ? APP_DEBUG : false);
 define('MK_DEVELOPER',			defined('DEVELOPER') ? DEVELOPER : false);
+define('MK_TEST',				defined('APP_TEST') ? APP_TEST : false);
 define('MK_ERROR_JS_ENABLED',	defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
 
 // Ścieżki do plików wykorzystywanych przez aplikację
