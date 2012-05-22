@@ -44,7 +44,7 @@ class MK {
 		if (empty($argv)) {
 			return;
 		}
-		if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+		if (version_compare(PHP_VERSION, '5.3.0', '>=') && APP_NAME !== 'spirb') { // Tymczasowy "myk" dla SPiRB-a z APP_NAME
 			$consoleController = ucfirst(APP_NAME) . '\Controller\Console';
 		} else {
 			$consoleController = ucfirst(APP_NAME) . '_Controller_Console';
@@ -69,19 +69,18 @@ class MK {
 			return;
 		}
 
-		foreach ($optArray as $optKey => $optValue) {
-			switch ($optKey) {
+		foreach($optArray as $optKey => $optValue) {
+			switch($optKey) {
 				case 'm':
-					if (is_array($optValue)) {
-						foreach ($optValue as $value) {
-
-							if (!method_exists($consoleController, $value)) {
+					if(is_array($optValue)) {
+						foreach($optValue as $value) {
+							if(!method_exists($consoleController, $value)) {
 								exit("Brak funkcji {$value}\n");
 							}
 							$consoleController->{$value}($optArgv);
 						}
 					} else {
-						if (!method_exists($consoleController, $optValue)) {
+						if(!method_exists($consoleController, $optValue)) {
 							exit("Brak funkcji {$optValue}\n");
 						}
 						$consoleController->{$optValue}($optArgv);
