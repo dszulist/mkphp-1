@@ -114,6 +114,14 @@ class MK_Db_PDO {
 	}
 
 	/**
+	 * Zwraca najnowszą wydaną wersje w rejestrze zmian
+	 * @return String
+	 */
+	public function getReleasedVersion(){
+		return $this->GetOne('SELECT subject FROM system_version ORDER BY id DESC LIMIT 1');
+	}
+
+	/**
 	 * Odczytanie schematu z tablicy, np.
 	 * "public.system_table" => $tableName='system_table'; $schemaName='public';
 	 *
