@@ -138,28 +138,29 @@ class MK_Controller_Update {
 	}
 
 	/**
+	 * Ustawia dane w tabeli przechowującej możliwości do aktualizacji
+	 * @return array
+	 */
+	public function getPatchTaskList() {
+		return $this->patchTaskList;
+	}
+
+	/**
 	 * Tworzy i zwraca stora do comboboxa z mozliwosciami aktualizacji
 	 * W przypadku podania parametru jako true zwróci tablice z opcjami zamiast stora
 	 *
 	 * @ruleDescription Tworzy i zwraca stora do comboboxa z mozliwosciami aktualizacji
 	 * @ruleTextName Tworzy i zwraca stora do comboboxa z mozliwosciami aktualizacji
 	 *
-	 * @param bool $returnArray
-	 *
-	 * @internal param \array (default:false) $czy ma zwrócić tablice z kluczami opcji i wartościami opisowymi
+	 * @param $args
 	 *
 	 * @return Array
 	 */
-	public function getPatchComboStore($returnArray = false) {
-		if($returnArray === true) {
-			return $this->patchTaskList;
-		}
-
+	public function getPatchComboStore($args) {
 		$store = array();
 		foreach($this->patchTaskList as $key => $val) {
 			$store[] = array("name" => $key, "description" => $val);
 		}
-
 		return $store;
 	}
 
