@@ -25,7 +25,7 @@ class MK_Filter_Html {
 	 */
 	public static function getInstance() {
 		if (!is_object(self::$_singleton)) {
-			require_once(DIR_LIBS . DIRECTORY_SEPARATOR . 'htmlpurifier' . DIRECTORY_SEPARATOR . 'HTMLPurifier.auto.php');
+			require_once(MK_DIR_VENDORS . DIRECTORY_SEPARATOR . 'htmlpurifier' . DIRECTORY_SEPARATOR . 'HTMLPurifier.auto.php');
 
 			$config = HTMLPurifier_Config::createDefault();
 			$config->set('Core.Encoding', 'UTF-8');
