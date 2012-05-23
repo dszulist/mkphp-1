@@ -1197,11 +1197,7 @@ class MK_Db_PDO {
 		if(!MK_Registry::isRegistered('sort') || MK_Registry::get('sort') === null) {
 			$constName = get_class($this) . '::SORT_COLUMN';
 			$constValue = @constant($constName);
-			if(is_null($constValue)) {
-				throw new MK_Exception('Brak zdefiniowanej stałej w klasie ' . $constName);
-			} else {
-				MK_Registry::set('sort', $constValue);
-			}
+			MK_Registry::set('sort', is_null($constValue) ? null : $constValue);
 		}
 	}
 
