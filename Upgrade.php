@@ -43,6 +43,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	{
 		$this->isDeveloper = (defined('MK_DEVELOPER') && MK_DEVELOPER == true) || (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == 'developer');
 		try {
+			self::writeToLog('URUCHAMIANIE PROCESU AKTUALIZACJI');
 			self::setUpgradeBeginTime();
 			$this->begin();
 		} catch (Exception $e) {
