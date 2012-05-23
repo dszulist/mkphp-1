@@ -43,7 +43,6 @@ Class MK_Upgrade extends MK_Db_PDO
 	{
 		$this->isDeveloper = (defined('MK_DEVELOPER') && MK_DEVELOPER == true) || (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == 'developer');
 		try {
-			self::writeToLog('URUCHAMIANIE PROCESU AKTUALIZACJI');
 			self::setUpgradeBeginTime();
 			$this->begin();
 		} catch (Exception $e) {
@@ -74,6 +73,7 @@ Class MK_Upgrade extends MK_Db_PDO
 		// ustawienie katalogu do plikow sql i parserow
 		$this->setUpgradeSourceFolder(APP_PATH . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR . 'source');
 
+		self::writeToLog('URUCHAMIANIE PROCESU AKTUALIZACJI');
 		self::writeToLog('Ustanowienie połączenia do bazy danych');
 		parent::__construct();
 		self::writeToLog('Rozpoczynanie transakcji sql (BEGIN)');
