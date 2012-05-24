@@ -122,6 +122,16 @@ class MK_Db_PDO {
 	}
 
 	/**
+	 * Zwraca tablicę z ostatnio wgranymi aktualizacjami
+	 *
+	 * @param int $limit
+	 * @return array
+	 */
+	public function getCompletedTask($limit=10){
+		return $this->GetRows('SELECT * FROM upgrade_completed_task ORDER BY id DESC LIMIT ?', array($limit));
+	}
+
+	/**
 	 * Odczytanie schematu z tablicy, np.
 	 * "public.system_table" => $tableName='system_table'; $schemaName='public';
 	 *
