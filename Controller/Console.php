@@ -104,13 +104,22 @@ class MK_Controller_Console {
 				'MTM_FILE_LOG' => MTM_FILE_LOG,
 				'MTM_FILE_LOCK' => MTM_FILE_LOCK
 			), PHP_EOL . '### MTM ###');
-			// ### LAST 5 UPGRADE COMPLETED TASK ###
+			// ### LAST 5 UPGRADE COMPLETED TASK [app_version;patch_name;createdate] ###
 			$rows = $db->getCompletedTask(5);
 			$completedTask = array();
-			foreach($rows as $i=>$row) {
-				$completedTask['LAST_COMPLETED['.$i.']'] = $row['app_version'] . '|' . $row['patch_name'] . '|' . $row['createdate'];
+			foreach($rows as $row) {
+				$completedTask['UPGRADE_COMPLETED['.$row['id'].']'] = "{$row['app_version']};{$row['patch_name']};{$row['createdate']}";
 			}
-			$this->output($completedTask, PHP_EOL . '### LAST 5 UPGRADE COMPLETED TASK ###');
+			$this->output($completedTask, PHP_EOL . '### LAST 5 UPGRADE COMPLETED TASK [app_version;patch_name;createdate] ###');
+			// ### LAST 5 UPGRADE LOGS ###
+			$rows = glob(MK_DIR_UPDATE_LOGS . DIRECTORY_SEPARATOR . '*.log');
+			$rows = array_reverse(array_slice($rows, -5));
+			$upgradeLogs = array();
+			foreach($rows as $i=>$row) {
+				$lastLine = exec(('tail -n 1 '. $row));
+				$upgradeLogs['UPGRADE_LOGS['.$i.']'] = "{$row};\n\t{$lastLine}";
+			}
+			$this->output($upgradeLogs, PHP_EOL . '### LAST 5 UPGRADE LOGS ###');
 		}
 		exit;
 	}
