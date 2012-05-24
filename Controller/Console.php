@@ -5,9 +5,9 @@
  *
  * Klasa do obsługi wywoływania aplikacji z lini polecen (CLI)
  *
- * @category	MK_Controller
+ * @category    MK_Controller
  * @package     MK_Controller_Console
- * @author	bskrzypkowiak
+ * @author    bskrzypkowiak
  */
 class MK_Controller_Console {
 
@@ -41,7 +41,7 @@ class MK_Controller_Console {
 		if(!empty($headerText)) {
 			echo $headerText . PHP_EOL;
 		}
-		foreach($arr as $k=>$v) {
+		foreach($arr as $k => $v) {
 			echo $k . '="' . $v . '"' . PHP_EOL;
 		}
 		if(!empty($footerText)) {
@@ -49,24 +49,26 @@ class MK_Controller_Console {
 		}
 	}
 
-    /**
-     * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
-     *     php index.php -mapplogs
-     * @param array $argv
-     */
+	/**
+	 * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
+	 *     php index.php -mapplogs
+	 *
+	 * @param array $argv
+	 */
 	public function applogs(array $argv) {
 		$debug = (isset($argv[0]) && $argv[0] == 'true');
 		$logs = new MK_Logs(APP_PATH, $debug);
 		exit($logs->sendPackage() ? 'true' : 'false');
 	}
 
-    /**
-     * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
-     *     php index.php -mappinfo
+	/**
+	 * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
+	 *     php index.php -mappinfo
 	 * Szczegółowy raport z dodatkowymi informacjami
-     *     php index.php -mappinfo true
-     * @param array $argv
-     */
+	 *     php index.php -mappinfo true
+	 *
+	 * @param array $argv
+	 */
 	public function appinfo(array $argv) {
 		$db = new MK_Db_PDO();
 		$this->output(array(
@@ -103,31 +105,29 @@ class MK_Controller_Console {
 
 	/**
 	 * Uruchamia aktualizacje (dodaje zadanie do kolejki)
-	 *	 php index.php -mupdate [arg]
+	 *     php index.php -mupdate [arg]
 	 *
-	 * @param array $args - parametry przekazywane w wywołaniu
+	 * @param array                 $args - parametry przekazywane w wywołaniu
+	 * @param \MK_Controller_Update $update
 	 */
-	public function update(array $args) {
-		if(!isset($args[0])) {
-			die('Brak argumentu aktualizacji');
-		}
+	public function execUpdate(array $args, MK_Controller_Update $update) {
+		$type = isset($args[0]) ? $args[0] : null;
 
-		$update = new MK_Controller_Update();
 		$optionList = $update->getPatchTaskList();
 
-		if(!array_key_exists($args[0], $optionList)) {
+		if(!array_key_exists($type, $optionList)) {
 			echo PHP_EOL;
-			echo "Nieprawidłowy argument: " . $args[0] . PHP_EOL;
+			echo 'Nieprawidłowy typ aktualizacji: "' . $type . '"' . PHP_EOL;
 			echo PHP_EOL;
-			echo "Wywołanie: php index.php -mupdate [arg]" . PHP_EOL;
-			echo " Dostępne argumenty to: " . PHP_EOL;
+			echo 'Wywołanie: php index.php -mupdate [arg]' . PHP_EOL;
+			echo ' Dostępne argumenty to: ' . PHP_EOL;
 			foreach($optionList as $k => $v) {
 				echo "\t" . $k . " - " . $v . PHP_EOL;
 			}
 			echo PHP_EOL . PHP_EOL;
 			die;
 		} else {
-			$update->run(array("type" => $args[0]));
+			$update->run(array("type" => $type));
 			//$updates->readProgressFileCLI();
 			echo "Pomyślnie dodano zadanie do kolejki." . PHP_EOL;
 			echo "Aby widzieć postęp wykonaj poniższą komende:" . PHP_EOL;
