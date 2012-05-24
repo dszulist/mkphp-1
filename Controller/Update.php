@@ -68,6 +68,20 @@ class MK_Controller_Update {
 	 * @throws MK_Exception
 	 */
 	public function __construct() {
+		if(is_null($this->currentVersion)) {
+			throw new MK_Exception('Nieustawione parametry wejściowe dla MK_Controller_Update');
+			// Przykładowa konfiguracja dla SPiRB-a
+//			$configDb = new ConfigDb();
+//			$this
+//				->setAppVersion($configDb->getAppVersion()) // SELECT get_app_version();
+//				->setAppName(APP_NAME)
+//				->setLicense($configDb->getValue('spirb_licence'))
+//				->setAllowedVersion($configDb->getValue('allow_version_to_upgrade')) // SELECT config_value FROM swpirb_config WHERE symbol = 'allow_version_to_upgrade';
+//				->setReleasedVersion($configDb->getReleasedVersion()) // SELECT subject FROM system_version ORDER BY id DESC;
+//				->setSuperAdmin(MK_IS_CLI === false ? UserSingleton::getInstance()->getCurrentUserInstance()->isSuperAdmin() : false);
+//			parent::__construct();
+		}
+
 		$this->preparePatchTaskList();
 
 		//@TODO sprawdzanie czy konto jest z uprawnieniami administratora
