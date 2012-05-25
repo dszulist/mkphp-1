@@ -92,17 +92,11 @@ class MK_Validator {
 	 * @return boolean
 	 */
 	public static function positiveFloatArgument($argName, array $args, $canBeZero = false) {
-
 		$isValid = self::isDefined($argName, $args);
-		$args[$argName] = str_replace(',', '.', $args[$argName]);
-
-		if ($isValid === true && (((float) $args[$argName] <= 0 && $canBeZero === false)
-				|| ((float) $args[$argName] < 0 && $canBeZero === true))) {
-
-			$isValid = false;
+		if ($isValid === true) {
+			$compareValue = bccomp(str_replace(',', '.', $args[$argName]), 0); // Większe od zera = 1, równe zero = 0
+			$isValid = (($canBeZero === false && $compareValue == 1) || ($canBeZero === true && $compareValue >= 0)) ? true : false;
 		}
-
-
 		return $isValid;
 	}
 
