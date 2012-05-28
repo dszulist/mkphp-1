@@ -156,8 +156,10 @@ class MK_Controller_Console {
 			echo "Pomyślnie dodano zadanie do kolejki." . PHP_EOL;
 			echo "Aby widzieć postęp wykonaj poniższą komende:" . PHP_EOL;
 			echo "\ttail -f " . MTM_FILE_LOCK . PHP_EOL;
-			echo "Szczegółowy podgląd zdarzeń:" . PHP_EOL;
+			echo "Szczegółowy podgląd zdarzeń (MTM):" . PHP_EOL;
 			echo "\ttail -n 25 -f " . MTM_FILE_LOG . PHP_EOL;
+			echo "Szczegółowy podgląd zdarzeń (aplikacja):" . PHP_EOL;
+			echo "\ttail -n 25 -f " . APP_STATUS_LOG . PHP_EOL;
 			die;
 		}
 	}
