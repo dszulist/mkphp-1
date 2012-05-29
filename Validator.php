@@ -21,7 +21,7 @@ class MK_Validator {
      * @return bool
      */
 	public static function isDefined($argName, array $args) {
-		return (array_key_exists($argName, $args));
+		return isset($args[$argName]);
 	}
 
 	/**
