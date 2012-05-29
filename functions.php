@@ -39,20 +39,23 @@ function bcfloor($number) {
 /**
  * Rounds a bc-string-value half up
  * BC MATH (Binary Calculator - numbers of any size and precision, represented as strings)
- *
- * @param string $number
+ * $number = '120.00';  bcround($number, 2) = 120.00;
+ * $number = '120.5555';  bcround($number, 2) = 120.56;
+ * $number = '120,5555';  bcround($number, 2) = 120.56;
+ * @param string $number np 120.00 , 120.5555, 10,9989393
  * @param integer $precision (default:0)
  * @return string
  */
 function bcround($number, $precision = 0) {
-	$number = rtrim($number, '.0');
-	if (strpos($number, '.') !== false) {
-		if ($number[0] != '-') {
-			return bcadd($number, '0.' . str_repeat('0', $precision) . '5', $precision);
-		}
-		return bcsub($number, '0.' . str_repeat('0', $precision) . '5', $precision);
-	}
-	return $number;
+    if(strpos($number, ',') !== false) {
+        $number = str_replace(array('.', ','), array('', '.'), $number);
+    }
+    if (false !== ($pos = strpos($number, '.')) && (strlen($number) - $pos - 1) > $precision) {
+        $zeros = str_repeat("0", $precision);
+        return bcadd($number, "0.{$zeros}5", $precision);
+    } else {
+        return $number;
+    }
 }
 
 /**
