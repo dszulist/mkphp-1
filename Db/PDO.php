@@ -1206,8 +1206,7 @@ class MK_Db_PDO {
 	private function _prepareSortParam() {
 		if(!MK_Registry::isRegistered('sort') || MK_Registry::get('sort') === null) {
 			$constName = get_class($this) . '::SORT_COLUMN';
-			$constValue = @constant($constName);
-			MK_Registry::set('sort', is_null($constValue) ? null : $constValue);
+			MK_Registry::set('sort', (defined($constName) ? constant($constName) : null));
 		}
 	}
 
