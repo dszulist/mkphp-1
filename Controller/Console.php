@@ -136,10 +136,11 @@ class MK_Controller_Console {
 	 */
 	public function execUpdate(array $args, MK_Controller_Update $update) {
 		$type = isset($args[0]) ? $args[0] : null;
+		$force = isset($args[1]) && $args[1] == 'true' ? true : false;
 
 		$optionList = $update->getPatchTaskList();
 
-		if(!array_key_exists($type, $optionList)) {
+		if(!isset($optionList[$type]) && !$force) {
 			echo PHP_EOL;
 			echo 'Nieprawidłowy typ aktualizacji: "' . $type . '"' . PHP_EOL;
 			echo PHP_EOL;
@@ -151,7 +152,7 @@ class MK_Controller_Console {
 			echo PHP_EOL . PHP_EOL;
 			die;
 		} else {
-			$update->run(array("type" => $type));
+			$update->run(array('type' => $type, 'force' => $force));
 			//$updates->readProgressFileCLI();
 			echo "Pomyślnie dodano zadanie do kolejki." . PHP_EOL;
 			echo "Aby widzieć postęp wykonaj poniższą komende:" . PHP_EOL;

@@ -221,24 +221,25 @@ class MK_Controller_Update {
 	 * @return array
 	 */
 	public function run(array $args) {
-		if(!array_key_exists('type', $args) || empty($args['type'])){
+		$type = isset($args['type']) ? $args['type'] : null;
+		$force = isset($args['force']) ? $args['force'] : false;
+
+		if(empty($args['type'])) {
 			throw new MK_Exception('Nie podano typu aktualizacji');
 		}
 
-		if(!array_key_exists($args['type'], $this->patchTaskList)) {
+		if(!$force && !isset($this->patchTaskList[$args['type']])) {
 			throw new MK_Exception('Nie można wykonać żądanej czynności.');
 		}
+
 		$phpVersion = floatval(phpversion());
 
 		//@TODO checkupgrade $licence = new SpirbLicence(); $licence->checkUpgrade(); - to trzeba uzupełnić o tą funkjonalność  "checkUpgrade"
 
 		$fh = fopen(MTM_FILE_LIST, 'a');
-
-		$endVersion = $startVersion = str_replace('.', '_', $this->currentVersion);
-
 		$msg = '';
 		$typeData = '';
-
+		$endVersion = $startVersion = str_replace('.', '_', $this->currentVersion);
 		switch($args['type']) {
 			case 'patch':
 				$typeData = 'stable';
