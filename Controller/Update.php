@@ -236,29 +236,29 @@ class MK_Controller_Update {
 
 		$endVersion = $startVersion = str_replace('.', '_', $this->currentVersion);
 
-		$stringData = "apply_madkom_pack {$this->licence} {$this->appName} {$startVersion} {$endVersion} ";
-		$msg = 'Uruchomiono mechanizm ';
+		$msg = '';
+		$typeData = '';
 
 		switch($args['type']) {
 			case 'patch':
-				$stringData .= 'stable ' . APP_PATH;
-				$msg .= 'wgrywania poprawek stabilnych';
+				$typeData = 'stable';
+				$msg .= "Uruchomiono mechanizm wgrywania poprawek stabilnych ({$startVersion})";
 				break;
 			case 'patch_rc':
-				$stringData .= 'rc_' . date('YmdHis') . ' ' . APP_PATH;
-				$msg .= 'wgrywania poprawek kandydujących na stabilne';
+				$typeData = 'rc_' . date('YmdHis');
+				$msg .= "Uruchomiono mechanizm wgrywania poprawek kandydujących na stabilne ({$startVersion})";
 				break;
 			case 'patch_dev':
-				$stringData .= date('YmdHis') . ' ' . APP_PATH;
-				$msg .= 'wgrywania poprawek niestabilnych';
+				$typeData = date('YmdHis');
+				$msg .= "Uruchomiono mechanizm wgrywania poprawek niestabilnych ({$startVersion})";
 				break;
 			case 'upgrade':
+				$typeData = 'stable';
 				$endVersion = str_replace('.', '_', $this->allowVersion);
-				$stringData = "apply_madkom_pack {$this->licence} {$this->appName} {$startVersion} {$endVersion} " . APP_PATH;
-				$msg .= "aktualizaji do nowej wersji: {$endVersion}";
+				$msg .= "Uruchomiono mechanizm aktualizaji z wersji {$startVersion} do nowej wersji: {$endVersion}";
 				break;
 		}
-		fwrite($fh, "{$stringData} {$phpVersion} \n");
+		fwrite($fh, "apply_madkom_pack {$this->licence} {$this->appName} {$startVersion} {$endVersion} {$typeData} " . APP_PATH . " {$phpVersion} \n");
 		fclose($fh);
 
 		//@TODO dodawanie do logów : TableLogs::addLogDeprecated(0, 'updateApplication', array( 'type' => $args['type'], 'msg' => $msg ));
