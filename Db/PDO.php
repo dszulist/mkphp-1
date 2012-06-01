@@ -118,7 +118,7 @@ class MK_Db_PDO {
 	 * @return String
 	 */
 	public function getReleasedVersion(){
-		return $this->GetOne('SELECT subject FROM system_version ORDER BY id DESC LIMIT 1');
+		return $this->GetOne('SELECT subject FROM system_version ORDER BY subject DESC LIMIT 1');
 	}
 
 	/**
