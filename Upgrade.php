@@ -298,6 +298,9 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function checkVersion($version, $licznik)
 	{
+		if($this->isDeveloper === true) {
+			return true;
+		}
 
 		$currentVersion = str_replace(".", "", $this->GetOne("SELECT get_app_version() as get_app_version"));
 		$currentVersion++;
