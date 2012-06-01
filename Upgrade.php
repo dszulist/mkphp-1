@@ -469,7 +469,8 @@ Class MK_Upgrade extends MK_Db_PDO
 			//pobranie folderów wersji
 			$foldersVersion = scandir(MK_Registry::get("upgradeSourceFolder"));
 			if(count($foldersVersion) < 3) {
-				throw new Exception("BRAK SQLi i PARSERÓW DO WYKONANIA");
+				self::writeToLog("BRAK SQLi i PARSERÓW DO WYKONANIA");
+				return;
 			}
 			$licznik = 1;
 			foreach($foldersVersion as $folderVersion) {
@@ -545,5 +546,4 @@ Class MK_Upgrade extends MK_Db_PDO
 			}
 		}
 	}
-
 }
