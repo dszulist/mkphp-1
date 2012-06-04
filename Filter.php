@@ -51,6 +51,31 @@ class MK_Filter {
 	}
 
 	/**
+	 * Zamienia kwotę/wskaźnik zapisany w formie urzędowej do postaci typu 'numeric'
+	 * z określoną dokładnością po przecinku, np:
+	 *
+	 * 1.234.567 		=> 1234567.0000
+	 * 1.234.567,02		=> 1234567.0200
+	 *   1234567 		=> 1234567.0000
+	 * 	       1.0101   =>		 1.0101
+	 * 	       1.23		=>		 1.2300
+	 *	   1.010   		=> 	  1010.0000
+	 *
+	 * @param String $string Kwota / wskaźnik
+	 * @param Integer $precision Precyzja
+	 * @return mixed Przeformatowana kwota/wskaźnik
+	 */
+	public static function getInNumericFormat( $string, $precision = 4 )
+	{
+		$numeric = preg_replace( '/([^0-9\,\.]+)/', '', $string );
+		$numeric = preg_replace( '/^([\d]+)\.([\d]{4}|[\d]{2}|[\d]{1})$/', '$1,$2', $numeric );  // wskaźniki
+		$numeric = strtr( $numeric, array( '.' => '', ',' => '.' ) );
+		$numeric = number_format( floatval($numeric), $precision, '.', '' );
+		return $numeric;
+	}
+
+
+	/**
 	 * Usunięcie niechcianych znaków z tekstu (filtrowanie).
 	 * ZERO WIDTH SPACE: U200B (dec: 8203)
 	 *
