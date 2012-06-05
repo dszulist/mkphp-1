@@ -290,40 +290,6 @@ Class MK_Upgrade extends MK_Db_PDO
 	}
 
 	/**
-	 * @param $version
-	 * @param $licznik
-	 *
-	 * @return bool
-	 * @throws Exception
-	 */
-	private function checkVersion($version, $licznik)
-	{
-		if($this->isDeveloper === true) {
-			return true;
-		}
-
-		$currentVersion = str_replace(".", "", $this->GetOne("SELECT get_app_version() as get_app_version"));
-		$currentVersion++;
-		if ($licznik == 1) {
-			// wgranie patchy
-			if ($currentVersion == $version) {
-				return true;
-			}
-			// rozpoczęcie upgradu
-			if (($currentVersion - 1) == $version) {
-				return true;
-			}
-			throw new Exception("ZŁA WERSJA OCZEKIWANO: {$currentVersion} PODANO {$version}");
-		}
-
-		if ($currentVersion != $version) {
-			throw new Exception("ZŁA WERSJA OCZEKIWANO: {$currentVersion} PODANO {$version}");
-		}
-
-		return false;
-	}
-
-	/**
 	 * @param $source
 	 * @param $destination
 	 * @param bool $replaceDestinationFile
@@ -472,14 +438,10 @@ Class MK_Upgrade extends MK_Db_PDO
 				self::writeToLog("BRAK SQLi i PARSERÓW DO WYKONANIA");
 				return;
 			}
-			$licznik = 1;
 			foreach($foldersVersion as $folderVersion) {
 				if(in_array($folderVersion, $this->ignoreDir)) {
 					continue;
 				}
-				//sprawdzenie czy jest poprawna nastepna wersja
-				$this->checkVersion(str_replace("_", "", $folderVersion), $licznik);
-				$licznik++;
 				self::writeToLog("Bieżąca wersja: " . $folderVersion);
 				// zapamiętanie która wersja jest upgradowana,
 				// potrzebne to jest do backupów
