@@ -14,55 +14,58 @@
 class MK_Logs {
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * Przekazana w konstruktorze ścieżka do aplikacji (domyślnie powinno być APP_PATH)
 	 * @var string
 	 */
 	private $appPath;
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * Ścieżka do folderu, w którym będą zapisywane logi błędów aplikacji
 	 * @var string
 	 */
 	private $dirErrors;
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * Ścieżka do folderu, w którym będą przechowywane logi do wysłania na logs.madkom.pl
 	 * @var string
 	 */
 	private $dirErrorsUpload;
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * Ścieżka do archiwum z logami (z folderu upload) do wysłania na logs.madkom.pl
 	 * @var string
 	 */
 	private $fileReportZip;
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * LOCK dla generowanego archiwum zip i wysyłania do logs.madkom.pl
+	 * Jest tworzony w momencie kopiowania plików do folderu upload i generowania archiwum.
+	 * Jest usuwany, gdy logs.madkom.pl odpowie false/true
 	 * @var string
 	 */
 	private $fileReportLock;
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * Czy debugować poszczególne kroki (zarówno po stronie klienta [aplikacji] jak i odpowiedzi serwera logs.madkom.pl)
 	 * @var string
 	 */
 	private $debug = false;
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * Opóźnienie wysyłanej paczki, żeby wszystkie aplikacje na raz nie wysyłały archiwum z logami.
+	 * Podanie wartości "0" spowoduje, że będzie wygenerowany losowo czas pomiędzy 0 a 59 sekund.
 	 * @var string
 	 */
 	private $sendDelay = 0;
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * Adres URL do wysłania archiwum ZIP POST-em (logs.madkom.pl)
 	 * @var string
 	 */
 	private $reportUrl = 'https://logs.madkom.pl/report.php';
 
 	/**
-	 * @todo Kuba dodaj opisy :D
+	 * Login i hasło dostępu do $this->reportUrl (logs.madkom.pl)
 	 * @var string
 	 */
 	private $reportAuth = 'aplikacja:Cziayu48B';
