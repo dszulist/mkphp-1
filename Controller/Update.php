@@ -262,6 +262,11 @@ class MK_Controller_Update {
 		fwrite($fh, "apply_madkom_pack {$this->licence} {$this->appName} {$startVersion} {$endVersion} {$typeData} " . APP_PATH . " {$phpVersion} \n");
 		fclose($fh);
 
+		// Utworzenie pliku status.log
+		$fh = fopen(APP_STATUS_LOG, 'a');
+		fwrite($fh, date("Y-m-d H:i:s") . " Update.php: {$msg}\n");
+		fclose($fh);
+
 		//@TODO dodawanie do logów : TableLogs::addLogDeprecated(0, 'updateApplication', array( 'type' => $args['type'], 'msg' => $msg ));
 
 		return array(
