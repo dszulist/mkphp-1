@@ -124,9 +124,9 @@ class MK {
 							)));
 				} else {
 					header("Content-type: text/html; charset=utf-8");
-					echo "<div style='text-align: center;'><div style='margin-top:80px;'><img src='public/images/docflow_logo.png' alt='Logo Docflow'>
+					echo "<div style='text-align: center;'><div style='margin-top:80px;'><img src='public/img/docflow_logo.png' alt='Logo Docflow'>
                             <h1>Przerwa techniczna.</h1><br />Proszę spróbować za 10 minut.<br />Proszę nie wyłączać i nie restartować serwera.<br />
-                            </div><br /><img alt='W trakcie przetwarzania' align='top' src='public/images/ajax/ajaxLoadingSmall.gif' /></div>";
+                            </div><br /><img alt='W trakcie przetwarzania' align='top' src='public/img/ajax/ajaxLoadingSmall.gif' /></div>";
 				}
 				die;
 			}
