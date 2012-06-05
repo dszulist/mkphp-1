@@ -161,24 +161,24 @@ class MK_Logs {
 		$logsPath = $this->dirErrors . DIRECTORY_SEPARATOR . '*.log';
 		$filePaths = glob($logsPath);
 		$filePathCount = count($filePaths);
-		$this->debug('Odczytanie listy aktualnych plików z raportami błędów (count: ' . $filePathCount . ')');
+		$this->debug("Odczytanie listy aktualnych plików z raportami błędów (count: {$filePathCount})");
 		if($filePathCount > 0) {
 			// Sprawdzenie czy wszystkie wysyłane pliki istnieją
 			foreach($filePaths as $filePathSrc) {
 				if(!file_exists($filePathSrc)) {
-					$this->debug('Plik nie istnieje - ' . $filePathSrc);
+					$this->debug("Plik nie istnieje - {$filePathSrc}");
 					return false;
 				}
 				$filePathDest = $this->dirErrorsUpload . DIRECTORY_SEPARATOR . basename($filePathSrc);
 				if(file_exists($filePathDest)) {
 					if(!file_put_contents($filePathDest, file_get_contents($filePathSrc), FILE_APPEND)) {
-						$this->debug('Nie udało się przenieść zawartości pliku: ' . $filePathSrc);
+						$this->debug("Nie udało się przenieść zawartości pliku: {$filePathSrc}");
 						return false;
 					}
 					unlink($filePathSrc);
 				} else {
 					if(!rename($filePathSrc, $filePathDest)) {
-						$this->debug('Nie udało się przenieść pliku: ' . $filePathSrc);
+						$this->debug("Nie udało się przenieść pliku: {$filePathSrc}");
 						return false;
 					}
 				}
@@ -233,7 +233,7 @@ class MK_Logs {
 	private function _clearFiles($delLogs = true) {
 		if($delLogs) {
 			$logsPath = $this->dirErrorsUpload . DIRECTORY_SEPARATOR . '*.log';
-			$this->debug('Usuwam pliki: ' . $logsPath);
+			$this->debug("Usuwam pliki: {$logsPath}");
 			$fileUploadPaths = glob($logsPath);
 			foreach($fileUploadPaths as $filePath) {
 				if(file_exists($filePath)) {
@@ -242,11 +242,11 @@ class MK_Logs {
 			}
 		}
 		if(file_exists($this->fileReportZip)) {
-			$this->debug('Usuwam archiwum: ' . $this->fileReportZip);
+			$this->debug("Usuwam archiwum: {$this->fileReportZip}");
 			unlink($this->fileReportZip);
 		}
 		if(file_exists($this->fileReportLock)) {
-			$this->debug('Usuwam lock: ' . $this->fileReportLock);
+			$this->debug("Usuwam lock: {$this->fileReportLock}");
 			unlink($this->fileReportLock);
 		}
 	}
@@ -274,7 +274,7 @@ class MK_Logs {
 			rename($this->fileReportZip, $newReportZip);
 			$this->_clearFiles();
 			$this->saveToFile('overweight', $newReportLog);
-			return 'Rozmiar pliku ' . $this->fileReportZip . ' przekroczył 10MB !';
+			return "Rozmiar pliku {$this->fileReportZip} przekroczył 10MB !";
 		} else {
 			$postData['archive'] = "@" . $this->fileReportZip;
 		}
@@ -329,17 +329,17 @@ class MK_Logs {
 				$this->debug('Lock istnieje dłużej jak 24h. Usuwam i próbuję wysłać paczkę');
 				unlink($this->fileReportLock);
 			} else {
-				$this->debug('Istnieje lock: ' . $this->fileReportLock);
+				$this->debug("Istnieje lock: {$this->fileReportLock}");
 				return false;
 			}
 		}
 
-		$this->debug('Utworzenie lock-a: ' . $this->fileReportLock);
+		$this->debug("Utworzenie lock-a: {$this->fileReportLock}");
 		file_put_contents($this->fileReportLock, date('Y-m-d H:i:s') . ' :: ' . $this->fileReportZip);
 
 		// Sprawdzenie czy uda się przygotować pliki do wysłania
 		if(!$this->_prepareLogFiles() || !$this->_prepareZipFile()) {
-			$this->debug('Usuwam lock: ' . $this->fileReportLock);
+			$this->debug("Usuwam lock: {$this->fileReportLock}");
 			unlink($this->fileReportLock);
 			return false;
 		}
@@ -350,14 +350,14 @@ class MK_Logs {
 		}
 
 		if($this->sendDelay > 0) {
-			$this->debug('Usypiam skrypt na okres ' . $this->sendDelay . 's');
+			$this->debug("Usypiam skrypt na okres {$this->sendDelay}s");
 			sleep($this->sendDelay);
 		}
 
 		$results = $this->_sendRequest();
 		$this->debug('Odpowiedź serwera: ' . PHP_EOL . $results);
 		if($results !== 'true') {
-			$this->debug('Usuwam lock: ' . $this->fileReportLock);
+			$this->debug("Usuwam lock: {$this->fileReportLock}");
 			unlink($this->fileReportLock);
 			return false;
 		}
