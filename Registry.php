@@ -11,7 +11,10 @@
  */
 class MK_Registry extends ArrayObject {
 
-	private static $_registry = null;
+	/**
+	 * @var mixed
+	 */
+	private static $registry = null;
 
     /**
      *
@@ -29,10 +32,10 @@ class MK_Registry extends ArrayObject {
 	 * @return MK_Registry
 	 */
 	public static function getInstance() {
-		if (self::$_registry === null) {
+		if (self::$registry === null) {
 			self::setInstance(new MK_Registry());
 		}
-		return self::$_registry;
+		return self::$registry;
 	}
 
 	/**
@@ -42,10 +45,10 @@ class MK_Registry extends ArrayObject {
 	 * @throws MK_Exception
 	 */
 	public static function setInstance(MK_Registry $registry) {
-		if (self::$_registry !== null) {
+		if (self::$registry !== null) {
 			throw new MK_Exception('Rejestr już jest utworzony');
 		}
-		self::$_registry = $registry;
+		self::$registry = $registry;
 	}
 
 	/**
@@ -83,10 +86,10 @@ class MK_Registry extends ArrayObject {
 	 * @return Boolean
 	 */
 	public static function isRegistered($index) {
-		if (self::$_registry === null) {
+		if (self::$registry === null) {
 			return false;
 		}
-		return self::$_registry->offsetExists($index);
+		return self::$registry->offsetExists($index);
 	}
 
     /**

@@ -36,7 +36,7 @@ class MK_Db_PDO {
 	 * @access private
 	 * @var object
 	 */
-	private $_mkLogs = null;
+	private $mkLogs = null;
 
 	/**
 	 * Ignorowane klasy w debug_backtrace dla SQL-i [fireBugSqlDump()]
@@ -45,7 +45,7 @@ class MK_Db_PDO {
 	 * @access private
 	 * @var array
 	 */
-	private $_sqlIgnoreClass = array('MK_Db_PDO');
+	private $sqlIgnoreClass = array('MK_Db_PDO');
 
 	/**
 	 * @var String
@@ -91,7 +91,7 @@ class MK_Db_PDO {
 	 * @param array $classArray
 	 */
 	public function setMoreSqlIgnoreClass($classArray) {
-		$this->_sqlIgnoreClass = array_merge($this->_sqlIgnoreClass, $classArray);
+		$this->sqlIgnoreClass = array_merge($this->sqlIgnoreClass, $classArray);
 	}
 
 	/**
@@ -250,7 +250,7 @@ class MK_Db_PDO {
 		$pdoObj = $this->db->prepare($sql);
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql);
+		$this->debugToFile($sql);
 
 		return $pdoObj->execute();
 	}
@@ -294,7 +294,7 @@ class MK_Db_PDO {
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql, $params);
+		$this->debugToFile($sql, $params);
 
 		// Ilość zmodyfikowanych wierszy
 		return $affectedRows;
@@ -341,7 +341,7 @@ class MK_Db_PDO {
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql, $params);
+		$this->debugToFile($sql, $params);
 
 		return $resString;
 	}
@@ -387,7 +387,7 @@ class MK_Db_PDO {
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql, $params);
+		$this->debugToFile($sql, $params);
 
 		return $resArray;
 	}
@@ -432,7 +432,7 @@ class MK_Db_PDO {
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql, $params);
+		$this->debugToFile($sql, $params);
 
 		return $resArray;
 	}
@@ -490,7 +490,7 @@ class MK_Db_PDO {
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql, $params);
+		$this->debugToFile($sql, $params);
 
 		return $resArray;
 	}
@@ -546,7 +546,7 @@ class MK_Db_PDO {
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql);
+		$this->debugToFile($sql);
 
 		return $resValue;
 	}
@@ -625,7 +625,9 @@ class MK_Db_PDO {
 			// Jeśli transakcja nie została przerwana, to należy zamknąć logi
 			if($commit == true) {
 				if(class_exists('TableLogsDb')) {
+					/** @noinspection PhpUndefinedClassInspection */
 					$tableLogsDb = new TableLogsDb();
+					/** @noinspection PhpUndefinedMethodInspection */
 					$tableLogsDb->closeConnectionForTableLog();
 				}
 			}
@@ -688,13 +690,14 @@ class MK_Db_PDO {
 	 *
 	 * @internal param bool $debug (default: true)
 	 */
-	private function _debugToFile($sql, $params = array()) {
+	private function debugToFile($sql, $params = array()) {
 		if(MK_Db_PDO_Singleton::debug() === true) {
-			if(is_null($this->_mkLogs)) {
-				$this->_mkLogs = new MK_Logs(APP_PATH);
+			if(is_null($this->mkLogs)) {
+				$this->mkLogs = new MK_Logs(APP_PATH);
 			}
 			$devMsg = $this->_prepareFullQuery($sql, $params);
-			$this->_mkLogs->saveToFile($this->_debugFileName, $devMsg);
+			/** @noinspection PhpUndefinedMethodInspection */
+			$this->mkLogs->saveToFile($this->_debugFileName, $devMsg);
 		}
 	}
 
@@ -751,7 +754,7 @@ class MK_Db_PDO {
 		}
 
 		// Jeżeli jest włączone debugowanie, to SQL-e zapisywane są do pliku debug.log
-		$this->_debugToFile($sql, $params);
+		$this->debugToFile($sql, $params);
 
 		return array(
 			'start' => $start,
@@ -1306,7 +1309,7 @@ class MK_Db_PDO {
 		$traceList = debug_backtrace();
 		$traceArr = array();
 		foreach($traceList as $trace) {
-			if(!isset($trace['class']) || in_array($trace['class'], $this->_sqlIgnoreClass)) {
+			if(!isset($trace['class']) || in_array($trace['class'], $this->sqlIgnoreClass)) {
 				continue;
 			}
 			if(count($traceArr) == 0) {

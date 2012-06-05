@@ -12,7 +12,10 @@
  */
 class MK_Licence {
 
-	private $_expireDate;
+	/**
+	 * @var string data
+	 */
+	private $expireDate;
 
 	/**
 	 * Odczytanie daty wygaśnięcia licencji
@@ -22,17 +25,17 @@ class MK_Licence {
 	 * @throws MK_Exception
 	 * @return string
 	 */
-	private function _expireDate($licence) {
-		if(isset($this->_expireDate)) {
-			return $this->_expireDate;
+	private function expireDate($licence) {
+		if(isset($this->expireDate)) {
+			return $this->expireDate;
 		}
 
 		if(!preg_match('#^([0-9]{4})([0-9]{2})([0-9]{2})#', $licence, $matches)) {
 			throw new MK_Exception('Nieprawidłowa licencja. Proszę o kontakt z administratorem.');
 		}
 
-		$this->_expireDate = $matches[1] . '-' . $matches[2] . '-' . $matches[3];
-		return $this->_expireDate;
+		$this->expireDate = $matches[1] . '-' . $matches[2] . '-' . $matches[3];
+		return $this->expireDate;
 	}
 
 	/**
@@ -44,12 +47,12 @@ class MK_Licence {
 	 * @throws MK_Exception
 	 * @return bool
 	 */
-	function verify($licence, $statusInconsistencyLicenseKey) {
+	public function verify($licence, $statusInconsistencyLicenseKey) {
 		if(MK_DEVELOPER === true) {
 			return true;
 		}
 
-		$expireDate = $this->_expireDate($licence);
+		$expireDate = $this->expireDate($licence);
 
 		if(!$this->isValidSignature($licence)
 			|| ($statusInconsistencyLicenseKey == 'stop_application' && strtotime($expireDate) < strtotime(date('Y-m-d')))
@@ -67,7 +70,7 @@ class MK_Licence {
 	 *
 	 * @throws MK_Exception
 	 */
-	function canUpgrade($taskListPathFile, $licence) {
+	public function canUpgrade($taskListPathFile, $licence) {
 		if(!empty($taskListPathFile)) {
 
 			if($this->isSupportActive($licence)) {
@@ -87,8 +90,8 @@ class MK_Licence {
 	 *
 	 * @return Boolean
 	 */
-	function isSupportActive($licence) {
-		return strtotime($this->_expireDate($licence)) < strtotime(date('Y-m-d'));
+	public function isSupportActive($licence) {
+		return strtotime($this->expireDate($licence)) < strtotime(date('Y-m-d'));
 	}
 
 	/**
@@ -98,9 +101,8 @@ class MK_Licence {
 	 *
 	 * @return Boolean
 	 */
-	function isValidSignature($licence) {
-		$expireDate = $this->_expireDate($licence);
-		//echo '20121231'.md5($expireDate . ' ' . exec('hostname') . ' ' . APP_PATH);
+	public function isValidSignature($licence) {
+		$expireDate = $this->expireDate($licence);
 		$validLicence = str_replace('-', '', $expireDate) . md5($expireDate . ' ' . exec('hostname') . ' ' . APP_PATH);
 		return (strlen($licence) == 40 && strcmp($validLicence, $licence) == 0);
 	}

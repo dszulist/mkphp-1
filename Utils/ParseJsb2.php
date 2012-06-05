@@ -11,10 +11,24 @@
  */
 class MK_Utils_ParseJsb2 {
 
+	/**
+	 * @var
+	 */
 	private $_scriptPath;
+
+	/**
+	 * @var array
+	 */
 	private $_returnMessage;
+
+	/**
+	 * @var
+	 */
 	public $fileContent;
 
+	/**
+	 *
+	 */
 	public function __construct() {
 		$this->_returnMessage = array();
 		// Tworzenie pliku 'js/mkjs/mk.jsb2' dla ścieżki 'js/mkjs/mk/'

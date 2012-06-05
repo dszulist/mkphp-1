@@ -57,7 +57,7 @@ class MK_Files {
      * @param $format_date
      * @return string
      */
-	function splitDate($attachment_date, $format_date) {
+	public function splitDate($attachment_date, $format_date) {
 
 		$subdate = explode('-', $attachment_date, 3);
 		unset($attachment_date);
@@ -87,7 +87,7 @@ class MK_Files {
      * @param $data_utworzenia_zal
      * @return string
      */
-	function parseCreatedateToPath($data_utworzenia_zal) {
+	public function parseCreatedateToPath($data_utworzenia_zal) {
 		//dodane ze wzgledu na mozliwosc przekazania DBTimeStamp
 		//zwracanego z apostrofami na poczatku i koncu ciagu daty
 		$data_utworzenia_zal = str_replace("'", "", $data_utworzenia_zal);
@@ -107,7 +107,7 @@ class MK_Files {
      * @param $glowny_kat
      * @param $data_utworzenia_zal
      */
-	function createDirsByCreatedate($glowny_kat, $data_utworzenia_zal) {
+	public function createDirsByCreatedate($glowny_kat, $data_utworzenia_zal) {
 
 		//dodane ze wzgledu na mozliwosc przekazania DBTimeStamp
 		//zwracanego z apostrofami na poczatku i koncu ciagu daty
@@ -184,7 +184,7 @@ class MK_Files {
 	 * @param string form_uid (uid formularza)
      * @return bool
      */
-	function isFileNameDuplicated($name, $create_date, $directory, array $sfile_array, $form_uid) {
+	public function isFileNameDuplicated($name, $create_date, $directory, array $sfile_array, $form_uid) {
 
 		$file = $directory . $this->parseCreatedateToPath($create_date) . $form_uid . DIRECTORY_SEPARATOR . $name;
 		if (is_file($file)) {
@@ -194,7 +194,12 @@ class MK_Files {
 		}
 	}
 
-	function multi_array_search($search_value, $the_array) {
+	/**
+	 * @param $search_value
+	 * @param $the_array
+	 * @return bool
+	 */
+	public function multi_array_search($search_value, $the_array) {
 		if (is_array($the_array)) {
 			foreach ($the_array as $value) {
 				$result = $this->multi_array_search($search_value, $value);
@@ -220,7 +225,7 @@ class MK_Files {
      * @internal param \typ $string
      * @return bool
      */
-	function convertFileToJPG($path, $type) {
+	public function convertFileToJPG($path, $type) {
 		switch ($type) {
 			case 'tiff': case 'tif':
 				if (strpos($_SERVER["SERVER_SOFTWARE"], 'Win')) {
@@ -276,13 +281,15 @@ class MK_Files {
 		return true;
 	}
 
-    /**
-     * Stworzenie pliku Zip z plikami z danego dokumentu
-     *
-     * @param array $arrayDocs
-     * @internal param array $arrayPdf - lista wraz z zawartoscia plikow dokumentow
-     * @return string - sciezka to tymczasowego pliku
-     */
+	/**
+	 * Stworzenie pliku Zip z plikami z danego dokumentu
+	 *
+	 * @param array $arrayDocs
+	 *
+	 * @throws Exception
+	 * @internal param array $arrayPdf - lista wraz z zawartoscia plikow dokumentow
+	 * @return string - sciezka to tymczasowego pliku
+	 */
 	public static function packAllContents(array $arrayDocs) {
 
 		if (empty($arrayDocs)) {
@@ -312,17 +319,18 @@ class MK_Files {
 		}
 	}
 
-    /**
-     * Zapis tymczasowego pliku xmlowego
-     * @param $fileNameToSave
-     * @param $dataToSave
-     * @return string
-     */
+	/**
+	 * Zapis tymczasowego pliku xmlowego
+	 *
+	 * @param $fileNameToSave
+	 * @param $dataToSave
+	 *
+	 * @throws Exception
+	 * @return string
+	 */
 	public static function saveTempXMLFile($fileNameToSave, $dataToSave) {
 
-        //utworzenie ścieżki wg schematu
-        //temp/webservice/adres_ip_klienta/'DocflowWebServiceService.wsdl'
-        //$_SERVER["REMOTE_ADDR"]
+        //utworzenie ścieżki wg schematu : temp/webservice/adres_ip_klienta/'DocflowWebServiceService.wsdl'
         $tempWebServiceDefinitionFolder = DIR_TEMP . DIRECTORY_SEPARATOR . 'webservice' . DIRECTORY_SEPARATOR . uniqid('', TRUE);
 
         if (!file_exists($tempWebServiceDefinitionFolder)) {
@@ -333,9 +341,7 @@ class MK_Files {
 
 		try {
 
-			$xml = new SimpleXMLElement(
-							$dataToSave,
-							LIBXML_COMPACT, FALSE);
+			$xml = new SimpleXMLElement($dataToSave, LIBXML_COMPACT, FALSE);
 
 			//zapisanie danych do pliku
 			if (file_exists($tempPath)) {
@@ -356,18 +362,20 @@ class MK_Files {
 		return $tempPath;
 	}
 
-    /**
-     * Metoda służąca do usuwania tymczasowego pliku
-     * razem z plikiem
-     * @param $pathToTemporaryPath
-     */
+	/**
+	 * Metoda służąca do usuwania tymczasowego pliku
+	 * razem z plikiem
+	 *
+	 * @param $pathToTemporaryPath
+	 *
+	 * @throws Exception
+	 */
 	public static function removeTemporaryFileWithParentDirectory($pathToTemporaryPath) {
 		try {
 			$tempWebServiceDefinitionPathFileInfo = new SplFileInfo($pathToTemporaryPath);
 			$temporaryFileParentDirectory = $tempWebServiceDefinitionPathFileInfo->getPath();
 			$tempWebServiceDefinitionPathFileInfo = null;
 
-			//var_dump($temporaryFileParentDirectory);die;
 			if (file_exists($pathToTemporaryPath)) {
 				unlink($pathToTemporaryPath);
 				rmdir($temporaryFileParentDirectory);

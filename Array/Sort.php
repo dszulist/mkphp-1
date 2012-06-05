@@ -11,9 +11,16 @@
  */
 class MK_Array_Sort {
 
-	// kolumna po ktorej maja byc sortowane tablice assocjacyjne po wartosci klucza 
-	public static $_sortValue = NULL;
-	// Porzadek sortowania
+	/**
+	 * Kolumna po ktorej maja byc sortowane tablice assocjacyjne po wartosci klucza
+	 * @var null
+	 */
+	public static $sortValue = NULL;
+
+	/**
+	 * Porzadek sortowania
+	 * @var string
+	 */
 	public static $_sortOrder = "ASC";
 
 	/**
@@ -126,7 +133,7 @@ class MK_Array_Sort {
 	 */
 	public static function assocByKeyValue(array $array, $sort, $dir='') {
 		if (!empty($sort)) {
-			self::$_sortValue = $sort;
+			self::$sortValue = $sort;
 		}
 		if (!empty($dir)) {
 			self::$_sortOrder = $dir;
@@ -146,11 +153,11 @@ class MK_Array_Sort {
 	 * @return Integer
 	 */
 	public static function invenSort(array $arr1, array $arr2) {
-		$i = (self::$_sortValue == 'ASC') ? 1 : -1;
-		if ($arr1[self::$_sortValue] == $arr2[self::$_sortValue]) {
+		$i = (self::$sortValue == 'ASC') ? 1 : -1;
+		if ($arr1[self::$sortValue] == $arr2[self::$sortValue]) {
 			return 0;
 		}
-		return (($arr1[self::$_sortValue] < $arr2[self::$_sortValue]) ? 1 : -1) * $i;
+		return (($arr1[self::$sortValue] < $arr2[self::$sortValue]) ? 1 : -1) * $i;
 	}
 
 }

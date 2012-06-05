@@ -41,11 +41,12 @@ Class MK_Soap_AutoDiscover extends  Zend_Soap_AutoDiscover {
      */
     public $strategy = 'Zend_Soap_Wsdl_Strategy_ArrayOfTypeSequence';
 
-    /**
-     * Konstruktor sprawdza czy są podane wymagane dane w _GET i uruchamia mechanizm generowania wsdl'a
-     *
-     * @return MK_Soap_AutoDiscover
-     */
+	/**
+	 * Konstruktor sprawdza czy są podane wymagane dane w _GET i uruchamia mechanizm generowania wsdl'a
+	 *
+	 * @throws MK_Exception
+	 * @return MK_Soap_AutoDiscover
+	 */
     public function __construct(){
 
         $this->setParamsFromEnv();

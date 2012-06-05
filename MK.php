@@ -53,6 +53,7 @@ class MK {
 		if (class_exists($consoleController)) {
 			$consoleController = new $consoleController();
 		} elseif (class_exists('ConsoleController')) {
+			/** @noinspection PhpUndefinedClassInspection */
 			$consoleController = new ConsoleController();
 		} else {
 			$consoleController = new MK_Controller_Console();

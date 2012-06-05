@@ -39,7 +39,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	/**
 	 * Konstruktor
 	 */
-	function __construct()
+	public function __construct()
 	{
 		$this->isDeveloper = (defined('MK_DEVELOPER') && MK_DEVELOPER == true) || (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == 'developer');
 		try {

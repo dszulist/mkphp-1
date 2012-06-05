@@ -10,12 +10,25 @@
  */
 class MK_Files_Mime {
 
+	/**
+	 * @var
+	 */
 	private $filename;
+
+	/**
+	 * @var
+	 */
 	protected $imageType;
 
-	var $availbeImagesExt =  array('jpg','jpeg','gif','png');
+	/**
+	 * @var array
+	 */
+	public $availbeImagesExt =  array('jpg','jpeg','gif','png');
 
-	var $mime_map = array(
+	/**
+	 * @var array
+	 */
+	public $mime_map = array(
 		'ai'	=>	'application/postscript',
 		'aif'	=>	'audio/x-aiff',
 		'aifc'	=>	'audio/x-aiff',
@@ -185,7 +198,10 @@ class MK_Files_Mime {
 		'zip'	=>	'application/zip'
 	);
 
-	var $dublin_core_map = array(
+	/**
+	 * @var array
+	 */
+	public $dublin_core_map = array(
 		'asc'	=>	'Text',
 		'avi'	=>	'Moving Image',
 		'bmp'	=>	'Image',
@@ -273,7 +289,7 @@ class MK_Files_Mime {
     /**
      * pobranie typu mime
      *
-     * @param string ext
+     * @param string $ext
      * @return string
      */
     function getMime($ext){
@@ -294,7 +310,7 @@ class MK_Files_Mime {
      * Pobranie typu zgodnego z Dublin Meta Core
      * link: http://dublincore.org/documents/dcmi-type-vocabulary/
      *
-     * @param string ext
+     * @param string $ext
      * @return string
      */
     function getDublinCoreResType($ext){
@@ -310,7 +326,7 @@ class MK_Files_Mime {
     /**
      * Stworzenie z filename jesli jest jpg obrazka
      *
-     * @param string typ
+     * @param string $type
      * @return bool
      */
     function createImageFile($type = 'jpg'){

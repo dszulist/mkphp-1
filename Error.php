@@ -11,12 +11,15 @@
  */
 class MK_Error {
 
-	private static $_mailAdmin = 'Szczegółowy komunikat został wysłany do Administratora.';
+	/**
+	 * @var string
+	 */
+	private static $mailAdmin = 'Szczegółowy komunikat został wysłany do Administratora.';
 
 	/**
 	 * Ignorowanie określonych klas z metodami
 	 */
-	private static $_traceIgnorePath = array(
+	private static $traceIgnorePath = array(
 		'MK_Error::handler',
 		'MK_Error::getExtendedTrace',
 		'MK::shutdownFunction',
@@ -31,7 +34,7 @@ class MK_Error {
 	 * @internal param array $classArray
 	 */
 	public static function setMoreTraceIgnorePath($tracePath) {
-		self::$_traceIgnorePath = array_merge(self::$_traceIgnorePath, $tracePath);
+		self::$traceIgnorePath = array_merge(self::$traceIgnorePath, $tracePath);
 	}
 
 	/**
@@ -80,9 +83,9 @@ class MK_Error {
 			$_file = isset($trace['file']) ? $trace['file'] : '';
 			$_line = isset($trace['line']) ? $trace['line'] : -1;
 
-			// Ignorowanie klas z metodami (self::$_traceIgnorePath)
+			// Ignorowanie klas z metodami (self::$traceIgnorePath)
 			$classTypeFunction = $_class . $_type . $_function;
-			if(in_array($classTypeFunction, self::$_traceIgnorePath)) {
+			if(in_array($classTypeFunction, self::$traceIgnorePath)) {
 				continue;
 			}
 
@@ -184,7 +187,7 @@ class MK_Error {
 
 		// Tutaj zwracamy informacje dla uzytkownika - w tym przypadku wyrzucamy wyjatek ktory zwróci jsona z informacja o obedzie ktora zostanie wyswietlana uzytkownikowi w postaci okna z błędem
 		if(($type !== E_NOTICE) && ($type < 2048)) {
-			return 'Nieoczekiwany błąd! ' . self::$_mailAdmin;
+			return 'Nieoczekiwany błąd! ' . self::$mailAdmin;
 		}
 
 		return false;
@@ -260,7 +263,7 @@ class MK_Error {
 			$logs = new MK_Logs(APP_PATH);
 			$logs->saveToFile('js', $devMessage, $md5);
 
-			return 'Błąd JavaScript. ' . self::$_mailAdmin;
+			return 'Błąd JavaScript. ' . self::$mailAdmin;
 		}
 		return null;
 	}

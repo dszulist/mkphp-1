@@ -32,14 +32,16 @@ Abstract Class MK_Crypt_KeyCert {
         $this->jarFilePath .= DIRECTORY_SEPARATOR . 'Crypt' . DIRECTORY_SEPARATOR . 'KeyCert' . DIRECTORY_SEPARATOR . 'jar' . DIRECTORY_SEPARATOR . 'KeyCert.jar';
     }
 
-    /**
-     * Uruchamia jara z podanymi parametrami
-     *
-     * @param String $params
-     * @param bool $load - jezeli true to robi load jezeli false to robi save
-     * @param bool $silent - w przypadku ustawinia na true nie wurzuca wyjatków
-     * @return array
-     */
+	/**
+	 * Uruchamia jara z podanymi parametrami
+	 *
+	 * @param String $params
+	 * @param bool $load - jezeli true to robi load jezeli false to robi save
+	 * @param bool $silent - w przypadku ustawinia na true nie wurzuca wyjatków
+	 *
+	 * @throws Exception
+	 * @return array
+	 */
     protected function executeJar($params, $load = true, $silent=false){
         $load = ($load === true) ? "-load {$this->srcType}" : "-save {$this->srcType}";
 

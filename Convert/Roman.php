@@ -18,17 +18,33 @@
  * */
 class MK_Convert_Roman {
 
+	/**
+	 * @var mixed
+	 */
 	public static $number;
+
+	/**
+	 * @var mixed
+	 */
 	public static $numrom;
+
+	/**
+	 * @var mixed
+	 */
 	public static $romovr;
+
+	/**
+	 * @var mixed
+	 */
 	public static $result;
 
 	/**
 	 * Konwersja rzymskie=>numeryczne i na odwrót (automatyczny wybór)
 	 *
 	 * @param mixed $number
+	 *
+	 * @throws MK_Exception
 	 * @return mixed
-	 * @throws Exception
 	 */
 	public static function result($number) {
 		self::$number = $number;

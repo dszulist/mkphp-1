@@ -10,6 +10,10 @@
  * @author bskrzypkowiak
  */
 class MK_Cookie {
+
+	/**
+	 *
+	 */
 	CONST MESSAGE_ERROR_REFRESH = '<br />Proszę przeładować stronę, a w razie dalszych problemów skontaktować się z administratorem systemu.';
 
 	/**
@@ -53,7 +57,7 @@ class MK_Cookie {
      *
      * @param string $name
      * @param string $value (default: '')
-     * @param int|\intger $time (default: 0)
+     * @param integer $time (default: 0)
      */
 	public static function set($name, $value='', $time=0) {
 		setcookie($name, $value, $time, MK_COOKIES_PATH);

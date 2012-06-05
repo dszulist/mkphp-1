@@ -85,17 +85,21 @@ class MK_Date {
 		return date('d', $dateTime) . ' ' . $monthText[date('n', $dateTime)] . ' ' . date('Y', $dateTime) . ' roku';
 	}
 
-    /**
-     * Formatuje datę do postaci dzień.miesiąc.rok rozdzielając
-     * poszczególne składowe stosownym separatorem (domyslnie kropka)
-     *
-     * @param String $dateText Data wejściowa
-     * @param String $separator Separator składowych daty
-     * @return string Sformatowana data
-     */
+	/**
+	 * Formatuje datę do postaci dzień.miesiąc.rok rozdzielając
+	 * poszczególne składowe stosownym separatorem (domyslnie kropka)
+	 *
+	 * @param String $dateText Data wejściowa
+	 * @param String $separator Separator składowych daty
+	 * @param string $extra
+	 *
+	 * @return string Sformatowana data
+	 */
     public static function format( $dateText, $separator = null, $extra = "" )
     {
-        if( empty($dateText) ) { return ""; }
+        if( empty($dateText) ) {
+	        return "";
+        }
 
         // Poniższa wartośc mogłaby być pobierana z predefiniowanej stałej
         $format = "d.m.Y";

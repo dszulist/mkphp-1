@@ -68,7 +68,7 @@ class MK_Money_Dictionary {
 	 *
 	 * @return String
 	 */
-	private static function _lessVariety($number) {
+	private static function lessVariety($number) {
 		$txt = '';
 
 		$abs = abs((int) $number);
@@ -141,16 +141,16 @@ class MK_Money_Dictionary {
 			$tmpNumber = (int) strrev($txtSplit[$i]);
 			if($tmpNumber > 0) {
 				if($i == 0) {
-					$txt .= self::_lessVariety($tmpNumber) . ' ';
+					$txt .= self::lessVariety($tmpNumber) . ' ';
 				} else {
-					$txt .= $tmpNumber > 1 ? self::_lessVariety($tmpNumber) . ' ' : '';
+					$txt .= $tmpNumber > 1 ? self::lessVariety($tmpNumber) . ' ' : '';
 					$txt .= self::varietyVerbal(self::$_words[4 + $i], $tmpNumber) . ' ';
 				}
 			}
 		}
 
 		$txt .= self::varietyVerbal(array('złoty', 'złote', 'złotych'), $tmpNumber) . ' ';
-		$txt .= 'i ' . ($fractionNumeric ? $fraction . '/100 ' : self::_lessVariety($fraction) . ' ') . self::varietyVerbal(array('grosz', 'grosze', 'groszy'), $fraction) . ' ';
+		$txt .= 'i ' . ($fractionNumeric ? $fraction . '/100 ' : self::lessVariety($fraction) . ' ') . self::varietyVerbal(array('grosz', 'grosze', 'groszy'), $fraction) . ' ';
 
 		return trim($txt);
 	}

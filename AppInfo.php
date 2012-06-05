@@ -34,8 +34,7 @@ class MK_AppInfo {
 			}
 		}
 		$command = shell_exec('php5 index.php -mappinfo');
-		$appInfo = self::_parseIni($command); // Na potrzeby logs.madkom.pl (PHP4)
-//		$appInfo = parse_ini_string($command);
+		$appInfo = self::parseIni($command); // Na potrzeby logs.madkom.pl (PHP4)
 		if ($changeDir) {
 			chdir($currentDir);
 		}
@@ -50,7 +49,7 @@ class MK_AppInfo {
 	 * @param string $string
 	 * @return array
 	 */
-	private static function _parseIni($string) {
+	private static function parseIni($string) {
 		$array = array();
 		$lines = explode("\n", $string);
 		foreach ($lines as $line) {

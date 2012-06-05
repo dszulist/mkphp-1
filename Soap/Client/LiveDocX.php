@@ -29,7 +29,7 @@ class MK_Soap_Client_LiveDocX {
 	 * 
 	 * @param String $login
 	 * @param String $password
-	 * @return LiveDocX 
+	 * @return MK_Soap_Client_LiveDocX
 	 */
 	public function connect($login='xxx', $password='xxx') {
 		$this->mailMerge->setUsername($login)->setPassword($password);
@@ -40,7 +40,7 @@ class MK_Soap_Client_LiveDocX {
 	 * Ustawianie katalogu docelowego gdzie wyladuja przekonwertowane pliki
 	 * 
 	 * @param String $value
-	 * @return LiveDocX 
+	 * @return MK_Soap_Client_LiveDocX
 	 */
 	public function setDestDir($value) {
 		//@TODO isdir i tworzenie wrazie czego
@@ -52,7 +52,7 @@ class MK_Soap_Client_LiveDocX {
 	 * Ustawianie katalogu źródłowego
 	 * 
 	 * @param String $value
-	 * @return LiveDocX 
+	 * @return MK_Soap_Client_LiveDocX
 	 */
 	public function setSourceDir($value) {
 		//@TODO isdir
@@ -68,7 +68,9 @@ class MK_Soap_Client_LiveDocX {
 	public function setDestination($destination='filesystem') {
 		switch ($destination) {
 			case 'filesystem' : $this->_writeToDb = false;
+								break;
 			case 'database' : $this->_writeToDb = true;
+								break;
 		}
 	}
 
@@ -108,7 +110,7 @@ class MK_Soap_Client_LiveDocX {
 	 * 
 	 * @param String $sourceFileName
 	 * @param String $destinationFileName
-	 * @return LiveDocX 
+	 * @return MK_Soap_Client_LiveDocX
 	 */
 	public function createDocument($sourceFileName, $destinationFileName='') {
 		if (empty($destinationFileName)) {

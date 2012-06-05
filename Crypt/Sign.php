@@ -98,7 +98,7 @@ class MK_Crypt_Sign {
 	/**
 	 * Uruchamia proces podpisywania
 	 *
-	 * @throw Exception
+	 * @throws Exception
 	 * @return string
 	 */
 	public function run(){
@@ -178,7 +178,7 @@ class MK_Crypt_Sign {
 	 *
 	 * @param String $val
 	 *
-	 * @throw Exception
+	 * @throws Exception
 	 * @return MK_Crypt_Sign
 	 */
 	public function setType($val){
@@ -239,6 +239,8 @@ class MK_Crypt_Sign {
 	 * Ustawia ardes do serwera znacznika czasu
 	 *
 	 * @param String $val (URL lub IP)
+	 *
+	 * @throws Exception
 	 * @return MK_Crypt_Sign
 	 */
 	public function useTimeStampServer($val){
@@ -256,7 +258,7 @@ class MK_Crypt_Sign {
 	 * @param String $val - sciezka do pliku lub jego zawartość
 	 * @param bool $fromFile - czy z pliku czy z treści
 	 *
-	 * @throw Exception
+	 * @throws Exception
 	 * @return MK_Crypt_Sign
 	 */
 	public function setInput($val, $fromFile=false){
@@ -313,7 +315,7 @@ class MK_Crypt_Sign {
 	 * Destruktor klasy ustawia właściwości na stan początkowy
 	 * Usuwa pliki stworzone na potrzebe podpisu
 	 *
-	 * @throw Exception
+	 * @throws Exception
 	 */
 	public function __destruct(){
 

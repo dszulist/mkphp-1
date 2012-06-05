@@ -13,7 +13,16 @@
  */
 class MK_Convert_ExcelHeader {
 
-    private static $_tabSize = 26;
+	/**
+	 * @todo OPIS
+	 * @var int
+	 */
+    private static $tabSize = 26;
+
+	/**
+	 * @todo OPIS
+	 * @var array
+	 */
     private static $_tabElement = array(
         'a', 'b', 'c', 'd', 'e',
         'f', 'g', 'h', 'i', 'j',
@@ -23,16 +32,20 @@ class MK_Convert_ExcelHeader {
         'z'
     );
 
-    /**
-     * Konwersja cyfra => nagłówek excel-a (litery [a-z]+)
-     * ASCII TABLE: 97-122 [a-z]
-     */
+	/**
+	 * Konwersja cyfra => nagłówek excel-a (litery [a-z]+)
+	 * ASCII TABLE: 97-122 [a-z]
+	 *
+	 * @param $number
+	 *
+	 * @return string
+	 */
     public static function result($number) {
         if ($number < 0) {
             return '';
         }
-        else if ($number >= self::$_tabSize) {
-            return self::result(floor($number / self::$_tabSize) - 1) . self::$_tabElement[$number % self::$_tabSize];
+        else if ($number >= self::$tabSize) {
+            return self::result(floor($number / self::$tabSize) - 1) . self::$_tabElement[$number % self::$tabSize];
         }
         else {
             return self::$_tabElement[$number];

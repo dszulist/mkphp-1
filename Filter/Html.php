@@ -16,6 +16,9 @@
  */
 class MK_Filter_Html {
 
+	/**
+	 * @var
+	 */
 	private static $_singleton;
 
 	/**
