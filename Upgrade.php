@@ -510,24 +510,22 @@ Class MK_Upgrade extends MK_Db_PDO
 						$extension = array_pop($fileName);
 						$fileName = implode(".", $fileName);
 						$setCompletedUpgradeTask = false;
+						self::writeToLog("BEGIN ({$extension}): {$pathToFile}");
 						// rozpoznawanie po typie
 						switch($extension) {
 							default :
 							case 'sql':
-								self::writeToLog($pathToFile . ' BEGIN');
 								$zawartosc = file_get_contents($pathToFile);
 								if(!empty($zawartosc)) {
 									$affectedRows = $this->Execute($zawartosc);
 								} else {
-									self::writeToLog($pathToFile . ' PUSTA ZAWARTOŚĆ PLIKU');
+									self::writeToLog("PUSTA ZAWARTOŚĆ PLIKU {$pathToFile}");
 								}
 								// oznaczenie zadania jako wykonane
 								$setCompletedUpgradeTask = true;
 								unset($zawartosc);
-								self::writeToLog($pathToFile . ' END');
 								break;
 							case 'php':
-								self::writeToLog($pathToFile . ' BEGIN');
 								// zapamiętanie scieżki zgrywanego pliku,
 								// aby później można było ją wykorzystać w includowanej klasie
 								MK_Registry::set("filesInfolderDatePath", $filesInfolderDatePath);
@@ -535,9 +533,9 @@ Class MK_Upgrade extends MK_Db_PDO
 								include ($pathToFile);
 								// oznaczenie zadania jako wykonane
 								$setCompletedUpgradeTask = true;
-								self::writeToLog($pathToFile . ' END');
 								break;
 						}
+						self::writeToLog("END ({$extension}): {$pathToFile}");
 						if($setCompletedUpgradeTask) {
 							$this->setCompletedUpgradeTask($folderVersion, $folderDate . DIRECTORY_SEPARATOR . $file);
 						}
