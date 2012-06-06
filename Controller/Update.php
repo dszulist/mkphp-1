@@ -243,15 +243,15 @@ class MK_Controller_Update {
 		switch($args['type']) {
 			case 'patch':
 				$typeData = 'stable';
-				$msg .= "Uruchomiono mechanizm wgrywania poprawek stabilnych ({$startVersion})";
+				$msg .= "Uruchomiono mechanizm wgrywania poprawek stabilnych ({$startVersion}:{$endVersion})";
 				break;
 			case 'patch_rc':
 				$typeData = 'rc_' . date('YmdHis');
-				$msg .= "Uruchomiono mechanizm wgrywania poprawek kandydujących na stabilne ({$startVersion})";
+				$msg .= "Uruchomiono mechanizm wgrywania poprawek kandydujących na stabilne ({$startVersion}:{$endVersion})";
 				break;
 			case 'patch_dev':
 				$typeData = date('YmdHis');
-				$msg .= "Uruchomiono mechanizm wgrywania poprawek niestabilnych ({$startVersion})";
+				$msg .= "Uruchomiono mechanizm wgrywania poprawek niestabilnych ({$startVersion}:{$endVersion})";
 				break;
 			case 'upgrade':
 				$typeData = 'stable';
