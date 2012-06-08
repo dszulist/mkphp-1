@@ -77,6 +77,7 @@ class MK_Db_PDO {
 		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 
 		// Połączenie z bazą danych (singleton)
+
 		$this->db = MK_Db_PDO_Singleton::getInstance();
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
@@ -100,7 +101,9 @@ class MK_Db_PDO {
 	 * @return string
 	 */
 	public function getErrorMsg() {
-		$errorInfo = MK_Db_PDO_Singleton::getInstance()->errorInfo();
+        echo "000";
+        $errorInfo = MK_Db_PDO_Singleton::getInstance()->errorInfo();
+        echo "000";
 		return isset($errorInfo[2]) ? $errorInfo[2] : null;
 	}
 

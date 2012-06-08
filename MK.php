@@ -16,6 +16,7 @@ class MK {
 	 * @return Boolean
 	 */
 	public static function _autoload($className) {
+
 		if (substr($className, 0, 3) == 'MK_') { //todo tu jest błąd bo nie załaduje MK::someMethod(); :)
 			include (substr(MK_PATH, 0, -3) . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php');
 			return true;
@@ -45,7 +46,7 @@ class MK {
 			return;
 		}
 		if (version_compare(PHP_VERSION, '5.3.0', '>=') && APP_NAME !== 'spirb') { // Tymczasowy "myk" dla SPiRB-a z APP_NAME
-			$consoleController = ucfirst(APP_NAME) . '\Controller\Console';
+			$consoleController = ucfirst(APP_NAME) . '\controller\Console';
 		} else {
 			$consoleController = ucfirst(APP_NAME) . '_Controller_Console';
 		}
@@ -102,7 +103,8 @@ class MK {
 	 * @return Boolean
 	 */
 	public static function isAjaxExecution($sendHeaders = false) {
-		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
+
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
 			if ($sendHeaders) {
 				MK::sendJSONHeaders();
 			}
