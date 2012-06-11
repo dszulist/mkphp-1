@@ -101,9 +101,7 @@ class MK_Db_PDO {
 	 * @return string
 	 */
 	public function getErrorMsg() {
-        echo "000";
         $errorInfo = MK_Db_PDO_Singleton::getInstance()->errorInfo();
-        echo "000";
 		return isset($errorInfo[2]) ? $errorInfo[2] : null;
 	}
 
