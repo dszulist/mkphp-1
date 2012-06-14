@@ -46,7 +46,7 @@ class MK {
 			return;
 		}
 		if (version_compare(PHP_VERSION, '5.3.0', '>=') && APP_NAME !== 'spirb') { // Tymczasowy "myk" dla SPiRB-a z APP_NAME
-			$consoleController = ucfirst(APP_NAME) . '\controller\Console';
+			$consoleController = strtolower(APP_NAME) . '\controller\Console';
 		} else {
 			$consoleController = ucfirst(APP_NAME) . '_Controller_Console';
 		}
