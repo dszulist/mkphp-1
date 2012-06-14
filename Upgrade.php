@@ -399,6 +399,10 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function checkLicence()
 	{
+
+        //nie sprawdzamy poprawnosci licencji
+        return;
+
 		if($this->isDeveloper === true) {
 			self::writeToLog('Pomijanie weryfikacji licencji (developer)');
 			return;
