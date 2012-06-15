@@ -52,6 +52,18 @@ class MK_Broker_Client {
 	public $authorized = false;
 
 	/**
+	 * Czy włączyć debugowanie ostatnio wysłanego zapytania __getLastRequest()
+	 * @var bool
+	 */
+	private $debugRequest = false;
+
+	/**
+	 * Czy włączyć debugowanie ostatnio odczytanej odpowiedzi __getLastResponse()
+	 * @var bool
+	 */
+	private $debugResponse = false;
+
+	/**
 	 * Konstruktor
 	 *
 	 * @param string        $login
@@ -74,6 +86,34 @@ class MK_Broker_Client {
 	}
 
 	/**
+	 * Włączenie/Wyłączenie debugowania ostatniego zapytania __getLastRequest()
+	 * @param bool $value
+	 */
+	public function debugRequest($value = true) {
+		$this->debugRequest = (bool) $value;
+	}
+
+	/**
+	 * Włączenie/Wyłączenie debugowania ostatniej odpowiedzi __getLastResponse()
+	 * @param bool $value
+	 */
+	public function debugResponse($value = true) {
+		$this->debugResponse = (bool) $value;
+	}
+
+	/**
+	 * Zwrócenie komunikatu błędu
+	 *
+	 * @param $title
+	 * @param $msg
+	 *
+	 * @return string
+	 */
+	private function debugRow($title, $msg) {
+		return "*** {$title} ***" . MK_EOL . $msg . MK_EOL . "*** /{$title} ***" . MK_EOL;
+	}
+
+	/**
 	 * Magiczne wywowałanie metody $this->SoapClient->ClassName($args)
 	 * Opakowane jest przez try-catch, więc od razu obsłużone są wyjątki i zwracany response.
 	 *
@@ -93,10 +133,22 @@ class MK_Broker_Client {
 	public function __call($name, $arguments) {
 		if($this->soapClient instanceof SoapClient) {
 			try {
-				return call_user_func_array(array($this->soapClient, $name), $arguments);
+				$response = call_user_func_array(array($this->soapClient, $name), $arguments);
+				if($this->debugRequest) {
+					echo $this->debugRow('Last request', $this->soapClient->__getLastRequest());
+				}
+				if($this->debugResponse) {
+					echo $this->debugRow('Last response', $this->soapClient->__getLastResponse());
+				}
+				return $response;
+			}
+			catch(SoapFault $e) {
+				$debug = ($this->debugRequest) ? $this->debugRow('Last request', $this->soapClient->__getLastRequest()) : '';
+				throw new MK_Exception($debug . $this->debugRow('SoapFault', $e->getMessage()));
 			}
 			catch(Exception $e) {
-				throw new MK_Exception($e->getMessage());
+				$debug = ($this->debugRequest) ? $this->debugRow('Last request', $this->soapClient->__getLastRequest()) : '';
+				throw new MK_Exception($debug . $this->debugRow('Exception', $e->getMessage()));
 			}
 		}
 		else {
@@ -113,7 +165,7 @@ class MK_Broker_Client {
 	public function connect() {
 		$this->soapClient = new SoapClient($this->wsdlUrl, $this->clientSettings);
 		// Autoryzacja na Brokerze - weryfikacja użytkownika i hasła
-		$authorizeResponse = $this->soapClient->authorize(new authorize($this->frontOfficeClientLogin, $this->frontOfficeClientPassword));
+		$authorizeResponse = $this->authorize(new authorize($this->frontOfficeClientLogin, $this->frontOfficeClientPassword));
 		if($authorizeResponse->return === false) {
 			throw new MK_Exception('Nie udało się poprawnie zalogować do Brokera');
 		}
@@ -127,9 +179,9 @@ class MK_Broker_Client {
 	 * @throws MK_Exception
 	 * @return string
 	 */
-	public function logout() {
+	public function disconnect() {
 		$this->authorized = false;
-		return $this->soapClient->logout(new logout());
+		return $this->logout(new logout());
 	}
 
 }
