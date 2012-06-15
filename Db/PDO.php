@@ -133,6 +133,21 @@ class MK_Db_PDO {
 	}
 
 	/**
+	 * Zliczanie ilości wierszy we wszystkich tabelach
+	 *
+	 * @return array
+	 */
+	public function getCountTablesRow() {
+		$counter = array();
+		$tables = $this->MetaTables('TABLE', true);
+		sort($tables);
+		foreach($tables as $table){
+			$counter[$table] = $this->GetOne("SELECT COUNT(*) AS count FROM {$table}");
+		}
+		return $counter;
+	}
+
+	/**
 	 * Odczytanie schematu z tablicy, np.
 	 * "public.system_table" => $tableName='system_table'; $schemaName='public';
 	 *
