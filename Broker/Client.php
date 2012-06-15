@@ -46,6 +46,12 @@ class MK_Broker_Client {
 	public $soapClient = NULL;
 
 	/**
+	 * Czy został zweryfikowany i zalogowany na Brokerze
+	 * @var bool
+	 */
+	public $authorized = false;
+
+	/**
 	 * Konstruktor
 	 *
 	 * @param string        $login
@@ -111,6 +117,7 @@ class MK_Broker_Client {
 		if($authorizeResponse->return === false) {
 			throw new MK_Exception('Nie udało się poprawnie zalogować do Brokera');
 		}
+		$this->authorized = true;
 		return $authorizeResponse->return;
 	}
 
@@ -121,6 +128,7 @@ class MK_Broker_Client {
 	 * @return string
 	 */
 	public function logout() {
+		$this->authorized = false;
 		return $this->soapClient->logout(new logout());
 	}
 
