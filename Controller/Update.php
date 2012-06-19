@@ -240,6 +240,14 @@ class MK_Controller_Update {
 		$msg = '';
 		$typeData = '';
 		$endVersion = $startVersion = str_replace('.', '_', $this->currentVersion);
+
+		// Wymuszanie ustawienia wersji aktualizacji ($force === true)
+		if($force === true) {
+			$startVersion = str_replace('.', '_', $this->releasedVersion);
+			$endVersion = implode('_', str_split(str_pad(((int) str_replace(array('_', '.'), '', $startVersion)) + 1, 3, 0, STR_PAD_LEFT)));
+		}
+
+		// Wybór rodzaju aktualizacji
 		switch($args['type']) {
 			case 'patch':
 				$typeData = 'stable';
@@ -255,10 +263,13 @@ class MK_Controller_Update {
 				break;
 			case 'upgrade':
 				$typeData = 'stable';
-				$endVersion = str_replace('.', '_', $this->allowVersion);
+				if($force !== true) {
+					$endVersion = str_replace('.', '_', $this->allowVersion);
+				}
 				$msg .= "Uruchomiono mechanizm aktualizaji z wersji {$startVersion} do nowej wersji: {$endVersion}";
 				break;
 		}
+
 		fwrite($fh, "apply_madkom_pack {$this->licence} {$this->appName} {$startVersion} {$endVersion} {$typeData} " . APP_PATH . " {$phpVersion} \n");
 		fclose($fh);
 
