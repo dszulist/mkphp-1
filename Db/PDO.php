@@ -96,6 +96,39 @@ class MK_Db_PDO {
 	}
 
 	/**
+	 * Odczytanie znacznika czasu z bazy danych, a nie z serwera apache
+	 *
+	 * @param string $interval np. ["+ 24 hours"] : http://www.postgresql.org/docs/8.2/static/functions-datetime.html
+	 * @param bool   $microtime Czy dołączyć milisekundy?
+	 *
+	 * @return integer
+	 */
+	public function getDbTimeStamp($interval = null, $microtime = false) {
+		$sqlInterval = '';
+		if(preg_match('#([+-]{0,1})[ ]*(.*)#', $interval, $matches)) {
+			if(count($matches) == 3) {
+				$iSign = $matches[1] == '-' ? '-' : '+';
+				$iValue = trim($matches[2]);
+				if(!empty($iValue)) {
+					// Oracle: SELECT SYSDATE - INTERVAL '24' HOUR, 'HH:MI:SS' FROM DUAL;
+					$sqlInterval = " {$iSign} interval '{$iValue}'";
+				}
+			}
+		}
+
+		// Oracle: SELECT SYSDATE;
+		$datetime = $this->GetOne("SELECT NOW(){$sqlInterval}");
+
+		// Odczytanie milisekund oraz zwrócenie znacznika czasu
+		if($microtime == true && preg_match('#.*\.([0-9]*).*#', $datetime, $matches) && count($matches) == 2) {
+			return bcadd(strtotime($datetime), '0.'.$matches[1], 6);
+		}
+		else {
+			return strtotime($datetime);
+		}
+	}
+
+	/**
 	 * Odczytanie ostatniego błędu bazy danych
 	 *
 	 * @return string
