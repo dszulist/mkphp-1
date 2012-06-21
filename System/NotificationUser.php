@@ -40,7 +40,7 @@ class MK_System_NotificationUser extends MK_Db_PDO {
 	public function markAsRead($notificationIds, $userId) {
 		$userId = (int) $userId;
 		if( !is_array($notificationIds) || count($notificationIds) == 0 || $userId <= 0) {
-			throw new MK_Exception('Nieprawidłowe parametry do oznaczania notatki jako przeczytana');
+			throw new MK_Exception('Nieprawidłowe parametry do oznaczania powiadomienia jako przeczytanego');
 		}
 		foreach($notificationIds as $notificationId) {
 			$sql = 'INSERT INTO ' . $this->tableName . ' (notification_id, user_id) VALUES (?, ?)';
