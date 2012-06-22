@@ -5,10 +5,10 @@
  *
  * Model dla tabeli system_notification_user
  *
- * @category	MK_System
- * @package		MK_System_NotificationUser
+ * @category    MK_System
+ * @package        MK_System_NotificationUser
  *
- * @throws		MK_Db_Exception
+ * @throws        MK_Db_Exception
  */
 class MK_System_NotificationUser extends MK_Db_PDO {
 
@@ -31,15 +31,15 @@ class MK_System_NotificationUser extends MK_Db_PDO {
 	/**
 	 * Oznaczanie notatek/informacji jako przeczytanych dla wybranego użytkownika
 	 *
-	 * @param $notificationIds
-	 * @param $userId
+	 * @param array $notificationIds
+	 * @param integer $userId
 	 *
 	 * @throws MK_Exception
 	 * @return bool
 	 */
-	public function markAsRead($notificationIds, $userId) {
+	public function markAsRead(array $notificationIds, $userId) {
 		$userId = (int) $userId;
-		if( !is_array($notificationIds) || count($notificationIds) == 0 || $userId <= 0) {
+		if(count($notificationIds) == 0 || $userId <= 0) {
 			throw new MK_Exception('Nieprawidłowe parametry do oznaczania powiadomienia jako przeczytanego');
 		}
 		foreach($notificationIds as $notificationId) {
