@@ -20,10 +20,12 @@ class MK_System_Notification extends MK_Db_PDO {
 	/**
 	 * Odczytywanie wszystkich rekordów z tabeli
 	 *
+	 * @param $userId
+	 *
+	 * @throws MK_Exception
 	 * @return array
 	 */
 	public function getList($userId) {
-
         $userId = (int) $userId;
         if($userId <= 0) {
             throw new MK_Exception('Nieprawidłowe parametry do odczytania listy nowych powiadomień');
