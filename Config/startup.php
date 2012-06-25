@@ -85,8 +85,8 @@ session_start();
 // Debuging - wymagany dodatek do Firebuga (http://developercompanion.com/)
 define('MK_DEBUG_FIREPHP', (isset($_SESSION['DEBUG_FIREPHP']) && !MK_IS_CLI));
 if (MK_DEBUG_FIREPHP) {
-	require (MK_DIR_VENDORS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
-	require (MK_DIR_VENDORS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
+	require_once (MK_DIR_VENDORS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'FirePHP.class.php');
+	require_once (MK_DIR_VENDORS . DIRECTORY_SEPARATOR . 'FirePHPCore' . DIRECTORY_SEPARATOR . 'fb.php');
 
 	//@TODO sprawdzic ten klucz sesji i obsłużyć
 	$_SESSION['sql_last_time'] = microtime(true);
