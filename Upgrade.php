@@ -55,6 +55,11 @@ Class MK_Upgrade extends MK_Db_PDO
 			$this->changeApplicationState('running');
 			self::writeToLog('Przywracanie backupu');
 			$this->restoreBackup();
+			// Debugowanie w przypadku błędu (tylko dla developera)
+			if($this->isDeveloper) {
+				echo '<pre>';
+				readfile(APP_STATUS_LOG);
+			}
 			exit('false');
 		}
 	}
