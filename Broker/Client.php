@@ -133,7 +133,7 @@ class MK_Broker_Client {
 	public function __call($name, $arguments) {
 		if($this->soapClient instanceof SoapClient) {
 			try {
-				$response = call_user_func_array(array($this->soapClient, $name), $arguments);
+				$response = $this->soapClient->__soapCall($name, $arguments);
 				if($this->debugRequest) {
 					echo $this->debugRow('Last request', $this->soapClient->__getLastRequest());
 				}
@@ -144,10 +144,12 @@ class MK_Broker_Client {
 			}
 			catch(SoapFault $e) {
 				$debug = ($this->debugRequest) ? $this->debugRow('Last request', $this->soapClient->__getLastRequest()) : '';
+				$debug .= ($this->debugResponse) ? $this->debugRow('Last response', $this->soapClient->__getLastResponse()) : '';
 				throw new MK_Exception($debug . $this->debugRow('SoapFault', $e->getMessage()));
 			}
 			catch(Exception $e) {
 				$debug = ($this->debugRequest) ? $this->debugRow('Last request', $this->soapClient->__getLastRequest()) : '';
+				$debug .= ($this->debugResponse) ? $this->debugRow('Last response', $this->soapClient->__getLastResponse()) : '';
 				throw new MK_Exception($debug . $this->debugRow('Exception', $e->getMessage()));
 			}
 		}
