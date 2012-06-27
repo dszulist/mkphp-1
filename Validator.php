@@ -288,4 +288,31 @@ class MK_Validator {
 		return (filter_var($val, FILTER_VALIDATE_URL) || filter_var($val, FILTER_VALIDATE_IP));
 	}
 
+	/**
+	 * Sprawdza poprawność numeru terytorialnego GUS
+	 * Nie jest to w 100% prawidłowa walidacja, ale ogólna (poglądowa)
+	 *
+	 * WOJ - kod województwa
+	 * POW - kod powiatu
+	 * GMI - kod gminy
+	 * RODZ - kod rodzaju jednostki
+	 *     1-dla gminy miejskiej
+	 *     2-dla gminy wiejskiej
+	 *     3-dla gminy miejsko wiejskiej
+	 *     4-dla miasta w gminie miejsko-wiejskiej
+	 *     5-dla obszaru wiejskiego w gminie miejsko-wiejskiej
+	 *     8-dla dzielnic w gminie Warszawa
+	 *     9-dla delegatur i dzielnic innych gmin miejskich
+	 * @url http://wipos.p.lodz.pl/zylla/ut/kody-GUS.html
+	 *
+	 * @static
+	 *
+	 * @param $gus
+	 *
+	 * @return bool
+	 */
+	public static function gus($gus) {
+		return !!preg_match("#^([0-3])([02468])([0-9]{2})([0-9]{0,3})$#", $gus, $matches);
+	}
+
 }
