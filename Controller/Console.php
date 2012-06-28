@@ -9,8 +9,7 @@
  * @package     MK_Controller_Console
  * @author    bskrzypkowiak
  */
-class MK_Controller_Console
-{
+class MK_Controller_Console {
 
 	/**
 	 * Adres remote wbijany dla wywolania metoda CLI
@@ -27,8 +26,7 @@ class MK_Controller_Console
 	/**
 	 * Konstruktor
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		// Ustawiam Remote_addr w przypadku gdy uruchamiam skrypt z konsoli
 		putenv("REMOTE_ADDR=$this->remoteAddress");
 		$_SERVER['HTTP_HOST'] = exec('hostname');
@@ -42,11 +40,11 @@ class MK_Controller_Console
 	 * Ustawienie debugowania true/false
 	 *
 	 * @param bool $debug
+	 *
 	 * @return \MK_Controller_Console
 	 */
-	protected function setDebug($debug)
-	{
-		$this->debug = (bool)$debug;
+	protected function setDebug($debug) {
+		$this->debug = (bool) $debug;
 		return $this;
 	}
 
@@ -55,9 +53,8 @@ class MK_Controller_Console
 	 *
 	 * @param string $msg
 	 */
-	private function debug($msg)
-	{
-		if ($this->debug) {
+	protected function debug($msg) {
+		if($this->debug) {
 			echo $msg . MK_EOL;
 		}
 	}
@@ -69,15 +66,14 @@ class MK_Controller_Console
 	 * @param string $headerText
 	 * @param string $footerText
 	 */
-	private function output(array $arr = array(), $headerText = '', $footerText = '')
-	{
-		if (!empty($headerText)) {
+	private function output(array $arr = array(), $headerText = '', $footerText = '') {
+		if(!empty($headerText)) {
 			echo $headerText . MK_EOL;
 		}
-		foreach ($arr as $k => $v) {
+		foreach($arr as $k => $v) {
 			echo $k . '="' . $v . '"' . MK_EOL;
 		}
-		if (!empty($footerText)) {
+		if(!empty($footerText)) {
 			echo $footerText . MK_EOL;
 		}
 	}
@@ -88,8 +84,7 @@ class MK_Controller_Console
 	 *
 	 * @param array $argv
 	 */
-	public function applogs(array $argv)
-	{
+	public function applogs(array $argv) {
 		$debug = (isset($argv[0]) && $argv[0] == 'true');
 		$logs = new MK_Logs(APP_PATH, $debug);
 		exit($logs->sendPackage() ? 'true' : 'false');
@@ -103,8 +98,7 @@ class MK_Controller_Console
 	 *
 	 * @param array $argv
 	 */
-	public function appinfo(array $argv)
-	{
+	public function appinfo(array $argv) {
 		$db = new MK_Db_PDO();
 		// Podstawowe informacje APPINFO
 		$this->output(array(
@@ -117,14 +111,14 @@ class MK_Controller_Console
 			'VERSION' => $db->getAppVersion()
 		));
 		// Dodatkowe informacje po wpisaniu parametru 'true'
-		if (isset($argv[0]) && $argv[0] == 'true') {
+		if(isset($argv[0]) && $argv[0] == 'true') {
 			// ### DEVELOPER ###
 			$this->output(array(
 				'RELEASED' => $db->getReleasedVersion(),
-				'MK_DEBUG' => (int)MK_DEBUG,
-				'MK_DEVELOPER' => (int)MK_DEVELOPER,
-				'MK_TEST' => (int)MK_TEST,
-				'MK_ERROR_JS_ENABLED' => (int)MK_ERROR_JS_ENABLED,
+				'MK_DEBUG' => (int) MK_DEBUG,
+				'MK_DEVELOPER' => (int) MK_DEVELOPER,
+				'MK_TEST' => (int) MK_TEST,
+				'MK_ERROR_JS_ENABLED' => (int) MK_ERROR_JS_ENABLED,
 			), MK_EOL . '### DEVELOPER ###');
 
 			// ### SESSION ###
@@ -143,10 +137,10 @@ class MK_Controller_Console
 			), MK_EOL . '### MTM ###');
 
 			// ### LAST 3 UPGRADE COMPLETED TASK ###
-			$this->output($this->prepareCompletedTasks($db->getCompletedTask(3)), MK_EOL . '### LAST 3 UPGRADE COMPLETED TASK ###');
+			$this->output($this->prepareCompletedTasks($db->getCompletedTask(3), 'UPGRADE_COMPLETED_TASK_'), MK_EOL . '### LAST 3 UPGRADE COMPLETED TASK ###');
 
 			// ### LAST 5 UPGRADE LOGS ###
-			$this->output(MK_Upgrade_Logs::getInfo(), MK_EOL . '### LAST 5 UPGRADE LOGS ###');
+			$this->output(MK_Upgrade_Logs::getInfo(5, 'LAST_UPGRADE_LOGS_'), MK_EOL . '### LAST 5 UPGRADE LOGS ###');
 		}
 		exit;
 	}
@@ -155,23 +149,22 @@ class MK_Controller_Console
 	 * Uruchamia aktualizacje (dodaje zadanie do kolejki)
 	 *     php index.php -mupdate [arg]
 	 *
-	 * @param array                 $args - parametry przekazywane w wywołaniu
+	 * @param array                 $argv - parametry przekazywane w wywołaniu
 	 * @param \MK_Controller_Update $update
 	 */
-	public function execUpdate(array $args, MK_Controller_Update $update)
-	{
-		$type = isset($args[0]) ? $args[0] : null;
-		$force = isset($args[1]) && $args[1] == 'true';
+	public function execUpdate(array $argv, MK_Controller_Update $update) {
+		$type = isset($argv[0]) ? $argv[0] : null;
+		$force = isset($argv[1]) && $argv[1] == 'true';
 
 		$optionList = $update->getPatchTaskList();
 
-		if (!isset($optionList[$type]) && !$force) {
+		if(!isset($optionList[$type]) && !$force) {
 			echo MK_EOL,
 				"Nieprawidłowy typ aktualizacji: '$type'" . MK_EOL,
 			MK_EOL,
 				'Wywołanie: php index.php -mupdate [arg]' . MK_EOL,
 				' Dostępne argumenty to: ' . MK_EOL;
-			foreach ($optionList as $k => $v) {
+			foreach($optionList as $k => $v) {
 				echo "\t$k - $v" . MK_EOL;
 			}
 			echo MK_EOL . MK_EOL;
@@ -193,7 +186,7 @@ class MK_Controller_Console
 	/**
 	 * Wysyła statystyki z systemu przez Brokera do GO
 	 *
-	 * @param array $args - tablica z danymi statystycznymi oraz danymi do połączenia z Brokerem
+	 * @param array $argv - tablica z danymi statystycznymi oraz danymi do połączenia z Brokerem
 	 *    Wymagane pola w tablicy:
 	 *          broker_login: login do atoryzacji z Brokerem
 	 *            broker_password: hasło do autoryzacji z Brokerem
@@ -206,8 +199,7 @@ class MK_Controller_Console
 	 *
 	 * @throws Exception
 	 */
-	protected function sendStats(array $args)
-	{
+	protected function sendStats(array $argv) {
 
 		$required = array(
 			'broker_login',
@@ -221,25 +213,25 @@ class MK_Controller_Console
 		);
 
 		// sprawdzamy czy przekazano wszystkie potrzebne informacje
-		foreach ($required as $val) {
-			if (isset($args[$val]) === false || empty($args[$val])) {
+		foreach($required as $val) {
+			if(isset($argv[$val]) === false || empty($argv[$val])) {
 				throw new Exception("Brak wymaganych danych: $val");
 			}
 		}
 
 		// Nawiązanie połączenia do Brokera i przygotowanie obietków
 		$this->debug('Nawiązywanie połączenia z Brokerem...');
-		$brokerClient = new MK_Broker_Client($args['broker_login'], $args['broker_password'], $args['broker_wsdl']);
+		$brokerClient = new MK_Broker_Client($argv['broker_login'], $argv['broker_password'], $argv['broker_wsdl']);
 		$brokerClient->connect();
 		$sendClientSystemInformations = new sendClientSystemInformations(APP_NAME);
 
 		// patch_version
 		$this->debug('Odczytywanie informacji o aktualnej wersji aplikacji...');
-		$sendClientSystemInformations->add('patch_version', $args['patch_version']);
+		$sendClientSystemInformations->add('patch_version', $argv['patch_version']);
 
 		// released_version
 		$this->debug('Odczytywanie informacji o wydanej wersji aplikacji...');
-		$sendClientSystemInformations->add('released_version', $args['released_version']);
+		$sendClientSystemInformations->add('released_version', $argv['released_version']);
 
 		// db_name
 		$this->debug('Odczytywanie informacji o nazwie bazy danych...');
@@ -247,19 +239,19 @@ class MK_Controller_Console
 
 		// count_actual_users
 		$this->debug('Odczytywanie informacji o ilości aktywnych użytkowników...');
-		$sendClientSystemInformations->add('count_actual_users', $args['count_actual_users']);
+		$sendClientSystemInformations->add('count_actual_users', $argv['count_actual_users']);
 
 		// count_tables_row
 		$this->debug('Odczytywanie informacji o ilości wierszy w tabelach...');
-		$sendClientSystemInformations->add('count_tables_row', $args['count_tables_row']);
+		$sendClientSystemInformations->add('count_tables_row', $argv['count_tables_row']);
 
 		// upgrade_completed
 		$this->debug('Odczytywanie informacji o 5 ostatnio wykonanych parserach/sqlach...');
-		$sendClientSystemInformations->add('upgrade_completed', $this->prepareCompletedTasks($args['completed_tasks']));
+		$sendClientSystemInformations->add('upgrade_completed', $this->prepareCompletedTasks($argv['completed_tasks']));
 
 		// patch_createdate
 		$this->debug('Odczytywanie informacji o dacie ostatnio uruchomionego parsera/sqla...');
-		$sendClientSystemInformations->add('patch_createdate', isset($args['completed_tasks'][0]) && isset($args['completed_tasks'][0]['createdate']) ? $args['completed_tasks'][0]['createdate'] : null);
+		$sendClientSystemInformations->add('patch_createdate', isset($argv['completed_tasks'][0]) && isset($argv['completed_tasks'][0]['createdate']) ? $argv['completed_tasks'][0]['createdate'] : null);
 
 		// upgrade_logs
 		$this->debug('Odczytywanie informacji o 5 ostatnio wykonanych aktualizacjach...');
@@ -276,18 +268,17 @@ class MK_Controller_Console
 	/**
 	 * Funkcja pomocnicza układająca dane na temat ostatnio wykonanych parserów/sqlów
 	 *
-	 * @param array $rows
+	 * @param array  $rows
+	 * @param string $prefix
 	 *
 	 * @return array
 	 */
-	private function prepareCompletedTasks(array $rows)
-	{
+	private function prepareCompletedTasks(array $rows, $prefix = '') {
 		$completedTaskArray = array();
-
-		foreach ($rows as $row) {
-			$completedTaskArray["{$row['id']}_APP_VERSION"] = $row['app_version'];
-			$completedTaskArray["{$row['id']}_CREATEDATE"] = $row['createdate'];
-			$completedTaskArray["{$row['id']}_PATCH_NAME"] = $row['patch_name'];
+		foreach($rows as $row) {
+			$completedTaskArray["{$prefix}{$row['id']}_APP_VERSION"] = $row['app_version'];
+			$completedTaskArray["{$prefix}{$row['id']}_CREATEDATE"] = $row['createdate'];
+			$completedTaskArray["{$prefix}{$row['id']}_PATCH_NAME"] = $row['patch_name'];
 		}
 
 		return $completedTaskArray;
