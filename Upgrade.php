@@ -408,6 +408,7 @@ Class MK_Upgrade extends MK_Db_PDO
         //nie sprawdzamy poprawnosci licencji
         return;
 
+		/** @noinspection PhpUnreachableStatementInspection */
 		if($this->isDeveloper === true) {
 			self::writeToLog('Pomijanie weryfikacji licencji (developer)');
 			return;
@@ -422,7 +423,6 @@ Class MK_Upgrade extends MK_Db_PDO
 			// (...)
 		}
 		// MYK
-
 		if (!empty($licence)) {
 			$expireDate = substr($licence, 0, 4) . '-' . substr($licence, 4, 2) . '-' . substr($licence, 6, 2);
 			if (strtotime($expireDate) < strtotime(date('Y-m-d'))) {
