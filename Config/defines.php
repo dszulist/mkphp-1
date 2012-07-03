@@ -1,5 +1,28 @@
 <?php
 
+/**
+ * Stałe wymagane, aby niektóre części MK(php) działały:
+ *
+ * JEZELI APLIKACJA KORZYSTA Z PLIKÓW KONFIGURACYJNYCH INI - patrz koniec tego pliku!!!
+ *
+ *	define('SESSION_SAVE_HANDLER,	'files');		// Sesje zapisywane w plikach
+ *	//define('SESSION_SAVE_HANDLER,	'memcache');	// Sesje zapisywane w pamięci
+ *	define('DIR_SESSION',			APP_PATH.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.'session');			// dla SESSION_SAVE_HANDLER = 'files'
+ *	//define('DIR_SESSION',			'tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15');	// dla SESSION_SAVE_HANDLER = 'memcache'
+ *	define('APP_NAME',		'');	// Nazwa aplikacji
+ *	define('DB_HOST',		'');	// Baza danych: hostname
+ *	define('DB_PORT',		'');	// Baza danych: port
+ *	define('DB_USER',		'');	// Baza danych: użytkownik
+ *	define('DB_PASS',		'');	// Baza danych: hasło
+ *	define('DB_NAME',		'');	// Baza danych: nazwa
+ *	define('DB_DEBUG',		'');	// Baza danych: Czy debugować zapytania SQL?
+ *
+ * Stałe pomocnicze:
+ *	define('MK_DEBUG',			false);
+ *	define('APP_ERROR_JS_ENABLED',	true);
+ *
+ */
+
 // Konfiguracja startowa aplikacji
 define('MK_LANG',			'pl');
 define('MK_DEFAULT_LANG',	'pl');
@@ -53,21 +76,17 @@ define('MK_PRECISION_INDEX',	4); // wskaźniki
 define('MK_PRECISION_PERCENT',	2); // wartość procentowa
 define('MK_PRECISION_FRACTION',	4); // wartość ułamkowa
 
-/**
- * Stałe wymagane, aby niektóre części MK(php) działały:
- *	define('SESSION_SAVE_HANDLER,	'files');		// Sesje zapisywane w plikach
- *	//define('SESSION_SAVE_HANDLER,	'memcache');	// Sesje zapisywane w pamięci
- *	define('DIR_SESSION',			APP_PATH.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.'session');			// dla SESSION_SAVE_HANDLER = 'files'
- *	//define('DIR_SESSION',			'tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15');	// dla SESSION_SAVE_HANDLER = 'memcache'
- *	define('APP_NAME',		'');	// Nazwa aplikacji
- *	define('DB_HOST',		'');	// Baza danych: hostname
- *	define('DB_PORT',		'');	// Baza danych: port
- *	define('DB_USER',		'');	// Baza danych: użytkownik
- *	define('DB_PASS',		'');	// Baza danych: hasło
- *	define('DB_NAME',		'');	// Baza danych: nazwa
- *	define('DB_DEBUG',		'');	// Baza danych: Czy debugować zapytania SQL?
- *
- * Stałe pomocnicze:
- *	define('MK_DEBUG',			false);
- *	define('APP_ERROR_JS_ENABLED',	true);
- */
+
+// Jeżeli aplikacja ma konfiguracje w pliku ini i został wskazany plik ini w postaci stałej APP_INI_FILE to brakujace wymagane definesy są pobierane z tego pliku
+if(defined('APP_INI_FILE')){
+	require_once (MK_PATH . DIRECTORY_SEPARATOR . 'Config.php');
+	$config  = new MK_Config(APP_INI_FILE);
+
+	define('DB_HOST', $config->getString('database', 'host'));
+	define('DB_PORT', $config->getString('database', 'port'));
+	define('DB_USER', $config->getString('database', 'user'));
+	define('DB_PASS', $config->getString('database', 'password'));
+	define('DB_NAME', $config->getString('database', 'name'));
+
+	define('SESSION_SAVE_HANDLER', $config->getString('system', 'session'));
+}
