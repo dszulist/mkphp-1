@@ -44,12 +44,6 @@ define('MK_DIR_SESSION', defined('DIR_SESSION') ? DIR_SESSION : realpath(session
 define('MK_DIR_UPDATE_LOGS', (defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . 'upgrade' . DIRECTORY_SEPARATOR . 'log');
 define('MK_DIR_VENDORS', MK_PATH . DIRECTORY_SEPARATOR . 'Vendors');
 
-// Konfigruacja zgłaszania i zapisywania błędów
-define('MK_DEBUG', defined('APP_DEBUG') ? APP_DEBUG : false);
-define('MK_DEVELOPER', defined('DEVELOPER') ? DEVELOPER : false);
-define('MK_TEST', defined('APP_TEST') ? APP_TEST : false);
-define('MK_ERROR_JS_ENABLED', defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
-
 // Ścieżki do plików wykorzystywanych przez aplikację
 define('APP_FILE_LOCK', (defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . 'under_construction.txt');
 define('APP_STATUS_LOG', (defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . 'upgrade/log/status.log');
@@ -94,3 +88,9 @@ if (defined('APP_INI_FILE')) {
 	define('APP_ERROR_JS_ENABLED', $config->getString('system', 'error_raporting_js'));
 	define('APP_NAME', $config->getString('system', 'name'));
 }
+
+// Konfigruacja zgłaszania i zapisywania błędów
+define('MK_DEBUG', defined('APP_DEBUG') ? APP_DEBUG : false);
+define('MK_DEVELOPER', defined('DEVELOPER') ? DEVELOPER : false);
+define('MK_TEST', defined('APP_TEST') ? APP_TEST : false);
+define('MK_ERROR_JS_ENABLED', defined('APP_ERROR_JS_ENABLED') ? APP_ERROR_JS_ENABLED : true);
