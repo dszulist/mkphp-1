@@ -214,7 +214,7 @@ class MK_Controller_Console {
 
 		// sprawdzamy czy przekazano wszystkie potrzebne informacje
 		foreach($required as $val) {
-			if(isset($argv[$val]) === false || empty($argv[$val])) {
+			if(!isset($argv[$val])) {
 				throw new Exception("Brak wymaganych danych: $val");
 			}
 		}
