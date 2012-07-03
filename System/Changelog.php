@@ -43,3 +43,21 @@ class MK_System_Changelog extends MK_Db_PDO {
 	}
 
 }
+
+/*
+
+CREATE TABLE system_changelog
+(
+  id serial NOT NULL,
+  notification_id integer DEFAULT 0,
+  system_version_id integer,
+  branch_id integer NOT NULL DEFAULT 0,
+  patch_type character(1) NOT NULL DEFAULT 'b'::bpchar,
+  bt_id character varying(1024),
+  description text NOT NULL DEFAULT ''::text,
+  description_more text,
+  createdate timestamp(0) without time zone NOT NULL DEFAULT now(),
+  CONSTRAINT system_changelog_pk PRIMARY KEY (id )
+);
+
+*/

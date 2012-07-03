@@ -54,3 +54,25 @@ class MK_System_Notification extends MK_Db_PDO {
 	}
 
 }
+
+/*
+
+CREATE SEQUENCE system_notification_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+
+CREATE TABLE system_notification
+(
+  id serial NOT NULL,
+  subject character varying(200),
+  description text,
+  notification_date date NOT NULL,
+  notice_type smallint DEFAULT 0,
+  createdate timestamp without time zone DEFAULT now(),
+  CONSTRAINT system_notification_pk PRIMARY KEY (id )
+);
+
+*/

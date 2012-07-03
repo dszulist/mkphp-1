@@ -68,3 +68,56 @@ class MK_System_Cron extends MK_Db_PDO {
 	}
 
 }
+
+/*
+
+CREATE SEQUENCE system_cron_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+
+CREATE TABLE system_cron
+(
+  id integer NOT NULL DEFAULT nextval('system_cron_seq'::regclass),
+  expression character varying DEFAULT '* * * * *'::character varying,
+  task_name character varying NOT NULL,
+  php_class character varying NOT NULL,
+  php_method character varying NOT NULL,
+  php_argv character varying,
+  sequence_order integer NOT NULL DEFAULT 0,
+  state character varying(1) DEFAULT 'A'::character varying,
+  last_exec timestamp without time zone,
+  exec_lock timestamp without time zone,
+  error_lock timestamp without time zone,
+  CONSTRAINT system_cron_pk PRIMARY KEY (id )
+);
+
+COMMENT ON COLUMN system_cron.id
+ IS 'Identyfikator zaplanowanego zadania';
+COMMENT ON COLUMN system_cron.expression
+ IS 'Format crontab: "Minute / Hour / Day of Month / Month / Day of Week"';
+COMMENT ON COLUMN system_cron.task_name
+ IS 'Nazwa zaplanowanego zadania';
+COMMENT ON COLUMN system_cron.php_class
+ IS 'Nazwa klasy, która zostanie uruchomiona';
+COMMENT ON COLUMN system_cron.php_method
+ IS 'Nazwa metody, która zostanie uruchomiona';
+COMMENT ON COLUMN system_cron.php_argv
+ IS 'Parametry przekazywane do metody oddzielone spacją (tak jak w konsoli)';
+COMMENT ON COLUMN system_cron.sequence_order
+ IS 'Kolejność wykonywania zadań z crona - jeśli zadanie ma mieć wyższy priorytet (wcześniej uruchomione), to należy podać liczbę wyższą niż pozostałe wartości w tabeli';
+COMMENT ON COLUMN system_cron.state
+ IS 'Status zaplanowanego zadania:
+A - Aktywne
+I - Nieaktywne
+D - Usunięte';
+COMMENT ON COLUMN system_cron.last_exec
+ IS 'W momencie uruchomienia/wykonywania zadania należy ustawić locka, który nie pozwoli na ponowne uruchomienie zadania, gdy jest już wykonywane';
+COMMENT ON COLUMN system_cron.exec_lock
+ IS 'NOW()+5m => jeżeli zadanie długo się wykonuje, to nie będzie sprawdzane czy istnieje taka potrzeba, aby ponownie uruchomić';
+COMMENT ON COLUMN system_cron.error_lock
+ IS 'NOW()+1h => jeżeli wystąpi jakikolwiek błąd podczas wcześniejszego wykonywania zadania z crona, to blokowane jest na godzinę czasu';
+
+*/

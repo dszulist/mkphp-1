@@ -50,3 +50,26 @@ class MK_System_NotificationUser extends MK_Db_PDO {
 	}
 
 }
+
+/*
+
+CREATE SEQUENCE system_notification_user_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+
+CREATE TABLE system_notification_user
+(
+  id serial NOT NULL,
+  notification_id integer NOT NULL,
+  user_id integer NOT NULL,
+  createdate timestamp without time zone DEFAULT now(),
+  CONSTRAINT system_notification_user_pk PRIMARY KEY (id ),
+  CONSTRAINT system_notification_user_fk1 FOREIGN KEY (notification_id)
+      REFERENCES system_notification (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+*/

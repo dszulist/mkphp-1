@@ -29,3 +29,20 @@ class MK_System_Build extends MK_Db_PDO {
 	}
 
 }
+
+/*
+
+CREATE TABLE system_build
+(
+  id serial NOT NULL,
+  system_version_id integer NOT NULL,
+  build_version integer NOT NULL,
+  createdate timestamp without time zone DEFAULT now(),
+  release_date timestamp without time zone,
+  CONSTRAINT system_build_pk PRIMARY KEY (id ),
+  CONSTRAINT system_build_fk1 FOREIGN KEY (system_version_id)
+      REFERENCES system_version (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+*/
