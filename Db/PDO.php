@@ -70,6 +70,12 @@ class MK_Db_PDO {
 	protected $_tableName;
 
 	/**
+	 * Nazwa sekwencji dla indeksu głównego tabeli
+	 * @var String
+	 */
+	protected  $sequenceName;
+
+	/**
 	 * Konstruktor
 	 */
 	public function __construct() {
@@ -77,13 +83,13 @@ class MK_Db_PDO {
 		$timeStart = MK_DEBUG_FIREPHP ? microtime(true) : 0;
 
 		// Połączenie z bazą danych (singleton)
-
 		$this->db = MK_Db_PDO_Singleton::getInstance();
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if(MK_DEBUG_FIREPHP) {
 			$this->fireBugSqlDump("MK_Db_PDO_Singleton::getInstance()", '', array(), microtime(true) - $timeStart);
 		}
+
 	}
 
 	/**
@@ -1453,5 +1459,36 @@ class MK_Db_PDO {
 		MK_Registry::set('dir', $sortDirection);
 		MK_Registry::set('sort', $sortColumn);
 	}
+
+	/**
+	 * Zwraca nazwe sekwencji jaka ustawiono lub standardowa na podstawie nazwy tabeli
+	 * @return String
+	 */
+	protected function getSequenceName(){
+		return (isset($this->sequenceName) && !empty($this->sequenceName)) ? $this->sequenceName : "{$this->_tableName}_id_seq";
+	}
+
+	/**
+     * Pobranie kolejnego numeru sekwencji dla kolumny Id
+     *
+     * @return Integer
+     */
+	protected function getNextId() {
+        $seqName = $this->getSequenceName();
+        $sql = "SELECT nextval('{$seqName}')";
+        return $this->getOne($sql, array());
+    }
+
+    /**
+     * Ustawia sekwencje dla danej tabeli na podstawie podanej kolumny
+     * @param string $col_name
+     * @return Integer
+     */
+	protected function setSequence($col_name) {
+	    $seqName = $this->getSequenceName();
+        $sql = "SELECT setval('{$seqName}', (SELECT MAX(\"{$col_name}\") FROM {$this->_tableName}) + 1)";
+        $this->Execute($sql);
+    }
+
 
 }
