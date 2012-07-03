@@ -101,9 +101,10 @@ function validate_directory($dirPath) {
  * @return bool
  */
 function block_directory_htaccess($dirPath){
-	if(!file_exists("{$dirPath}.htaccess")){
+	$file  = $dirPath . DIRECTORY_SEPARATOR . '.htaccess';
+	if(!file_exists($file)){
 		validate_directory($dirPath);
-	    file_put_contents("{$dirPath}.htaccess", "Order Deny,Allow " . PHP_EOL . "Deny from all " . PHP_EOL . "Allow from 127.0.0.1 " . PHP_EOL);
+	    file_put_contents($file, "Order Deny,Allow " . PHP_EOL . "Deny from all " . PHP_EOL . "Allow from 127.0.0.1 " . PHP_EOL);
 		return true;
 	}
 	return false;
