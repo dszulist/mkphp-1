@@ -45,7 +45,7 @@ class MK_XML_Convert {
      * @param SimpleXMLElement $xml
      */
     private function iteratechildren($object, SimpleXMLElement $xml){
-        if(!empty($object)){
+        if(!empty($object) && $object !== true){
             foreach ($object as $name => $value){
                 if (is_string($value) || is_numeric($value)) {
                     $xml->$name = $value;
