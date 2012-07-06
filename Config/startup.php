@@ -67,6 +67,7 @@ ini_set('session.hash_function', 1);
 ini_set('session.hash_bits_per_character', 6);
 ini_set('session.save_handler', SESSION_SAVE_HANDLER);
 ini_set('session.gc_maxlifetime', 0);
+ini_set('session.gc_probability', 0);
 ini_set('session.cookie_lifetime', 0);
 ini_set('session.cache_expire', 480);
 
