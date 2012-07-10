@@ -24,10 +24,9 @@
  */
 
 // Konfiguracja startowa aplikacji
-define('MK_LANG', 'pl');
-define('MK_DEFAULT_LANG', 'pl');
-define('MK_LOCALE_TIME', 'pl_PL.UTF-8');
-define('MK_LOCALE_NUMERIC', 'en_US');
+define('MK_LANG', 'pl_PL');
+define('MK_LOCALE_TIME', MK_LANG . '.UTF-8');
+define('MK_LOCALE_NUMERIC', MK_LANG);
 define('MK_TIMEZONE', 'Europe/Warsaw');
 define('MK_HTML_HEADER', 'Content-Type: text/html; charset=utf-8');
 define('MK_COOKIES_PATH', dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost') . '?'));
