@@ -5,18 +5,20 @@
  *
  * Klasa do obsługi opcji developerskich
  *
- * @category	MK_Controller
- * @package		MK_Controller_Developer
- * @author		bskrzypkowiak
+ * @category    MK_Controller
+ * @package        MK_Controller_Developer
+ * @author        bskrzypkowiak
  */
-class MK_Controller_Developer {
+class MK_Controller_Developer
+{
 
 	/**
 	 * Włączaja/Wyłącza debbuging firephp oraz xdebug
 	 *
 	 * @return Array
 	 */
-	public function enableDebug() {
+	public function enableDebug()
+	{
 		$msg = '';
 		if (array_key_exists('DEBUG_FIREPHP', $_SESSION) && $_SESSION['DEBUG_FIREPHP'] === true) {
 			unset($_SESSION['DEBUG_FIREPHP']);

@@ -5,12 +5,13 @@
  *
  * Model dla tabeli system_cron
  *
- * @category	MK_System
- * @package		MK_System_Cron
+ * @category    MK_System
+ * @package        MK_System_Cron
  *
- * @throws		MK_Db_Exception
+ * @throws        MK_Db_Exception
  */
-class MK_System_Cron extends MK_Db_PDO {
+class MK_System_Cron extends MK_Db_PDO
+{
 
 	/**
 	 * @var string
@@ -22,7 +23,8 @@ class MK_System_Cron extends MK_Db_PDO {
 	 *
 	 * @return array
 	 */
-	public function getList() {
+	public function getList()
+	{
 		return $this->GetRows("SELECT * FROM {$this->tableName} ORDER BY id ASC", array(), 'id');
 	}
 
@@ -31,7 +33,8 @@ class MK_System_Cron extends MK_Db_PDO {
 	 *
 	 * @return array
 	 */
-	public function getActiveList() {
+	public function getActiveList()
+	{
 		return $this->GetRows("SELECT * FROM {$this->tableName} WHERE state = ? ORDER BY sequence_order DESC", array('A'), 'id');
 	}
 
@@ -44,9 +47,10 @@ class MK_System_Cron extends MK_Db_PDO {
 	 *
 	 * @return int
 	 */
-	public function setTaskExecuted($id, $finished = false, $currentTime = 0) {
+	public function setTaskExecuted($id, $finished = false, $currentTime = 0)
+	{
 		$timeStamp = date("Y-m-d H:i:s", $currentTime > 0 ? $currentTime : time());
-		if($finished === true) {
+		if ($finished === true) {
 			return $this->Execute("UPDATE {$this->tableName} SET last_exec = ?, exec_lock = ?, error_lock = ? WHERE id = ?", array($timeStamp, null, null, $id));
 		}
 		else {
@@ -62,7 +66,8 @@ class MK_System_Cron extends MK_Db_PDO {
 	 *
 	 * @return int
 	 */
-	public function setTaskError($id, $currentTime = 0) {
+	public function setTaskError($id, $currentTime = 0)
+	{
 		$timeStamp = date("Y-m-d H:i:s", $currentTime > 0 ? $currentTime : time());
 		return $this->Execute("UPDATE {$this->tableName} SET error_lock = ? WHERE id = ?", array($timeStamp, (int)$id));
 	}

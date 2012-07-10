@@ -16,7 +16,8 @@
  * overscore on roman numeral is represented by underscore prefix
  *
  * */
-class MK_Convert_Roman {
+class MK_Convert_Roman
+{
 
 	/**
 	 * @var mixed
@@ -46,7 +47,8 @@ class MK_Convert_Roman {
 	 * @throws MK_Exception
 	 * @return mixed
 	 */
-	public static function result($number) {
+	public static function result($number)
+	{
 		self::$number = $number;
 
 		self::$numrom = array(
@@ -83,7 +85,8 @@ class MK_Convert_Roman {
 	 *
 	 * @return string
 	 */
-	public static function convertNum() {
+	public static function convertNum()
+	{
 		$number = self::$number;
 		$numrom = self::$numrom;
 		$romovr = self::$romovr;
@@ -117,7 +120,8 @@ class MK_Convert_Roman {
 	 *
 	 * @return string
 	 */
-	public static function convertRom() {
+	public static function convertRom()
+	{
 		$number = self::$number;
 		$numrom = array_reverse(self::$numrom);
 		$arabic = array_values($numrom);
@@ -128,8 +132,8 @@ class MK_Convert_Roman {
 		$i = 0;
 		while ($number != 0) {
 			while ($number >= $arabic[$i]) {
-				$number-= $arabic[$i];
-				$str_roman.= $roman[$i];
+				$number -= $arabic[$i];
+				$str_roman .= $roman[$i];
 			}
 			$i++;
 		}

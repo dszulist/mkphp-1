@@ -8,19 +8,22 @@
  * na podstawie: http://www.php.net/manual/en/streamwrapper.url-stat.php
  *
  * @category MK_Steam
- * @package	MK_Stream_Tcp
- * @author	bskrzypkowiak
+ * @package    MK_Stream_Tcp
+ * @author    bskrzypkowiak
  */
-Class MK_Stream_Tcp {
+Class MK_Stream_Tcp
+{
 
 	/**
 	 * Sprawdzanie protokołu
-	 * 
+	 *
 	 * @param String $path
 	 * @param Integer $flags
+	 *
 	 * @return Boolean
 	 */
-	public static function url_stat($path, $flags) {
+	public static function url_stat($path, $flags)
+	{
 
 		if (!stream_socket_client($path, $errno, $errstr, 10)) {
 			echo "Brak połączenia: \r\n$path \r\n $errstr";
@@ -32,13 +35,15 @@ Class MK_Stream_Tcp {
 
 	/**
 	 * Przy próbie utworzenia pliku dla "tcp" nic nie twórz i zwróć true
-	 * 
+	 *
 	 * @param String $path
 	 * @param Integer $mode
 	 * @param Integer $options
-	 * @return Boolean 
+	 *
+	 * @return Boolean
 	 */
-	public static function mkdir($path, $mode, $options) {
+	public static function mkdir($path, $mode, $options)
+	{
 		return true;
 	}
 

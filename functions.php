@@ -5,9 +5,11 @@
  * BC MATH (Binary Calculator - numbers of any size and precision, represented as strings)
  *
  * @param string $number
+ *
  * @return string
  */
-function bcceil($number) {
+function bcceil($number)
+{
 	$number = rtrim($number, '.0');
 	if (strpos($number, '.') !== false) {
 		if ($number[0] != '-') {
@@ -23,9 +25,11 @@ function bcceil($number) {
  * BC MATH (Binary Calculator - numbers of any size and precision, represented as strings)
  *
  * @param string $number
+ *
  * @return string
  */
-function bcfloor($number) {
+function bcfloor($number)
+{
 	$number = rtrim($number, '.0');
 	if (strpos($number, '.') !== false) {
 		if ($number[0] != '-') {
@@ -42,20 +46,23 @@ function bcfloor($number) {
  * $number = '120.00';  bcround($number, 2) = 120.00;
  * $number = '120.5555';  bcround($number, 2) = 120.56;
  * $number = '120,5555';  bcround($number, 2) = 120.56;
+ *
  * @param string $number np 120.00 , 120.5555, 10,9989393
  * @param integer $precision (default:0)
+ *
  * @return string
  */
-function bcround($number, $precision = 0) {
-    if(strpos($number, ',') !== false) {
-        $number = str_replace(array('.', ','), array('', '.'), $number);
-    }
-    if (false !== ($pos = strpos($number, '.')) && (strlen($number) - $pos - 1) > $precision) {
-        $zeros = str_repeat("0", $precision);
-        return bcadd($number, "0.{$zeros}5", $precision);
-    } else {
-        return $number;
-    }
+function bcround($number, $precision = 0)
+{
+	if (strpos($number, ',') !== false) {
+		$number = str_replace(array('.', ','), array('', '.'), $number);
+	}
+	if (false !== ($pos = strpos($number, '.')) && (strlen($number) - $pos - 1) > $precision) {
+		$zeros = str_repeat("0", $precision);
+		return bcadd($number, "0.{$zeros}5", $precision);
+	} else {
+		return $number;
+	}
 }
 
 /**
@@ -63,9 +70,11 @@ function bcround($number, $precision = 0) {
  *
  * @param string $filePath
  * @param string $appPath
+ *
  * @return boolean
  */
-function file_exists_in_app($filePath, $appPath = '') {
+function file_exists_in_app($filePath, $appPath = '')
+{
 	if (empty($appPath)) {
 		if (!defined('APP_PATH')) {
 			trigger_error('Undefined argument $appPath in function ' . __FUNCTION__ . '() OR constant APP_PATH', E_USER_ERROR);
@@ -80,8 +89,9 @@ function file_exists_in_app($filePath, $appPath = '') {
  *
  * @param string $dirPath
  */
-function validate_directory($dirPath) {
-	if(!empty($dirPath) && $dirPath !== '..' && $dirPath !== '.'){
+function validate_directory($dirPath)
+{
+	if (!empty($dirPath) && $dirPath !== '..' && $dirPath !== '.') {
 		if (!file_exists($dirPath) || !is_dir($dirPath)) {
 			if (!mkdir($dirPath, MK_CHMOD_DIR, true)) {
 				exit("Nie można utworzyć katalogu {$dirPath}");
@@ -98,13 +108,15 @@ function validate_directory($dirPath) {
  * Jeżeli utworzy plik htacces zwróci true, w przeciwnym wypadku false
  *
  * @param string $dirPath
+ *
  * @return bool
  */
-function block_directory_htaccess($dirPath){
-	$file  = $dirPath . DIRECTORY_SEPARATOR . '.htaccess';
-	if(!file_exists($file)){
+function block_directory_htaccess($dirPath)
+{
+	$file = $dirPath . DIRECTORY_SEPARATOR . '.htaccess';
+	if (!file_exists($file)) {
 		validate_directory($dirPath);
-	    file_put_contents($file, "Order Deny,Allow " . PHP_EOL . "Deny from all " . PHP_EOL . "Allow from 127.0.0.1 " . PHP_EOL);
+		file_put_contents($file, "Order Deny,Allow " . PHP_EOL . "Deny from all " . PHP_EOL . "Allow from 127.0.0.1 " . PHP_EOL);
 		return true;
 	}
 	return false;
@@ -116,9 +128,11 @@ function block_directory_htaccess($dirPath){
  * @param mixed $data - dane do wyświetlenia, może być string/array/object
  * @param boolean $throwException (default: true) - domyślnie wyrzuca wyjątek MK_Exception()
  * @param string $method (default: print_r) - domyślnie zwraca wynik przy użyciu funkcji print_r
+ *
  * @throws MK_Exception
  */
-function printr($data, $throwException=true, $method='print_r') {
+function printr($data, $throwException = true, $method = 'print_r')
+{
 
 	switch ($method) {
 		case 'var_dump':
@@ -151,22 +165,24 @@ function printr($data, $throwException=true, $method='print_r') {
  * Usuwa katalog rekurencyjnie z jego plikami
  *
  * @param $dir
+ *
  * @return bool
  */
-function removeDir($dir) {
-	if (!file_exists($dir)){
+function removeDir($dir)
+{
+	if (!file_exists($dir)) {
 		return true;
 	}
 
-	if (!is_dir($dir)){
+	if (!is_dir($dir)) {
 		return unlink($dir);
 	}
 
 	foreach (scandir($dir) as $item) {
-		if ($item == '.' || $item == '..'){
+		if ($item == '.' || $item == '..') {
 			continue;
 		}
-		if (!removeDir($dir . DIRECTORY_SEPARATOR . $item)){
+		if (!removeDir($dir . DIRECTORY_SEPARATOR . $item)) {
 			return false;
 		}
 	}

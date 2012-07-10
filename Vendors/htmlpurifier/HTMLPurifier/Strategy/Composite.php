@@ -6,19 +6,20 @@
 abstract class HTMLPurifier_Strategy_Composite extends HTMLPurifier_Strategy
 {
 
-    /**
-     * List of strategies to run tokens through.
-     */
-    protected $strategies = array();
+	/**
+	 * List of strategies to run tokens through.
+	 */
+	protected $strategies = array();
 
-    abstract public function __construct();
+	abstract public function __construct();
 
-    public function execute($tokens, $config, $context) {
-        foreach ($this->strategies as $strategy) {
-            $tokens = $strategy->execute($tokens, $config, $context);
-        }
-        return $tokens;
-    }
+	public function execute($tokens, $config, $context)
+	{
+		foreach ($this->strategies as $strategy) {
+			$tokens = $strategy->execute($tokens, $config, $context);
+		}
+		return $tokens;
+	}
 
 }
 

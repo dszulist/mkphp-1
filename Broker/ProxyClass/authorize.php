@@ -2,7 +2,8 @@
 /**
  * Autoryzacja klienta na Brokerze
  */
-class authorize {
+class authorize
+{
 
 	/**
 	 * @var integer
@@ -18,7 +19,8 @@ class authorize {
 	 * @param $clientUid
 	 * @param $clientPassword
 	 */
-	public function __construct($clientUid, $clientPassword) {
+	public function __construct($clientUid, $clientPassword)
+	{
 		$this->synchronizationClientUID = $clientUid;
 		$this->synchronizationClientPassword = $clientPassword;
 	}

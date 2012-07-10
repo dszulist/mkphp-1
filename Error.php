@@ -6,10 +6,11 @@
  * Obsługa błędów php/js zgłaszanie na maila etc.
  *
  * @category MK
- * @package	MK_Error
+ * @package    MK_Error
  * @author bskrzypkowiak
  */
-class MK_Error {
+class MK_Error
+{
 
 	/**
 	 * @var string
@@ -33,7 +34,8 @@ class MK_Error {
 	 *
 	 * @internal param array $classArray
 	 */
-	public static function setMoreTraceIgnorePath($tracePath) {
+	public static function setMoreTraceIgnorePath($tracePath)
+	{
 		self::$traceIgnorePath = array_merge(self::$traceIgnorePath, $tracePath);
 	}
 
@@ -42,16 +44,17 @@ class MK_Error {
 	 * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
 	 *
 	 * try {
-	 *	 // code
+	 *     // code
 	 * } catch (Exception $e) {
-	 *	 die(MK_Error::getSimpleMessage($e));
+	 *     die(MK_Error::getSimpleMessage($e));
 	 * }
 	 *
 	 * @param Exception $exceptionClass
 	 *
 	 * @return string
 	 */
-	public static function getSimpleInfo(Exception $exceptionClass) {
+	public static function getSimpleInfo(Exception $exceptionClass)
+	{
 		return '<pre>' . self::fromException($exceptionClass->getMessage(), $exceptionClass->getFile(), strval($exceptionClass->getLine()), self::getExtendedTrace($exceptionClass)) . '</pre>';
 	}
 
@@ -62,11 +65,12 @@ class MK_Error {
 	 *
 	 * @return string
 	 */
-	public static function getExtendedTrace($exception = null) {
+	public static function getExtendedTrace($exception = null)
+	{
 		$traceKey = 1;
 		$msg = " #" . $traceKey++ . "\t";
 
-		if($exception instanceof Exception) {
+		if ($exception instanceof Exception) {
 			$msg .= $exception->getFile() . '(' . $exception->getLine() . ')';
 			$traceArray = $exception->getTrace();
 		} else {
@@ -76,7 +80,7 @@ class MK_Error {
 		// Odwrócenie kolejności czytania tablicy ze śladami
 		$traceArray = array_reverse($traceArray, true);
 
-		foreach($traceArray as $trace) {
+		foreach ($traceArray as $trace) {
 			$_class = isset($trace['class']) ? $trace['class'] : '';
 			$_type = isset($trace['type']) ? $trace['type'] : '';
 			$_function = isset($trace['function']) ? $trace['function'] : '';
@@ -85,7 +89,7 @@ class MK_Error {
 
 			// Ignorowanie klas z metodami (self::$traceIgnorePath)
 			$classTypeFunction = $_class . $_type . $_function;
-			if(in_array($classTypeFunction, self::$traceIgnorePath)) {
+			if (in_array($classTypeFunction, self::$traceIgnorePath)) {
 				continue;
 			}
 
@@ -93,8 +97,8 @@ class MK_Error {
 			$msg .= "\n #" . $traceKey++ . "\t" . $_file . '(' . $_line . '): ' . $classTypeFunction . '(';
 
 			// Odczytanie argumentów
-			if(isset($trace['args']) && count($trace['args']) > 0) {
-				foreach($trace['args'] as $argsKey => $argsValue) {
+			if (isset($trace['args']) && count($trace['args']) > 0) {
+				foreach ($trace['args'] as $argsKey => $argsValue) {
 					$msg .= ($argsKey ? ' , ' : ' ');
 					$msg .= print_r($argsValue, true);
 				}
@@ -113,7 +117,8 @@ class MK_Error {
 	 *
 	 * @return string
 	 */
-	private static function _prepareMessage($file = '(null)', $line = '(null)') {
+	private static function _prepareMessage($file = '(null)', $line = '(null)')
+	{
 		//@TODO - ugryźć jako parametruyzacja czy cos :)
 		//	if(!UserSingleton::getInstance()->isLogged()) {
 		//		$userLogin = 'Brak informacji';
@@ -143,7 +148,7 @@ class MK_Error {
 			. " REQUEST_URI:\t" . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'brak danych') . "\n"
 			. " USER_AGENT:\t" . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'brak danych') . "\n";
 
-		if(defined('APP_PATH')) {
+		if (defined('APP_PATH')) {
 			$devMessage .= " APP_PATH:\t" . APP_PATH . "\n"
 				. " COOKIES_PATH:\t" . MK_COOKIES_PATH . "\n";
 		}
@@ -154,39 +159,40 @@ class MK_Error {
 	/**
 	 * Obsługa błędów PHP. Zapisywanie informacji do pliku.
 	 *
-	 * @param Integer	 $type
-	 * @param String	  $message (default: "")
-	 * @param String	  $file (default: "")
+	 * @param Integer     $type
+	 * @param String      $message (default: "")
+	 * @param String      $file (default: "")
 	 * @param int|string  $line (default: "")
-	 * @param Mixed	   $errContext (default: array())
-	 * @param String	  $debugBacktrace (default: "")
+	 * @param Mixed       $errContext (default: array())
+	 * @param String      $debugBacktrace (default: "")
 	 *
 	 * @return Boolean
 	 */
-	public static function handler($type, $message = "", $file = "", $line = "", $errContext = array(), $debugBacktrace = "") {
+	public static function handler($type, $message = "", $file = "", $line = "", $errContext = array(), $debugBacktrace = "")
+	{
 		// W przypadku tego błędu nie logujemy ponieważ nie ma on się pojawiać
-		if(preg_match('#pg_fetch_array\(\)( \[[^]]+\])*: Unable to jump to row [0-9]+ on PostgreSQL result index [0-9]+#i', $message)) {
+		if (preg_match('#pg_fetch_array\(\)( \[[^]]+\])*: Unable to jump to row [0-9]+ on PostgreSQL result index [0-9]+#i', $message)) {
 			return true;
 		}
 
 		$devMessage = self::_prepareMessage($file, $line) . "Komunikat błędu:\n " . $message . "\n\n";
 		$md5 = md5($message . $file . $line);
-		if(count($errContext) > 0) {
+		if (count($errContext) > 0) {
 			$devMessage .= "Informacje szczegółowe:\n " . substr(print_r($errContext, true), 0, 10240) . "\n\n";
 		}
 		$devMessage .= "Backtrace:\n" . substr(empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace, 0, 1024) . "\n";
 
-		if(MK_DEBUG === true) {
+		if (MK_DEBUG === true) {
 			return "Błąd \"php\"\t" . $md5 . "\n" . $devMessage;
 		}
-		if(!class_exists('MK_Logs')) {
+		if (!class_exists('MK_Logs')) {
 			include_once('Logs.php');
 		}
 		$logs = new MK_Logs(APP_PATH);
 		$logs->saveToFile('php', $devMessage, $md5);
 
 		// Tutaj zwracamy informacje dla uzytkownika - w tym przypadku wyrzucamy wyjatek ktory zwróci jsona z informacja o obedzie ktora zostanie wyswietlana uzytkownikowi w postaci okna z błędem
-		if(($type !== E_NOTICE) && ($type < 2048)) {
+		if (($type !== E_NOTICE) && ($type < 2048)) {
 			return 'Nieoczekiwany błąd! ' . self::$mailAdmin;
 		}
 
@@ -196,19 +202,20 @@ class MK_Error {
 	/**
 	 * Obsługa błędów zwróconych przez aplikację. Zapisywanie informacji do pliku.
 	 *
-	 * @param String	 $message (default: "")
-	 * @param String	 $file (default: "")
+	 * @param String     $message (default: "")
+	 * @param String     $file (default: "")
 	 * @param int|string $line (default: "")
-	 * @param String	 $debugBacktrace (default: "")
+	 * @param String     $debugBacktrace (default: "")
 	 *
 	 * @return Boolean
 	 */
-	public static function fromException($message = "", $file = "", $line = "", $debugBacktrace = "") {
+	public static function fromException($message = "", $file = "", $line = "", $debugBacktrace = "")
+	{
 		$md5 = md5($message . $file . $line);
 		$devMessage = self::_prepareMessage($file, $line) . "Komunikat:\n " . $message . "\n\n"
 			. "Backtrace:\n" . substr(empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace, 0, 1024) . "\n";
 
-		if(MK_DEBUG === true) {
+		if (MK_DEBUG === true) {
 			return "Błąd \"exception\"\t" . $md5 . "\n" . $devMessage;
 		}
 
@@ -228,12 +235,13 @@ class MK_Error {
 	 *
 	 * @return string
 	 */
-	public static function fromDataBase($message = "", $file = "", $line = 0, $debugBacktrace = "") {
+	public static function fromDataBase($message = "", $file = "", $line = 0, $debugBacktrace = "")
+	{
 		$md5 = md5($message . $file . $line);
 		$devMessage = self::_prepareMessage($file, $line) . "Komunikat:\n " . $message . "\n\n"
 			. "Backtrace:\n" . substr(empty($debugBacktrace) ? print_r(debug_backtrace(), true) : $debugBacktrace, 0, 1024) . "\n";
 
-		if(MK_DEBUG === true) {
+		if (MK_DEBUG === true) {
 			return "Błąd \"db\"\t" . $md5 . "\n" . $devMessage;
 		}
 
@@ -248,15 +256,16 @@ class MK_Error {
 	 *
 	 * @return string
 	 */
-	public static function fromJavaScript() {
-		if(isset($_COOKIE['ys-javascriptErrorLog'])) {
+	public static function fromJavaScript()
+	{
+		if (isset($_COOKIE['ys-javascriptErrorLog'])) {
 			MK_Cookie::clear('ys-javascriptErrorLog');
 			$errorObject = json_decode(substr($_COOKIE['ys-javascriptErrorLog'], 2));
 
 			$md5 = md5(print_r($errorObject, true));
 			$devMessage = self::_prepareMessage() . "Komunikat:\n " . substr(print_r($errorObject, true), 0, 1024) . "\n\n";
 
-			if(MK_DEBUG === true) {
+			if (MK_DEBUG === true) {
 				return "Błąd \"js\"\t" . $md5 . "\n" . $devMessage;
 			}
 

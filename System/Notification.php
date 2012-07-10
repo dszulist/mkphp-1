@@ -5,12 +5,13 @@
  *
  * Model dla tabeli system_notification
  *
- * @category	MK_System
- * @package		MK_System_Notification
+ * @category    MK_System
+ * @package        MK_System_Notification
  *
- * @throws		MK_Db_Exception
+ * @throws        MK_Db_Exception
  */
-class MK_System_Notification extends MK_Db_PDO {
+class MK_System_Notification extends MK_Db_PDO
+{
 
 	/**
 	 * @var string
@@ -26,26 +27,27 @@ class MK_System_Notification extends MK_Db_PDO {
 	 * @throws MK_Exception
 	 * @return array
 	 */
-	public function getList($userId, $withChangelog = true) {
-        $userId = (int) $userId;
-        if($userId <= 0) {
-            throw new MK_Exception('Nieprawidłowe parametry do odczytania listy nowych powiadomień');
-        }
+	public function getList($userId, $withChangelog = true)
+	{
+		$userId = (int)$userId;
+		if ($userId <= 0) {
+			throw new MK_Exception('Nieprawidłowe parametry do odczytania listy nowych powiadomień');
+		}
 
-		$sql = 'SELECT sn.* FROM ' . $this->tableName .' sn '
+		$sql = 'SELECT sn.* FROM ' . $this->tableName . ' sn '
 			. ' LEFT JOIN system_notification_user snu ON (sn.id = snu.notification_id AND snu.user_id = ?) WHERE snu.user_id IS NULL ORDER BY id DESC';
 		$notifications = $this->GetRows($sql, array($userId), 'id');
 
 		// Odczytywanie rejestru zmian dla powiadomień
-		if($withChangelog == true) {
+		if ($withChangelog == true) {
 			$notificationIds = array();
-			foreach($notifications as &$notification) {
+			foreach ($notifications as &$notification) {
 				$notificationIds[] = $notification['id'];
 				$notification['changelogs'] = array();
 			}
 			$changelogDb = new MK_System_Changelog();
 			$changelogs = $changelogDb->getListByNotificationIds($notificationIds);
-			foreach($changelogs as &$changelog) {
+			foreach ($changelogs as &$changelog) {
 				$notifications[$changelog['notification_id']]['changelogs'][] = $changelog;
 			}
 		}

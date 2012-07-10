@@ -226,6 +226,7 @@ class MK_XML_Convert
 	 *
 	 * @static
 	 * @todo pogadac z holkiem i zmienic w df i brokerze uzycie iprzeniesc do MK_Object
+	 *
 	 * @param stdClass $obj
 	 * @param string $toClass
 	 *

@@ -5,11 +5,12 @@
  *
  * Klasa do tworzenia plików jsb2 wykorzystywanych przez plugin do Eclipse (Spket) w celu podpowiadania składni frameworków JavaScript
  *
- * @category	MK_Utils
- * @package		MK_Utils_ParseJsb2
+ * @category    MK_Utils
+ * @package        MK_Utils_ParseJsb2
  * @todo jest pare metod uzytych ze SPirbController nalezy sie ich pozbyc
  */
-class MK_Utils_ParseJsb2 {
+class MK_Utils_ParseJsb2
+{
 
 	/**
 	 * @var
@@ -29,7 +30,8 @@ class MK_Utils_ParseJsb2 {
 	/**
 	 *
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->_returnMessage = array();
 		// Tworzenie pliku 'js/mkjs/mk.jsb2' dla ścieżki 'js/mkjs/mk/'
 		$this->createJsb2File('js/mkjs/Mk.jsb2', 'js/mkjs/mk/', 'Madkom JS (Mk.*)', 'Mk.all.js');
@@ -40,14 +42,16 @@ class MK_Utils_ParseJsb2 {
 		$this->returnJsonMessage();
 	}
 
-	public function foobar() {
-		
+	public function foobar()
+	{
+
 	}
 
 	/**
 	 * Wyświetlenie komunikatu w jsonie
 	 */
-	public function returnJsonMessage() {
+	public function returnJsonMessage()
+	{
 		if (count($this->_returnMessage)) {
 			$retArray = $this->returnSuccessMessage(implode('<br/>', $this->_returnMessage));
 		} else {
@@ -57,15 +61,17 @@ class MK_Utils_ParseJsb2 {
 		exit(json_encode($retArray));
 	}
 
-    /**
-     *
-     * Odczytanie rozszerzenia danego pliku
-     *
-     * @param $fileName
-     * @internal param string $filename
-     * @return string
-     */
-	public function getFileExtension($fileName) {
+	/**
+	 *
+	 * Odczytanie rozszerzenia danego pliku
+	 *
+	 * @param $fileName
+	 *
+	 * @internal param string $filename
+	 * @return string
+	 */
+	public function getFileExtension($fileName)
+	{
 		$pi = pathinfo($fileName);
 		return isset($pi['extension']) ? $pi['extension'] : '';
 	}
@@ -75,38 +81,44 @@ class MK_Utils_ParseJsb2 {
 	 * Odczytanie ścieżki skryptu (do pliku .jsb2)
 	 *
 	 * @param string $jsb2File
+	 *
 	 * @return string
 	 */
-	private function _getScriptPath($jsb2File) {
+	private function _getScriptPath($jsb2File)
+	{
 		$pi = pathinfo($jsb2File);
 		return isset($pi['dirname']) ? $pi['dirname'] . '/' : '';
 	}
 
-    /**
-     *
-     * Sprawdzenie czy dany plik jest z roszerzeniem *.js
-     *
-     * @param $fileName
-     * @internal param string $filename
-     * @return Boolean
-     */
-	private function _isJs($fileName) {
+	/**
+	 *
+	 * Sprawdzenie czy dany plik jest z roszerzeniem *.js
+	 *
+	 * @param $fileName
+	 *
+	 * @internal param string $filename
+	 * @return Boolean
+	 */
+	private function _isJs($fileName)
+	{
 		if ($this->getFileExtension($fileName) == 'js') {
 			return true;
 		}
 		return false;
 	}
 
-    /**
-     *
-     * Dopisanie pliku JS do zawartości .jsb2 (linia "fileIncludes")
-     *
-     * @param $fileName
-     * @param $filePath
-     * @internal param string $filename
-     * @return string
-     */
-	private function _createJsb2Line($fileName, $filePath) {
+	/**
+	 *
+	 * Dopisanie pliku JS do zawartości .jsb2 (linia "fileIncludes")
+	 *
+	 * @param $fileName
+	 * @param $filePath
+	 *
+	 * @internal param string $filename
+	 * @return string
+	 */
+	private function _createJsb2Line($fileName, $filePath)
+	{
 		$filePath = str_replace($this->_scriptPath, '', $filePath);
 		$jsb2Line = "\t\t\t" . '{' . PHP_EOL;
 		$jsb2Line .= "\t\t\t\t" . '"text": "' . $fileName . '",' . PHP_EOL;
@@ -115,14 +127,16 @@ class MK_Utils_ParseJsb2 {
 		return $jsb2Line;
 	}
 
-    /**
-     *
-     * Odczytanie listy plików (*.js)
-     *
-     * @param $dirPath
-     * @internal param string $path
-     */
-	public function getJsFiles($dirPath) {
+	/**
+	 *
+	 * Odczytanie listy plików (*.js)
+	 *
+	 * @param $dirPath
+	 *
+	 * @internal param string $path
+	 */
+	public function getJsFiles($dirPath)
+	{
 		$di = new DirectoryIterator($dirPath);
 		foreach ($di as $fileInfo) {
 			$path = $fileInfo->getPath();
@@ -136,17 +150,19 @@ class MK_Utils_ParseJsb2 {
 		}
 	}
 
-    /**
-     *
-     * Tworzenie pliku jsb2
-     *
-     * @param $jsb2File
-     * @param $jsPath
-     * @param $pkgsName
-     * @param $pkgsFile
-     * @internal param string $path
-     */
-	public function createJsb2File($jsb2File, $jsPath, $pkgsName, $pkgsFile) {
+	/**
+	 *
+	 * Tworzenie pliku jsb2
+	 *
+	 * @param $jsb2File
+	 * @param $jsPath
+	 * @param $pkgsName
+	 * @param $pkgsFile
+	 *
+	 * @internal param string $path
+	 */
+	public function createJsb2File($jsb2File, $jsPath, $pkgsName, $pkgsFile)
+	{
 
 		// Pobranie listy plików *.js
 		$this->fileContent = '';

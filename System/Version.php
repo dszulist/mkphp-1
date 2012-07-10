@@ -5,12 +5,13 @@
  *
  * Model dla tabeli system_version
  *
- * @category	MK_System
- * @package		MK_System_Version
+ * @category    MK_System
+ * @package        MK_System_Version
  *
- * @throws		MK_Db_Exception
+ * @throws        MK_Db_Exception
  */
-class MK_System_Version extends MK_Db_PDO {
+class MK_System_Version extends MK_Db_PDO
+{
 
 	/**
 	 * @var string
@@ -22,7 +23,8 @@ class MK_System_Version extends MK_Db_PDO {
 	 *
 	 * @return array
 	 */
-	public function getList() {
+	public function getList()
+	{
 		$sql = 'SELECT * FROM ' . $this->tableName
 			. ' ORDER BY id DESC';
 		return $this->GetRows($sql);

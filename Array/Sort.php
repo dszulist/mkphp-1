@@ -3,13 +3,14 @@
 /**
  * MK_Array_Sort
  *
- * Klasa do sortowania tablic jednowymiarowych typu ['klucz' => 'wartosc'] 
+ * Klasa do sortowania tablic jednowymiarowych typu ['klucz' => 'wartosc']
  *
  * @category MK_Array
- * @package	MK_Array_Sort
- * @author	bskrzypkowiak
+ * @package    MK_Array_Sort
+ * @author    bskrzypkowiak
  */
-class MK_Array_Sort {
+class MK_Array_Sort
+{
 
 	/**
 	 * Kolumna po ktorej maja byc sortowane tablice assocjacyjne po wartosci klucza
@@ -24,16 +25,17 @@ class MK_Array_Sort {
 	public static $_sortOrder = "ASC";
 
 	/**
-	 * Sortowanie tablicy po kluczach, 
+	 * Sortowanie tablicy po kluczach,
 	 * z uwzglednieniem polskich znakow
 	 * oraz z zachowaniem wartosci kluczy
-	 * 
+	 *
 	 * Parametr order ustawiony na 'DESC', powoduje posortowanie w odwrotnej kolejnosci
-	 * 
+	 *
 	 * @param Array     $array
-	 * @param String    $order 
+	 * @param String    $order
 	 */
-	public static function byKeys(array &$array, $order = '') {
+	public static function byKeys(array &$array, $order = '')
+	{
 		setlocale(LC_COLLATE, 'pl_PL.utf8', 'pl');
 		uksort($array, 'strcoll');
 		setlocale(LC_COLLATE, '');
@@ -43,16 +45,17 @@ class MK_Array_Sort {
 	}
 
 	/**
-	 * Sortowanie tablicy po wartosciach, 
-	 * z uwzglednieniem polskich znakow 
+	 * Sortowanie tablicy po wartosciach,
+	 * z uwzglednieniem polskich znakow
 	 * oraz z zachowaniem wartosci kluczy
-	 * 
+	 *
 	 * Parametr order ustawiony na 'DESC', powoduje posortowanie w odwrotnej kolejnosci
-	 *     
+	 *
 	 * @param Array     $array
-	 * @param String    $order 
+	 * @param String    $order
 	 */
-	public static function byValues(array &$array, $order = '') {
+	public static function byValues(array &$array, $order = '')
+	{
 		setlocale(LC_COLLATE, 'pl_PL.utf8', 'pl');
 		uasort($array, 'strcoll');
 		setlocale(LC_COLLATE, '');
@@ -65,10 +68,11 @@ class MK_Array_Sort {
 	 *
 	 * @param Array     $array1
 	 * @param Array     $array2
-	 * 
-	 * @return Mixed 
+	 *
+	 * @return Mixed
 	 */
-	public static function array_diff_assoc_recursive(array $array1, array $array2) {
+	public static function array_diff_assoc_recursive(array $array1, array $array2)
+	{
 		foreach ($array1 as $key => $value) {
 			if (is_array($value)) {
 				if (!isset($array2[$key])) {
@@ -85,53 +89,54 @@ class MK_Array_Sort {
 				$difference[$key] = $value;
 			}
 		}
-		return!isset($difference) ? 0 : $difference;
+		return !isset($difference) ? 0 : $difference;
 	}
 
 	/**
-	 * 
+	 *
 	 * Sortuje tablice wielowymiarowa po wartosci w kluczy tablicy zagniezdzonej tj.
-	 * 
+	 *
 	 * Przy wywołaniu : $mySortedArray = MK_Array_Sort::assocByKeyValue($myArray,'symbol');
-	 * 
+	 *
 	 * Tablica wejsciowa ($myArray):
 	 * Array
-	 * ( 
-	 * 		[0] => Array
-	 * 			(
-	 * 				[symbol] => '002'
-	 * 				[field2] => 'lorem'
-	 * 			)
-	 * 		[1] => Array
-	 * 			(
-	 * 				[symbol] => '001' 
-	 * 				[field2] => 'ipsum'
-	 * 			) 		
+	 * (
+	 *         [0] => Array
+	 *             (
+	 *                 [symbol] => '002'
+	 *                 [field2] => 'lorem'
+	 *             )
+	 *         [1] => Array
+	 *             (
+	 *                 [symbol] => '001'
+	 *                 [field2] => 'ipsum'
+	 *             )
 	 *  )
-	 * 
-	 * 
+	 *
+	 *
 	 * Tablica wyjsciowa ($mySortedArray):
 	 * Array
-	 * ( 
-	 * 		[0] => Array
-	 * 			(
-	 * 				[symbol] => '001'
-	 * 				[field2] => 'ipsum'
-	 * 			)
-	 * 		[1] => Array
-	 * 			(
-	 * 				[symbol] => '002' 
-	 * 				[field2] => 'lorem'
-	 * 			) 		
+	 * (
+	 *         [0] => Array
+	 *             (
+	 *                 [symbol] => '001'
+	 *                 [field2] => 'ipsum'
+	 *             )
+	 *         [1] => Array
+	 *             (
+	 *                 [symbol] => '002'
+	 *                 [field2] => 'lorem'
+	 *             )
 	 *  )
-	 *  	 
+	 *
 	 * @param Array $array
 	 * @param String $sort
 	 * @param String $dir (Optional)
-	 * 
+	 *
 	 * @return Array
 	 */
-	public static function assocByKeyValue(array $array, $sort, $dir='') {
+	public static function assocByKeyValue(array $array, $sort, $dir = '')
+	{
 		if (!empty($sort)) {
 			self::$sortValue = $sort;
 		}
@@ -146,13 +151,14 @@ class MK_Array_Sort {
 
 	/**
 	 * Funkcja pomocnicza dla assocByKeyValue sprawdza po kluczu ktory z elementow ma wiekszy klucz i zwraca odpowiedni wynik dla funkcji usort
-	 * 
+	 *
 	 * @param Array $arr1
 	 * @param Array $arr2
-	 * 
+	 *
 	 * @return Integer
 	 */
-	public static function invenSort(array $arr1, array $arr2) {
+	public static function invenSort(array $arr1, array $arr2)
+	{
 		$i = (self::$sortValue == 'ASC') ? 1 : -1;
 		if ($arr1[self::$sortValue] == $arr2[self::$sortValue]) {
 			return 0;

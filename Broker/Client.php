@@ -8,9 +8,10 @@ require_once('ProxyClassLoader.php');
  *
  * @category    MK_Broker
  * @package     MK_Broker_Client
- * @throws		MK_Exception
+ * @throws        MK_Exception
  */
-class MK_Broker_Client {
+class MK_Broker_Client
+{
 
 	/**
 	 * WSDL do Brokera
@@ -73,12 +74,13 @@ class MK_Broker_Client {
 	 *
 	 * @return \MK_Broker_Client
 	 */
-	public function __construct($login, $password, $url, $settings = false) {
+	public function __construct($login, $password, $url, $settings = false)
+	{
 		$this->frontOfficeClientLogin = $login;
 		$this->frontOfficeClientPassword = $password;
 		$this->wsdlUrl = $url;
 
-		if($settings !== false) {
+		if ($settings !== false) {
 			$this->clientSettings = $settings;
 		}
 
@@ -87,18 +89,22 @@ class MK_Broker_Client {
 
 	/**
 	 * Włączenie/Wyłączenie debugowania ostatniego zapytania __getLastRequest()
+	 *
 	 * @param bool $value
 	 */
-	public function debugRequest($value = true) {
-		$this->debugRequest = (bool) $value;
+	public function debugRequest($value = true)
+	{
+		$this->debugRequest = (bool)$value;
 	}
 
 	/**
 	 * Włączenie/Wyłączenie debugowania ostatniej odpowiedzi __getLastResponse()
+	 *
 	 * @param bool $value
 	 */
-	public function debugResponse($value = true) {
-		$this->debugResponse = (bool) $value;
+	public function debugResponse($value = true)
+	{
+		$this->debugResponse = (bool)$value;
 	}
 
 	/**
@@ -109,7 +115,8 @@ class MK_Broker_Client {
 	 *
 	 * @return string
 	 */
-	private function debugRow($title, $msg) {
+	private function debugRow($title, $msg)
+	{
 		return "*** {$title} ***" . MK_EOL . $msg . MK_EOL . "*** /{$title} ***" . MK_EOL;
 	}
 
@@ -130,24 +137,25 @@ class MK_Broker_Client {
 	 * @return mixed
 	 * @throws MK_Exception
 	 */
-	public function __call($name, $arguments) {
-		if($this->soapClient instanceof SoapClient) {
+	public function __call($name, $arguments)
+	{
+		if ($this->soapClient instanceof SoapClient) {
 			try {
 				$response = $this->soapClient->__soapCall($name, $arguments);
-				if($this->debugRequest) {
+				if ($this->debugRequest) {
 					echo $this->debugRow('Last request', $this->soapClient->__getLastRequest());
 				}
-				if($this->debugResponse) {
+				if ($this->debugResponse) {
 					echo $this->debugRow('Last response', $this->soapClient->__getLastResponse());
 				}
 				return $response;
 			}
-			catch(SoapFault $e) {
+			catch (SoapFault $e) {
 				$debug = ($this->debugRequest) ? $this->debugRow('Last request', $this->soapClient->__getLastRequest()) : '';
 				$debug .= ($this->debugResponse) ? $this->debugRow('Last response', $this->soapClient->__getLastResponse()) : '';
 				throw new MK_Exception($debug . $this->debugRow('SoapFault', $e->getMessage()));
 			}
-			catch(Exception $e) {
+			catch (Exception $e) {
 				$debug = ($this->debugRequest) ? $this->debugRow('Last request', $this->soapClient->__getLastRequest()) : '';
 				$debug .= ($this->debugResponse) ? $this->debugRow('Last response', $this->soapClient->__getLastResponse()) : '';
 				throw new MK_Exception($debug . $this->debugRow('Exception', $e->getMessage()));
@@ -156,7 +164,7 @@ class MK_Broker_Client {
 		else {
 			throw new MK_Exception('Nie zostało nawiązane połączenie z Brokerem!');
 		}
-    }
+	}
 
 	/**
 	 * Nawiązanie połączenia z Brokerem przy użyciu webservice [SoapClient]
@@ -164,11 +172,12 @@ class MK_Broker_Client {
 	 * @throws MK_Exception
 	 * @return string
 	 */
-	public function connect() {
+	public function connect()
+	{
 		$this->soapClient = new SoapClient($this->wsdlUrl, $this->clientSettings);
 		// Autoryzacja na Brokerze - weryfikacja użytkownika i hasła
 		$authorizeResponse = $this->authorize(new authorize($this->frontOfficeClientLogin, $this->frontOfficeClientPassword));
-		if($authorizeResponse->return === false) {
+		if ($authorizeResponse->return === false) {
 			throw new MK_Exception('Nie udało się poprawnie zalogować do Brokera');
 		}
 		$this->authorized = true;
@@ -181,7 +190,8 @@ class MK_Broker_Client {
 	 * @throws MK_Exception
 	 * @return string
 	 */
-	public function disconnect() {
+	public function disconnect()
+	{
 		$this->authorized = false;
 		return $this->logout(new logout());
 	}

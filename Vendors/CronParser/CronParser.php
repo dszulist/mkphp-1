@@ -47,7 +47,8 @@ echo "Debug:<br>" . nl2br($cron->getDebug());
  *#######################################################################################################
  */
 
-class CronParser {
+class CronParser
+{
 
 	public $bits = Array(); //exploded String like 0 1 * * *
 	public $now = Array(); //Array of cron-style entries for time()
@@ -66,31 +67,35 @@ class CronParser {
 	/**
 	 * @return array
 	 */
-	public function getLastRan() {
+	public function getLastRan()
+	{
 		return explode(",", strftime("%M,%H,%d,%m,%w,%Y", $this->lastRan)); //Get the values for now in a format we can use
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getLastRanUnix() {
+	public function getLastRanUnix()
+	{
 		return $this->lastRan;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getDebug() {
+	public function getDebug()
+	{
 		return $this->debug;
 	}
 
 	/**
 	 * @param $str
 	 */
-	public function debug($str) {
-		if(is_array($str)) {
+	public function debug($str)
+	{
+		if (is_array($str)) {
 			$this->debug .= "\nArray: ";
-			foreach($str as $k => $v) {
+			foreach ($str as $k => $v) {
 				$this->debug .= "$k=>$v, ";
 			}
 
@@ -104,23 +109,24 @@ class CronParser {
 	 * Assumes that value is not *, and creates an array of valid numbers that
 	 * the string represents.  Returns an array.
 	 */
-	public function expand_ranges($str) {
+	public function expand_ranges($str)
+	{
 		$ret = array();
-		if(strstr($str, ",")) {
+		if (strstr($str, ",")) {
 			$arParts = explode(',', $str);
-			foreach($arParts AS $part) {
-				if(strstr($part, '-')) {
+			foreach ($arParts AS $part) {
+				if (strstr($part, '-')) {
 					$arRange = explode('-', $part);
-					for($i = $arRange[0]; $i <= $arRange[1]; $i++) {
+					for ($i = $arRange[0]; $i <= $arRange[1]; $i++) {
 						$ret[] = $i;
 					}
 				} else {
 					$ret[] = $part;
 				}
 			}
-		} elseif(strstr($str, '-')) {
+		} elseif (strstr($str, '-')) {
 			$arRange = explode('-', $str);
-			for($i = $arRange[0]; $i <= $arRange[1]; $i++) {
+			for ($i = $arRange[0]; $i <= $arRange[1]; $i++) {
 				$ret[] = $i;
 			}
 		}
@@ -138,7 +144,8 @@ class CronParser {
 	 *
 	 * @return string
 	 */
-	public function daysinmonth($month, $year) {
+	public function daysinmonth($month, $year)
+	{
 		return date('t', mktime(0, 0, 0, $month, 1, $year));
 	}
 
@@ -149,7 +156,8 @@ class CronParser {
 	 *
 	 * @return bool
 	 */
-	public function calcLastRan($string) {
+	public function calcLastRan($string)
+	{
 
 		$tstart = microtime();
 		$this->debug = "";
@@ -165,7 +173,7 @@ class CronParser {
 
 		$string = preg_replace('/[\s]{2,}/', ' ', $string);
 
-		if(preg_match('/[^-,* \\d]/', $string) !== 0) {
+		if (preg_match('/[^-,* \\d]/', $string) !== 0) {
 			$this->debug("Cron String contains invalid character");
 			return false;
 		}
@@ -173,7 +181,7 @@ class CronParser {
 		$this->debug("<b>Working on cron schedule: $string</b>");
 		$this->bits = @explode(" ", $string);
 
-		if(count($this->bits) != 5) {
+		if (count($this->bits) != 5) {
 			$this->debug("Cron string is invalid. Too many or too little sections after explode");
 			return false;
 		}
@@ -188,38 +196,38 @@ class CronParser {
 
 		do {
 			$this->month = array_pop($arMonths);
-		} while($this->month > $this->now[3]);
+		} while ($this->month > $this->now[3]);
 
-		if($this->month === NULL) {
+		if ($this->month === NULL) {
 			$this->year = $this->year - 1;
 			$this->debug("Not due within this year. So checking the previous year " . $this->year);
 			$arMonths = $this->_getMonthsArray();
 			$this->_prevMonth($arMonths);
-		} elseif($this->month == $this->now[3]) //now Sep, month = array(7,9,12)
+		} elseif ($this->month == $this->now[3]) //now Sep, month = array(7,9,12)
 		{
 			$this->debug("Cron is due this month, getting days array.");
 			$arDays = $this->_getDaysArray($this->month, $this->year);
 
 			do {
 				$this->day = array_pop($arDays);
-			} while($this->day > $this->now[2]);
+			} while ($this->day > $this->now[2]);
 
-			if($this->day === NULL) {
+			if ($this->day === NULL) {
 				$this->debug("Smallest day is even greater than today");
 				$this->_prevMonth($arMonths);
-			} elseif($this->day == $this->now[2]) {
+			} elseif ($this->day == $this->now[2]) {
 				$this->debug("Due to run today");
 				$arHours = $this->_getHoursArray();
 
 				do {
 					$this->hour = array_pop($arHours);
-				} while($this->hour > $this->now[1]);
+				} while ($this->hour > $this->now[1]);
 
-				if($this->hour === NULL) // now =2, arHours = array(3,5,7)
+				if ($this->hour === NULL) // now =2, arHours = array(3,5,7)
 				{
 					$this->debug("Not due this hour and some earlier hours, so go for previous day");
 					$this->_prevDay($arDays, $arMonths);
-				} elseif($this->hour < $this->now[1]) //now =2, arHours = array(1,3,5)
+				} elseif ($this->hour < $this->now[1]) //now =2, arHours = array(1,3,5)
 				{
 					$this->minute = $this->_getLastMinute();
 				}
@@ -229,9 +237,9 @@ class CronParser {
 					$arMinutes = $this->_getMinutesArray();
 					do {
 						$this->minute = array_pop($arMinutes);
-					} while($this->minute > $this->now[0]);
+					} while ($this->minute > $this->now[0]);
 
-					if($this->minute === NULL) {
+					if ($this->minute === NULL) {
 						$this->debug("Not due this minute, so go for previous hour.");
 						$this->_prevHour($arHours, $arDays, $arMonths);
 					} else {
@@ -249,7 +257,7 @@ class CronParser {
 		{
 			$this->debug("Cron was due before this month. Previous month is: " . $this->year . '-' . $this->month);
 			$this->day = $this->_getLastDay($this->month, $this->year);
-			if($this->day === NULL) {
+			if ($this->day === NULL) {
 				//No scheduled date within this month. So we will try the previous month in the month array
 				$this->_prevMonth($arMonths);
 			} else {
@@ -263,7 +271,7 @@ class CronParser {
 		$this->debug("Parsing $string taken " . $this->taken . " seconds");
 
 		//if the last due is beyond 1970
-		if($this->minute === NULL) {
+		if ($this->minute === NULL) {
 			$this->debug("Error calculating last due time");
 			return false;
 		} else {
@@ -278,11 +286,12 @@ class CronParser {
 	 *
 	 * @param $arMonths
 	 */
-	private function _prevMonth($arMonths) {
+	private function _prevMonth($arMonths)
+	{
 		$this->month = array_pop($arMonths);
-		if($this->month === NULL) {
+		if ($this->month === NULL) {
 			$this->year = $this->year - 1;
-			if($this->year <= 1970) {
+			if ($this->year <= 1970) {
 				$this->debug("Can not calculate last due time. At least not before 1970..");
 			} else {
 				$this->debug("Have to go for previous year " . $this->year);
@@ -293,7 +302,7 @@ class CronParser {
 			$this->debug("Getting the last day for previous month: " . $this->year . '-' . $this->month);
 			$this->day = $this->_getLastDay($this->month, $this->year);
 
-			if($this->day === NULL) {
+			if ($this->day === NULL) {
 				//no available date schedule in this month
 				$this->_prevMonth($arMonths);
 			} else {
@@ -310,10 +319,11 @@ class CronParser {
 	 * @param $arDays
 	 * @param $arMonths
 	 */
-	private function _prevDay($arDays, $arMonths) {
+	private function _prevDay($arDays, $arMonths)
+	{
 		$this->debug("Go for the previous day");
 		$this->day = array_pop($arDays);
-		if($this->day === NULL) {
+		if ($this->day === NULL) {
 			$this->debug("Have to go for previous month");
 			$this->_prevMonth($arMonths);
 		} else {
@@ -329,10 +339,11 @@ class CronParser {
 	 * @param $arDays
 	 * @param $arMonths
 	 */
-	private function _prevHour($arHours, $arDays, $arMonths) {
+	private function _prevHour($arHours, $arDays, $arMonths)
+	{
 		$this->debug("Going for previous hour");
 		$this->hour = array_pop($arHours);
-		if($this->hour === NULL) {
+		if ($this->hour === NULL) {
 			$this->debug("Have to go for previous day");
 			$this->_prevDay($arDays, $arMonths);
 		} else {
@@ -345,7 +356,8 @@ class CronParser {
 	 *
 	 * @return mixed
 	 */
-	private function _getLastMonth() {
+	private function _getLastMonth()
+	{
 		$months = $this->_getMonthsArray();
 		$month = array_pop($months);
 
@@ -358,7 +370,8 @@ class CronParser {
 	 *
 	 * @return mixed
 	 */
-	private function _getLastDay($month, $year) {
+	private function _getLastDay($month, $year)
+	{
 		//put the available days for that month into an array
 		$days = $this->_getDaysArray($month, $year);
 		$day = array_pop($days);
@@ -369,7 +382,8 @@ class CronParser {
 	/**
 	 * @return mixed
 	 */
-	private function _getLastHour() {
+	private function _getLastHour()
+	{
 		$hours = $this->_getHoursArray();
 		$hour = array_pop($hours);
 
@@ -379,7 +393,8 @@ class CronParser {
 	/**
 	 * @return mixed
 	 */
-	private function _getLastMinute() {
+	private function _getLastMinute()
+	{
 		$minutes = $this->_getMinutesArray();
 		$minute = array_pop($minutes);
 
@@ -395,10 +410,11 @@ class CronParser {
 	 *
 	 * @return array
 	 */
-	private function _sanitize($arr, $low, $high) {
+	private function _sanitize($arr, $low, $high)
+	{
 		$count = count($arr);
-		for($i = 0; $i <= ($count - 1); $i++) {
-			if($arr[$i] < $low) {
+		for ($i = 0; $i <= ($count - 1); $i++) {
+			if ($arr[$i] < $low) {
 				$this->debug("Remove out of range element. {$arr[$i]} is outside $low - $high");
 				unset($arr[$i]);
 			} else {
@@ -406,8 +422,8 @@ class CronParser {
 			}
 		}
 
-		for($i = ($count - 1); $i >= 0; $i--) {
-			if($arr[$i] > $high) {
+		for ($i = ($count - 1); $i >= 0; $i--) {
+			if ($arr[$i] > $high) {
 				$this->debug("Remove out of range element. {$arr[$i]} is outside $low - $high");
 				unset ($arr[$i]);
 			} else {
@@ -428,20 +444,21 @@ class CronParser {
 	 *
 	 * @return array
 	 */
-	private function _getDaysArray($month, $year = 0) {
-		if($year == 0) {
+	private function _getDaysArray($month, $year = 0)
+	{
+		if ($year == 0) {
 			$year = $this->year;
 		}
 
 		$days = array();
 
 		//return everyday of the month if both bit[2] and bit[4] are '*'
-		if($this->bits[2] == '*' AND $this->bits[4] == '*') {
+		if ($this->bits[2] == '*' AND $this->bits[4] == '*') {
 			$days = $this->getDays($month, $year);
 		} else {
 			//create an array for the weekdays
-			if($this->bits[4] == '*') {
-				for($i = 0; $i <= 6; $i++) {
+			if ($this->bits[4] == '*') {
+				for ($i = 0; $i <= 6; $i++) {
 					$arWeekdays[] = $i;
 				}
 			} else {
@@ -449,8 +466,8 @@ class CronParser {
 				$arWeekdays = $this->_sanitize($arWeekdays, 0, 7);
 
 				//map 7 to 0, both represents Sunday. Array is sorted already!
-				if(in_array(7, $arWeekdays)) {
-					if(in_array(0, $arWeekdays)) {
+				if (in_array(7, $arWeekdays)) {
+					if (in_array(0, $arWeekdays)) {
 						array_pop($arWeekdays);
 					} else {
 						$tmp[] = 0;
@@ -462,7 +479,7 @@ class CronParser {
 			$this->debug("Array for the weekdays");
 			$this->debug($arWeekdays);
 
-			if($this->bits[2] == '*') {
+			if ($this->bits[2] == '*') {
 				$daysmonth = $this->getDays($month, $year);
 			} else {
 				$daysmonth = $this->expand_ranges($this->bits[2]);
@@ -472,9 +489,9 @@ class CronParser {
 			}
 
 			//Now match these days with weekdays
-			foreach($daysmonth AS $day) {
+			foreach ($daysmonth AS $day) {
 				$wkday = date('w', mktime(0, 0, 0, $month, $day, $year));
-				if(in_array($wkday, $arWeekdays)) {
+				if (in_array($wkday, $arWeekdays)) {
 					$days[] = $day;
 				}
 			}
@@ -492,11 +509,12 @@ class CronParser {
 	 *
 	 * @return array
 	 */
-	public function getDays($month, $year) {
+	public function getDays($month, $year)
+	{
 		$daysinmonth = $this->daysinmonth($month, $year);
 		$this->debug("Number of days in $year-$month : $daysinmonth");
 		$days = array();
-		for($i = 1; $i <= $daysinmonth; $i++) {
+		for ($i = 1; $i <= $daysinmonth; $i++) {
 			$days[] = $i;
 		}
 		return $days;
@@ -505,12 +523,13 @@ class CronParser {
 	/**
 	 * @return array
 	 */
-	private function _getHoursArray() {
-		if(empty($this->hours_arr)) {
+	private function _getHoursArray()
+	{
+		if (empty($this->hours_arr)) {
 			$hours = array();
 
-			if($this->bits[1] == '*') {
-				for($i = 0; $i <= 23; $i++) {
+			if ($this->bits[1] == '*') {
+				for ($i = 0; $i <= 23; $i++) {
 					$hours[] = $i;
 				}
 			} else {
@@ -528,12 +547,13 @@ class CronParser {
 	/**
 	 * @return array
 	 */
-	private function _getMinutesArray() {
-		if(empty($this->minutes_arr)) {
+	private function _getMinutesArray()
+	{
+		if (empty($this->minutes_arr)) {
 			$minutes = array();
 
-			if($this->bits[0] == '*') {
-				for($i = 0; $i <= 60; $i++) {
+			if ($this->bits[0] == '*') {
+				for ($i = 0; $i <= 60; $i++) {
 					$minutes[] = $i;
 				}
 			} else {
@@ -550,11 +570,12 @@ class CronParser {
 	/**
 	 * @return array
 	 */
-	private function _getMonthsArray() {
-		if(empty($this->months_arr)) {
+	private function _getMonthsArray()
+	{
+		if (empty($this->months_arr)) {
 			$months = array();
-			if($this->bits[3] == '*') {
-				for($i = 1; $i <= 12; $i++) {
+			if ($this->bits[3] == '*') {
+				for ($i = 1; $i <= 12; $i++) {
 					$months[] = $i;
 				}
 			} else {

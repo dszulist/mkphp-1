@@ -2,6 +2,7 @@
 /**
  * Poprawne wylogowanie z Brokera
  */
-class logout {
+class logout
+{
 
 }

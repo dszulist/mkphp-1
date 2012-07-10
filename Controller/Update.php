@@ -9,7 +9,8 @@
  * @package     MK_Controller_Update
  * @author    bskrzypkowiak
  */
-class MK_Controller_Update {
+class MK_Controller_Update
+{
 
 	/**
 	 * Nazwa aplikacji
@@ -67,8 +68,9 @@ class MK_Controller_Update {
 	 * Konstruktor
 	 * @throws MK_Exception
 	 */
-	public function __construct() {
-		if(is_null($this->currentVersion)) {
+	public function __construct()
+	{
+		if (is_null($this->currentVersion)) {
 			throw new MK_Exception('Nieustawione parametry wejściowe dla MK_Controller_Update');
 			// Przykładowa konfiguracja dla SPiRB-a
 //			$configDb = new ConfigDb();
@@ -85,7 +87,7 @@ class MK_Controller_Update {
 		$this->preparePatchTaskList();
 
 		//@TODO sprawdzanie czy konto jest z uprawnieniami administratora
-		if(!file_exists(MTM_FILE_LIST) || !is_writable(MTM_FILE_LIST)) {
+		if (!file_exists(MTM_FILE_LIST) || !is_writable(MTM_FILE_LIST)) {
 			throw new MK_Exception('Problem z zapisem do pliku.');
 		}
 	}
@@ -94,59 +96,76 @@ class MK_Controller_Update {
 	 * Ustawia aktualny nr wersji aplikacji
 	 *
 	 * @param $v
+	 *
 	 * @return MK_Controller_Update
 	 */
-	protected function setAppVersion($v){
+	protected function setAppVersion($v)
+	{
 		$this->currentVersion = $v;
 		return $this;
 	}
 
 	/**
 	 * Ustawia klucz licencji
+	 *
 	 * @param $v
+	 *
 	 * @return MK_Controller_Update
 	 */
-	protected function setLicense($v){
+	protected function setLicense($v)
+	{
 		$this->licence = $v;
 		return $this;
 	}
 
 	/**
 	 * Ustawia nr wersji do której można wykonać aktualizację
+	 *
 	 * @param $v
+	 *
 	 * @return MK_Controller_Update
 	 */
-	protected function setAllowedVersion($v){
+	protected function setAllowedVersion($v)
+	{
 		$this->allowVersion = str_replace('.', '_', $v);
 		return $this;
 	}
 
 	/**
 	 * Ustawia nr wersji jaka została ostatnio wydana
+	 *
 	 * @param $v
+	 *
 	 * @return MK_Controller_Update
 	 */
-	protected function setReleasedVersion($v){
+	protected function setReleasedVersion($v)
+	{
 		$this->releasedVersion = $v;
 		return $this;
 	}
 
 	/**
 	 * Ustawia czy zalogowany użytkownik to superadmin z możliwością wykonania aktualizacji z trunka
+	 *
 	 * @param $v
+	 *
 	 * @return MK_Controller_Update
 	 */
-	protected function setSuperAdmin($v){
+	protected function setSuperAdmin($v)
+	{
 		$this->superAdmin = $v; //UserSingleton::getInstance()->getCurrentUserInstance()->isSuperAdmin();
 		return $this;
 	}
 
 	/**
 	 * Ustawia nazwe aplikacji w celu wprowadzania wpisów w mtm
+	 *
 	 * @param $v
+	 *
 	 * @return MK_Controller_Update
 	 */
-	protected function setAppName($v){
+	protected function setAppName($v)
+	{
 		$this->appName = $v;
 		return $this;
 	}
@@ -155,7 +174,8 @@ class MK_Controller_Update {
 	 * Ustawia dane w tabeli przechowującej możliwości do aktualizacji
 	 * @return array
 	 */
-	public function getPatchTaskList() {
+	public function getPatchTaskList()
+	{
 		return $this->patchTaskList;
 	}
 
@@ -170,9 +190,10 @@ class MK_Controller_Update {
 	 *
 	 * @return Array
 	 */
-	public function getPatchComboStore($args) {
+	public function getPatchComboStore($args)
+	{
 		$store = array();
-		foreach($this->patchTaskList as $key => $val) {
+		foreach ($this->patchTaskList as $key => $val) {
 			$store[] = array("name" => $key, "description" => $val);
 		}
 		return $store;
@@ -182,20 +203,21 @@ class MK_Controller_Update {
 	 * Ustawia dane w tabeli przechowującej możliwości do aktualizacji
 	 * @return bool
 	 */
-	public function preparePatchTaskList() {
+	public function preparePatchTaskList()
+	{
 		$this->patchTaskList['upgrade'] .= $this->allowVersion;
 
-		$allowVersion = (int) str_replace('.', '', $this->allowVersion);
-		$currentVersion = (int) str_replace('.', '', $this->currentVersion);
-		$releasedVersion = (int) str_replace('.', '', $this->releasedVersion);
+		$allowVersion = (int)str_replace('.', '', $this->allowVersion);
+		$currentVersion = (int)str_replace('.', '', $this->currentVersion);
+		$releasedVersion = (int)str_replace('.', '', $this->releasedVersion);
 
-		if(!($currentVersion < $allowVersion)) {
+		if (!($currentVersion < $allowVersion)) {
 			unset($this->patchTaskList['upgrade']);
 		}
 
 		// przeypadek kiedy jest to niewydana wersja, tzn w APP_NAME_conf jest 0.1.2,
 		// a w rejestrze zmian jest 0.1.1
-		if($currentVersion == $releasedVersion + 1) {
+		if ($currentVersion == $releasedVersion + 1) {
 			// patch_rc
 			unset($this->patchTaskList['patch_dev']);
 			unset($this->patchTaskList['patch']);
@@ -204,7 +226,7 @@ class MK_Controller_Update {
 			unset($this->patchTaskList['patch_rc']);
 		}
 
-		if(MK_IS_CLI === false && $this->superAdmin === false) {
+		if (MK_IS_CLI === false && $this->superAdmin === false) {
 			unset($this->patchTaskList['patch_dev']);
 			unset($this->patchTaskList['patch_rc']);
 		}
@@ -220,15 +242,16 @@ class MK_Controller_Update {
 	 * @throws MK_Exception
 	 * @return array
 	 */
-	public function run(array $args) {
+	public function run(array $args)
+	{
 		$type = isset($args['type']) ? $args['type'] : null;
 		$force = isset($args['force']) ? $args['force'] : false;
 
-		if(empty($args['type'])) {
+		if (empty($args['type'])) {
 			throw new MK_Exception('Nie podano typu aktualizacji');
 		}
 
-		if(!$force && !isset($this->patchTaskList[$args['type']])) {
+		if (!$force && !isset($this->patchTaskList[$args['type']])) {
 			throw new MK_Exception('Nie można wykonać żądanej czynności.');
 		}
 
@@ -242,13 +265,13 @@ class MK_Controller_Update {
 		$endVersion = $startVersion = str_replace('.', '_', $this->currentVersion);
 
 		// Wymuszanie ustawienia wersji aktualizacji ($force === true)
-		if($force === true) {
+		if ($force === true) {
 			$startVersion = str_replace('.', '_', $this->releasedVersion);
-			$endVersion = implode('_', str_split(str_pad(((int) str_replace(array('_', '.'), '', $startVersion)) + 1, 3, 0, STR_PAD_LEFT)));
+			$endVersion = implode('_', str_split(str_pad(((int)str_replace(array('_', '.'), '', $startVersion)) + 1, 3, 0, STR_PAD_LEFT)));
 		}
 
 		// Wybór rodzaju aktualizacji
-		switch($args['type']) {
+		switch ($args['type']) {
 			case 'patch':
 				$typeData = 'stable';
 				$msg .= "Uruchomiono mechanizm wgrywania poprawek stabilnych ({$startVersion}:{$endVersion})";
@@ -263,7 +286,7 @@ class MK_Controller_Update {
 				break;
 			case 'upgrade':
 				$typeData = 'stable';
-				if($force !== true) {
+				if ($force !== true) {
 					$endVersion = str_replace('.', '_', $this->allowVersion);
 				}
 				$msg .= "Uruchomiono mechanizm aktualizaji z wersji {$startVersion} do nowej wersji: {$endVersion}";
@@ -290,7 +313,8 @@ class MK_Controller_Update {
 	 * Pobiera informacje z pliku do którego dodawane są dane dotyczące bieżącej aktualizacji
 	 * @return Array
 	 */
-	public function getProgress() {
+	public function getProgress()
+	{
 		sleep(5);
 		return $this->readProgressFile();
 	}
@@ -299,14 +323,15 @@ class MK_Controller_Update {
 	 * Odczytuje plik i zwraca wynik w postaci tablicy
 	 * @return Array
 	 */
-	public function readProgressFile() {
+	public function readProgressFile()
+	{
 		$rows = array();
-		if(file_exists(APP_STATUS_LOG)) {
+		if (file_exists(APP_STATUS_LOG)) {
 			preg_match_all($this->logRegExp, file_get_contents(APP_STATUS_LOG), $row);
-			if(isset($row[3]) && isset($row[3][0])) {
+			if (isset($row[3]) && isset($row[3][0])) {
 				$lastKey = count($row[3]) - 1;
-				for($i = 0; $i <= $lastKey; $i++) {
-					if(strstr($row[3][$i], 'DEBUG: ') !== false) {
+				for ($i = 0; $i <= $lastKey; $i++) {
+					if (strstr($row[3][$i], 'DEBUG: ') !== false) {
 						continue;
 					}
 					$rows[] = array(
@@ -333,15 +358,16 @@ class MK_Controller_Update {
 	 *
 	 * @return array
 	 */
-	public function getHistory() {
+	public function getHistory()
+	{
 		$maxRecords = 20;
 		$rows = array();
-		if(is_dir(MK_DIR_UPDATE_LOGS)) {
+		if (is_dir(MK_DIR_UPDATE_LOGS)) {
 			$files = scandir(MK_DIR_UPDATE_LOGS);
 			rsort($files);
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				preg_match_all($this->logRegExp, file_get_contents(MK_DIR_UPDATE_LOGS . DIRECTORY_SEPARATOR . $file), $row);
-				if(!isset($row[3]) || !isset($row[3][0])) {
+				if (!isset($row[3]) || !isset($row[3][0])) {
 					continue;
 				}
 				$lastKey = count($row[3]) - 1;
@@ -349,7 +375,7 @@ class MK_Controller_Update {
 					'date' => $row[1][$lastKey],
 					'description' => $row[3][$lastKey]
 				);
-				if(--$maxRecords <= 0) {
+				if (--$maxRecords <= 0) {
 					break;
 				}
 			}

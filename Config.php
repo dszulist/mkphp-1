@@ -6,7 +6,7 @@
  * Klasa podprowadzona z PEARA info poniżej
  *
  * @category MK
- * @package	MK_Config
+ * @package    MK_Config
  *
  * @author    Patrick C. Engel <pce@php.net>
  * @copyright 2010-2011 <pce@php.net>

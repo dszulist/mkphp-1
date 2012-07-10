@@ -6,10 +6,11 @@
  * Klasa zawiera metody odostepniajace mozliwosc tlumaczenia
  * liczb na ich słowne odpowiedniki
  *
- * @category	MK_Money
- * @package		MK_Money_Dictionary
+ * @category    MK_Money
+ * @package        MK_Money_Dictionary
  */
-class MK_Money_Dictionary {
+class MK_Money_Dictionary
+{
 
 	/**
 	 * Słowny zapis kwot - tablica z wyrazami
@@ -50,11 +51,12 @@ class MK_Money_Dictionary {
 	 *
 	 * @return String
 	 */
-	public static function varietyVerbal($wordsArray, $number) {
+	public static function varietyVerbal($wordsArray, $number)
+	{
 		$txt = ($number == 1) ? $wordsArray[0] : $wordsArray[2];
-		$unit = (int) substr($number, -1);
+		$unit = (int)substr($number, -1);
 		$rest = $number % 100;
-		if(($unit > 1 && $unit < 5) & !($rest > 10 && $rest < 20)) {
+		if (($unit > 1 && $unit < 5) & !($rest > 10 && $rest < 20)) {
 			$txt = $wordsArray[1];
 		}
 		return $txt;
@@ -68,11 +70,12 @@ class MK_Money_Dictionary {
 	 *
 	 * @return String
 	 */
-	private static function lessVariety($number) {
+	private static function lessVariety($number)
+	{
 		$txt = '';
 
-		$abs = abs((int) $number);
-		if($abs == 0) {
+		$abs = abs((int)$number);
+		if ($abs == 0) {
 			return self::$_words[1][0];
 		}
 
@@ -80,19 +83,19 @@ class MK_Money_Dictionary {
 		$tens = ($abs % 100 - $unit) / 10;
 		$hundreds = ($abs - $tens * 10 - $unit) / 100;
 
-		if($hundreds > 0) {
+		if ($hundreds > 0) {
 			$txt .= self::$_words[4][$hundreds - 1] . ' ';
 		}
 
-		if($tens > 0) {
-			if($tens == 1) {
+		if ($tens > 0) {
+			if ($tens == 1) {
 				$txt .= self::$_words[2][$unit] . ' ';
 			} else {
 				$txt .= self::$_words[3][$tens - 1] . ' ';
 			}
 		}
 
-		if($unit > 0 && $tens != 1) {
+		if ($unit > 0 && $tens != 1) {
 			$txt .= self::$_words[1][$unit] . ' ';
 		}
 
@@ -117,19 +120,20 @@ class MK_Money_Dictionary {
 	 * @internal param \Mixed $_number (zarówno Integer jak i String)
 	 * @return String
 	 */
-	public static function verbal($number, $fractionNumeric = false) {
+	public static function verbal($number, $fractionNumeric = false)
+	{
 		$txt = '';
 
 		$number = floatval($number);
 		$tmpNumber = floor($number);
 		$fraction = round($number - $tmpNumber, 2) * 100;
 
-		if($tmpNumber < 0) {
+		if ($tmpNumber < 0) {
 			$tmpNumber *= -1;
 			$txt = self::$_words[0] . ' ';
 		}
 
-		if($tmpNumber == 0) {
+		if ($tmpNumber == 0) {
 			$txt = self::$_words[1][0] . ' ';
 		}
 
@@ -137,10 +141,10 @@ class MK_Money_Dictionary {
 		$txtSplit = str_split(strrev($tmpNumber), 3);
 		$txtSplitCount = count($txtSplit) - 1;
 
-		for($i = $txtSplitCount; $i >= 0; $i--) {
-			$tmpNumber = (int) strrev($txtSplit[$i]);
-			if($tmpNumber > 0) {
-				if($i == 0) {
+		for ($i = $txtSplitCount; $i >= 0; $i--) {
+			$tmpNumber = (int)strrev($txtSplit[$i]);
+			if ($tmpNumber > 0) {
+				if ($i == 0) {
 					$txt .= self::lessVariety($tmpNumber) . ' ';
 				} else {
 					$txt .= $tmpNumber > 1 ? self::lessVariety($tmpNumber) . ' ' : '';

@@ -11,10 +11,11 @@
  * //lub bez zakodowanych encji
  * echo MK_Filter_Html::purifyText('html');
  *
- * @category	MK_Filter
- * @package		MK_Filter_Html
+ * @category    MK_Filter
+ * @package        MK_Filter_Html
  */
-class MK_Filter_Html {
+class MK_Filter_Html
+{
 
 	/**
 	 * @var
@@ -26,7 +27,8 @@ class MK_Filter_Html {
 	 *
 	 * @return Object
 	 */
-	public static function getInstance() {
+	public static function getInstance()
+	{
 		if (!is_object(self::$_singleton)) {
 			require_once(MK_DIR_VENDORS . DIRECTORY_SEPARATOR . 'htmlpurifier' . DIRECTORY_SEPARATOR . 'HTMLPurifier.auto.php');
 
@@ -47,9 +49,11 @@ class MK_Filter_Html {
 	 * Filtrowanie treści i pozostanie w postaci Źródła HTML (zamiast "&amp;" będzie "&")
 	 *
 	 * @param string $html
+	 *
 	 * @return string
 	 */
-	public static function purifyText($html) {
+	public static function purifyText($html)
+	{
 		return html_entity_decode(self::getInstance()->purify($html), ENT_COMPAT, 'UTF-8');
 	}
 
@@ -57,9 +61,11 @@ class MK_Filter_Html {
 	 * Filtrowanie treści i pozostanie w postaci zaenkodowanego HTML-a (np. "&amp;")
 	 *
 	 * @param string $html
+	 *
 	 * @return string
 	 */
-	public static function purifyHtml($html) {
+	public static function purifyHtml($html)
+	{
 		return self::getInstance()->purify($html);
 	}
 

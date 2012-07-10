@@ -2,7 +2,8 @@
 /**
  * Wysłanie rejestrów do Brokera
  */
-class sendRegistries {
+class sendRegistries
+{
 
 	/**
 	 * @var docflowRegistry (array of docflowRegistry)
@@ -11,9 +12,11 @@ class sendRegistries {
 
 	/**
 	 * XML z rejestrami
+	 *
 	 * @param string $registries
 	 */
-	public function __construct($registries = NULL) {
+	public function __construct($registries = NULL)
+	{
 		$this->text = $registries;
 	}
 

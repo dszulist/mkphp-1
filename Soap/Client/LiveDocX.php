@@ -2,15 +2,16 @@
 
 /**
  * MK_Soap_Client_LiveDocX
- * 
+ *
  * Klasa do obsługi webservice LiveDOcX
  * Obsługa konwersji dokumentów z możliwością konwertowania całego katalogu
  *
- * @category	MK_Soap
- * @package		MK_Soap_Client_LiveDocX
- * @author		bskrzypkowiak
+ * @category    MK_Soap
+ * @package        MK_Soap_Client_LiveDocX
+ * @author        bskrzypkowiak
  */
-class MK_Soap_Client_LiveDocX {
+class MK_Soap_Client_LiveDocX
+{
 
 	private $_sourceDirectory = '';
 	private $_destinationDirectory = '';
@@ -20,29 +21,34 @@ class MK_Soap_Client_LiveDocX {
 
 	//DIR_TEMP . DIRECTORY_SEPARATOR
 
-	public function __construct() {
+	public function __construct()
+	{
 		$this->mailMerge = new Zend_Service_LiveDocx_MailMerge();
 	}
 
 	/**
 	 * Utworzenie i zwrocenie połączenia do webservice
-	 * 
+	 *
 	 * @param String $login
 	 * @param String $password
+	 *
 	 * @return MK_Soap_Client_LiveDocX
 	 */
-	public function connect($login='xxx', $password='xxx') {
+	public function connect($login = 'xxx', $password = 'xxx')
+	{
 		$this->mailMerge->setUsername($login)->setPassword($password);
 		return $this;
 	}
 
 	/**
 	 * Ustawianie katalogu docelowego gdzie wyladuja przekonwertowane pliki
-	 * 
+	 *
 	 * @param String $value
+	 *
 	 * @return MK_Soap_Client_LiveDocX
 	 */
-	public function setDestDir($value) {
+	public function setDestDir($value)
+	{
 		//@TODO isdir i tworzenie wrazie czego
 		$this->_destinationDirectory = $value;
 		return $this;
@@ -50,11 +56,13 @@ class MK_Soap_Client_LiveDocX {
 
 	/**
 	 * Ustawianie katalogu źródłowego
-	 * 
+	 *
 	 * @param String $value
+	 *
 	 * @return MK_Soap_Client_LiveDocX
 	 */
-	public function setSourceDir($value) {
+	public function setSourceDir($value)
+	{
 		//@TODO isdir
 		$this->_sourceDirectory = $value;
 		return $this;
@@ -62,35 +70,40 @@ class MK_Soap_Client_LiveDocX {
 
 	/**
 	 * Ustawianie czy zapis ma być w pliku czy w bazie
-	 * 
-	 * @param String $destination 
+	 *
+	 * @param String $destination
 	 */
-	public function setDestination($destination='filesystem') {
+	public function setDestination($destination = 'filesystem')
+	{
 		switch ($destination) {
-			case 'filesystem' : $this->_writeToDb = false;
-								break;
-			case 'database' : $this->_writeToDb = true;
-								break;
+			case 'filesystem' :
+				$this->_writeToDb = false;
+				break;
+			case 'database' :
+				$this->_writeToDb = true;
+				break;
 		}
 	}
 
 	/**
 	 * Funkcja testująca
 	 */
-	public function testMe() {
+	public function testMe()
+	{
 		$this->connect()->convertDir(DIR_TEMP);
 	}
 
 	/**
 	 * Funkcja konwertuje wszystkie pliki z podanego katalogu do ustawionego formatu wyjscuiowego
-	 * 	 
+	 *
 	 * @param String $srcDir
-	 * @param String $destDir 
+	 * @param String $destDir
 	 */
-	public function convertDir($srcDir, $destDir='html') {
+	public function convertDir($srcDir, $destDir = 'html')
+	{
 
 		$this->setSourceDir($srcDir)
-				->setDestDir($srcDir . DIRECTORY_SEPARATOR . $destDir);
+			->setDestDir($srcDir . DIRECTORY_SEPARATOR . $destDir);
 
 
 		$iterator = new DirectoryIterator($this->_sourceDirectory);
@@ -107,12 +120,14 @@ class MK_Soap_Client_LiveDocX {
 
 	/**
 	 * Dokonuje konwersji na poszczególnym dokumencie
-	 * 
+	 *
 	 * @param String $sourceFileName
 	 * @param String $destinationFileName
+	 *
 	 * @return MK_Soap_Client_LiveDocX
 	 */
-	public function createDocument($sourceFileName, $destinationFileName='') {
+	public function createDocument($sourceFileName, $destinationFileName = '')
+	{
 		if (empty($destinationFileName)) {
 			$destinationFileName = $this->getFileInfo($sourceFileName, 'filename');
 		}
@@ -126,15 +141,15 @@ class MK_Soap_Client_LiveDocX {
 		if ($this->canConvert($sourceFile)) {
 			$this->mailMerge->setLocalTemplate($sourceFile);
 
-			$this->mailMerge->assign(null);  // must be called as of phpLiveDocx 1.2
+			$this->mailMerge->assign(null); // must be called as of phpLiveDocx 1.2
 			$this->mailMerge->createDocument();
 			$fileContent = $this->mailMerge->retrieveDocument($this->_destinationFileExtension);
 
 			if ($this->_writeToDb) {
-                if(class_exists('HelpDb')){
-				    $helpDb = new HelpDb();
-				    $helpDb->setValue($fileContent);
-                }
+				if (class_exists('HelpDb')) {
+					$helpDb = new HelpDb();
+					$helpDb->setValue($fileContent);
+				}
 			} else {
 				file_put_contents($destinationFile, $fileContent);
 			}
@@ -145,22 +160,26 @@ class MK_Soap_Client_LiveDocX {
 
 	/**
 	 * Sprawdza czy możliea jest konwersja podanego pliku (w zależnośći od rozszerzenia)
-	 * 
+	 *
 	 * @param String $fileName
-	 * @return Boolean 
+	 *
+	 * @return Boolean
 	 */
-	public function canConvert($fileName) {
+	public function canConvert($fileName)
+	{
 		return ($this->getFileInfo($fileName) == $this->_sourceFileExtension);
 	}
 
 	/**
 	 * Zwraca informację o pliku
-	 * 
+	 *
 	 * @param String $filename
 	 * @param String $val
-	 * @return String 
+	 *
+	 * @return String
 	 */
-	public function getFileInfo($filename, $val='extension') {
+	public function getFileInfo($filename, $val = 'extension')
+	{
 		$path_info = pathinfo($filename);
 		return $path_info[$val];
 	}

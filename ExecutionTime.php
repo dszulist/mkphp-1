@@ -16,7 +16,8 @@ class MK_ExecutionTime
 	/**
 	 * W konstruktorze ustawiany jest czas startowy
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->_startTime = $this->_getActualTime();
 	}
 
@@ -26,7 +27,8 @@ class MK_ExecutionTime
 	 *
 	 * @return float
 	 */
-	public function getDifferenceTime() {
+	public function getDifferenceTime()
+	{
 		return round($this->_getActualTime() - $this->_startTime, 3);
 	}
 
@@ -36,8 +38,9 @@ class MK_ExecutionTime
 	 *
 	 * @return float
 	 */
-	private function _getActualTime() {
-		list($usec,$sec) = explode(" ",microtime());
+	private function _getActualTime()
+	{
+		list($usec, $sec) = explode(" ", microtime());
 		return ((float)$usec + (float)$sec);
 	}
 }

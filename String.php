@@ -6,9 +6,10 @@
  * Klasa do obsługi stringów
  *
  * @category MK
- * @package	MK_String
+ * @package    MK_String
  */
-class MK_String {
+class MK_String
+{
 
 
 	/**
@@ -28,7 +29,8 @@ class MK_String {
 	 *
 	 * @return int The length in bytes of the given string.
 	 */
-	public static function bytes($str, $format=false) {
+	public static function bytes($str, $format = false)
+	{
 		// STRINGS ARE EXPECTED TO BE IN ASCII OR UTF-8 FORMAT
 		// Number of characters in string
 		$strlen_var = strlen($str);
@@ -71,22 +73,25 @@ class MK_String {
 			}
 		}
 
-		return $format===true ? self::formatBytes($d) : $d;
+		return $format === true ? self::formatBytes($d) : $d;
 	}
 
 	/**
 	 * Foramtuje bajty na k,M,G,T
 	 *
 	 * @static
+	 *
 	 * @param $size
 	 * @param int $precision
+	 *
 	 * @return string
 	 */
-	public static function formatBytes($size, $precision = 2){
-	    $base = log($size) / log(1024);
-	    $suffixes = array('', 'k', 'M', 'G', 'T');
+	public static function formatBytes($size, $precision = 2)
+	{
+		$base = log($size) / log(1024);
+		$suffixes = array('', 'k', 'M', 'G', 'T');
 
-	    return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
+		return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
 	}
 
 }

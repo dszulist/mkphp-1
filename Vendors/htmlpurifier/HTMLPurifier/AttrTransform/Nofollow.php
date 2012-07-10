@@ -8,33 +8,35 @@
  */
 class HTMLPurifier_AttrTransform_Nofollow extends HTMLPurifier_AttrTransform
 {
-    private $parser;
+	private $parser;
 
-    public function __construct() {
-        $this->parser = new HTMLPurifier_URIParser();
-    }
+	public function __construct()
+	{
+		$this->parser = new HTMLPurifier_URIParser();
+	}
 
-    public function transform($attr, $config, $context) {
+	public function transform($attr, $config, $context)
+	{
 
-        if (!isset($attr['href'])) {
-            return $attr;
-        }
+		if (!isset($attr['href'])) {
+			return $attr;
+		}
 
-        // XXX Kind of inefficient
-        $url = $this->parser->parse($attr['href']);
-        $scheme = $url->getSchemeObj($config, $context);
+		// XXX Kind of inefficient
+		$url = $this->parser->parse($attr['href']);
+		$scheme = $url->getSchemeObj($config, $context);
 
-        if (!is_null($url->host) && $scheme !== false && $scheme->browsable) {
-            if (isset($attr['rel'])) {
-                $attr['rel'] .= ' nofollow';
-            } else {
-                $attr['rel'] = 'nofollow';
-            }
-        }
+		if (!is_null($url->host) && $scheme !== false && $scheme->browsable) {
+			if (isset($attr['rel'])) {
+				$attr['rel'] .= ' nofollow';
+			} else {
+				$attr['rel'] = 'nofollow';
+			}
+		}
 
-        return $attr;
+		return $attr;
 
-    }
+	}
 
 }
 

@@ -9,7 +9,8 @@
  * @package     MK_Controller_Console
  * @author    bskrzypkowiak
  */
-class MK_Controller_Console {
+class MK_Controller_Console
+{
 
 	/**
 	 * Adres remote wbijany dla wywolania metoda CLI
@@ -26,7 +27,8 @@ class MK_Controller_Console {
 	/**
 	 * Konstruktor
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		// Ustawiam Remote_addr w przypadku gdy uruchamiam skrypt z konsoli
 		putenv("REMOTE_ADDR=$this->remoteAddress");
 		$_SERVER['HTTP_HOST'] = exec('hostname');
@@ -43,8 +45,9 @@ class MK_Controller_Console {
 	 *
 	 * @return \MK_Controller_Console
 	 */
-	protected function setDebug($debug) {
-		$this->debug = (bool) $debug;
+	protected function setDebug($debug)
+	{
+		$this->debug = (bool)$debug;
 		return $this;
 	}
 
@@ -53,8 +56,9 @@ class MK_Controller_Console {
 	 *
 	 * @param string $msg
 	 */
-	protected function debug($msg) {
-		if($this->debug) {
+	protected function debug($msg)
+	{
+		if ($this->debug) {
 			echo $msg . MK_EOL;
 		}
 	}
@@ -66,14 +70,15 @@ class MK_Controller_Console {
 	 * @param string $headerText
 	 * @param string $footerText
 	 */
-	private function output(array $arr = array(), $headerText = '', $footerText = '') {
-		if(!empty($headerText)) {
+	private function output(array $arr = array(), $headerText = '', $footerText = '')
+	{
+		if (!empty($headerText)) {
 			echo $headerText . MK_EOL;
 		}
-		foreach($arr as $k => $v) {
+		foreach ($arr as $k => $v) {
 			echo $k . '="' . $v . '"' . MK_EOL;
 		}
-		if(!empty($footerText)) {
+		if (!empty($footerText)) {
 			echo $footerText . MK_EOL;
 		}
 	}
@@ -84,7 +89,8 @@ class MK_Controller_Console {
 	 *
 	 * @param array $argv
 	 */
-	public function applogs(array $argv) {
+	public function applogs(array $argv)
+	{
 		$debug = (isset($argv[0]) && $argv[0] == 'true');
 		$logs = new MK_Logs(APP_PATH, $debug);
 		exit($logs->sendPackage() ? 'true' : 'false');
@@ -98,7 +104,8 @@ class MK_Controller_Console {
 	 *
 	 * @param array $argv
 	 */
-	public function appinfo(array $argv) {
+	public function appinfo(array $argv)
+	{
 		$db = new MK_Db_PDO();
 		// Podstawowe informacje APPINFO
 		$this->output(array(
@@ -111,14 +118,14 @@ class MK_Controller_Console {
 			'VERSION' => $db->getAppVersion()
 		));
 		// Dodatkowe informacje po wpisaniu parametru 'true'
-		if(isset($argv[0]) && $argv[0] == 'true') {
+		if (isset($argv[0]) && $argv[0] == 'true') {
 			// ### DEVELOPER ###
 			$this->output(array(
 				'RELEASED' => $db->getReleasedVersion(),
-				'MK_DEBUG' => (int) MK_DEBUG,
-				'MK_DEVELOPER' => (int) MK_DEVELOPER,
-				'MK_TEST' => (int) MK_TEST,
-				'MK_ERROR_JS_ENABLED' => (int) MK_ERROR_JS_ENABLED,
+				'MK_DEBUG' => (int)MK_DEBUG,
+				'MK_DEVELOPER' => (int)MK_DEVELOPER,
+				'MK_TEST' => (int)MK_TEST,
+				'MK_ERROR_JS_ENABLED' => (int)MK_ERROR_JS_ENABLED,
 			), MK_EOL . '### DEVELOPER ###');
 
 			// ### SESSION ###
@@ -152,19 +159,20 @@ class MK_Controller_Console {
 	 * @param array                 $argv - parametry przekazywane w wywołaniu
 	 * @param \MK_Controller_Update $update
 	 */
-	public function execUpdate(array $argv, MK_Controller_Update $update) {
+	public function execUpdate(array $argv, MK_Controller_Update $update)
+	{
 		$type = isset($argv[0]) ? $argv[0] : null;
 		$force = isset($argv[1]) && $argv[1] == 'true';
 
 		$optionList = $update->getPatchTaskList();
 
-		if(!isset($optionList[$type]) && !$force) {
+		if (!isset($optionList[$type]) && !$force) {
 			echo MK_EOL,
 				"Nieprawidłowy typ aktualizacji: '$type'" . MK_EOL,
 			MK_EOL,
 				'Wywołanie: php index.php -mupdate [arg]' . MK_EOL,
 				' Dostępne argumenty to: ' . MK_EOL;
-			foreach($optionList as $k => $v) {
+			foreach ($optionList as $k => $v) {
 				echo "\t$k - $v" . MK_EOL;
 			}
 			echo MK_EOL . MK_EOL;
@@ -199,7 +207,8 @@ class MK_Controller_Console {
 	 *
 	 * @throws Exception
 	 */
-	protected function sendStats(array $argv) {
+	protected function sendStats(array $argv)
+	{
 
 		$required = array(
 			'broker_login',
@@ -213,8 +222,8 @@ class MK_Controller_Console {
 		);
 
 		// sprawdzamy czy przekazano wszystkie potrzebne informacje
-		foreach($required as $val) {
-			if(!isset($argv[$val])) {
+		foreach ($required as $val) {
+			if (!isset($argv[$val])) {
 				throw new Exception("Brak wymaganych danych: $val");
 			}
 		}
@@ -273,9 +282,10 @@ class MK_Controller_Console {
 	 *
 	 * @return array
 	 */
-	private function prepareCompletedTasks(array $rows, $prefix = '') {
+	private function prepareCompletedTasks(array $rows, $prefix = '')
+	{
 		$completedTaskArray = array();
-		foreach($rows as $row) {
+		foreach ($rows as $row) {
 			$completedTaskArray["{$prefix}{$row['id']}_APP_VERSION"] = $row['app_version'];
 			$completedTaskArray["{$prefix}{$row['id']}_CREATEDATE"] = $row['createdate'];
 			$completedTaskArray["{$prefix}{$row['id']}_PATCH_NAME"] = $row['patch_name'];

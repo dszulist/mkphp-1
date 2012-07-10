@@ -5,12 +5,13 @@
  *
  * Klasa z Singletonem PDO
  *
- * @category	MK_Db
- * @package		MK_Db_PDO_Singleton
+ * @category    MK_Db
+ * @package        MK_Db_PDO_Singleton
  *
- * @throws		MK_Db_Exception
+ * @throws        MK_Db_Exception
  */
-class MK_Db_PDO_Singleton {
+class MK_Db_PDO_Singleton
+{
 	CONST MESSAGE_ERROR_RESULTS = 'Błąd przy wysyłaniu zapytania do bazy danych';
 	CONST MESSAGE_ERROR_SEQUENCE = 'Nieprawidłowa wartość sekwencji - operacja przerwana';
 
@@ -58,7 +59,8 @@ class MK_Db_PDO_Singleton {
 	 * @access public
 	 * @static
 	 */
-	public static function getInstance() {
+	public static function getInstance()
+	{
 		if (!is_object(self::$_singleton)) {
 			$dsn = 'pgsql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME;
 			try {
@@ -121,7 +123,8 @@ class MK_Db_PDO_Singleton {
 	 *
 	 * @return boolean
 	 */
-	public static function transOk($status=null) {
+	public static function transOk($status = null)
+	{
 		if (is_bool($status)) {
 			self::$_transOk = $status;
 		}
@@ -136,8 +139,9 @@ class MK_Db_PDO_Singleton {
 	 *
 	 * @return integer
 	 */
-	public static function transCount($incrementation=0, $setValue=false) {
-		$incrementation = (int) $incrementation;
+	public static function transCount($incrementation = 0, $setValue = false)
+	{
+		$incrementation = (int)$incrementation;
 		if ($incrementation != 0) {
 			if ($setValue == true) {
 				self::$_transCounter = $incrementation;
@@ -157,7 +161,8 @@ class MK_Db_PDO_Singleton {
 	 *
 	 * @return boolean
 	 */
-	public static function debug($status=null) {
+	public static function debug($status = null)
+	{
 		if (is_bool($status)) {
 			self::$_debug = $status;
 		}

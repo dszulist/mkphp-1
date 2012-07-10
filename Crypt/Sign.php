@@ -5,10 +5,11 @@
  * Umożliwia podpisywanie plików, za pomocą aplikacji JAVA ;)
  *
  * @category MK
- * @package	MK_Crypt_Sign
+ * @package    MK_Crypt_Sign
  * @author bskrzypkowiak
  */
-class MK_Crypt_Sign {
+class MK_Crypt_Sign
+{
 
 	/**
 	 * Scieżka do pliku jar
@@ -88,8 +89,9 @@ class MK_Crypt_Sign {
 	 *
 	 * @throw Exception
 	 */
-	public function __construct(){
-	    $this->jarFilePath .= DIRECTORY_SEPARATOR . 'Crypt' . DIRECTORY_SEPARATOR . 'Sign' . DIRECTORY_SEPARATOR . 'jar' . DIRECTORY_SEPARATOR . 'Signer.jar';
+	public function __construct()
+	{
+		$this->jarFilePath .= DIRECTORY_SEPARATOR . 'Crypt' . DIRECTORY_SEPARATOR . 'Sign' . DIRECTORY_SEPARATOR . 'jar' . DIRECTORY_SEPARATOR . 'Signer.jar';
 		$this->tempDir .= DIRECTORY_SEPARATOR . 'MK_Crypt_Sign' . DIRECTORY_SEPARATOR . uniqid();
 
 		validate_directory($this->tempDir);
@@ -101,39 +103,40 @@ class MK_Crypt_Sign {
 	 * @throws Exception
 	 * @return string
 	 */
-	public function run(){
-		
+	public function run()
+	{
+
 		$output = null;
 
 		try {
-			if(MK_DEBUG){
-				if(empty($this->pkcs12) && empty($this->hsmslot)){
+			if (MK_DEBUG) {
+				if (empty($this->pkcs12) && empty($this->hsmslot)) {
 					throw new Exception('Nie podano magaznu certyfikacji. Użyj: usePkcs12(); | useHSM();');
 				}
 
-				if(empty($this->input)){
+				if (empty($this->input)) {
 					throw new Exception('Nie podano żródła do podpisania. Użyj: setInput();');
 				}
 
-				if(empty($this->kspass)){
+				if (empty($this->kspass)) {
 					throw new Exception('Nie podano hasła. Użyj: setKeyStorePassword();');
 				}
 
-				if(empty($this->keyalias)){
+				if (empty($this->keyalias)) {
 					throw new Exception('Nie podano aliasu. Użyj: setKeyStoreAlias();');
 				}
 			}
 			$cmd = EXEC_JAVA .
-				   " -Xmx512m -jar {$this->jarFilePath} -sign " .
-				   "{$this->type} {$this->kspass} {$this->keyalias} {$this->pkcs12} {$this->hsmslot} {$this->input} {$this->output} {$this->timeserver} {$this->reflist} 2>&1";
+				" -Xmx512m -jar {$this->jarFilePath} -sign " .
+				"{$this->type} {$this->kspass} {$this->keyalias} {$this->pkcs12} {$this->hsmslot} {$this->input} {$this->output} {$this->timeserver} {$this->reflist} 2>&1";
 
 			exec($cmd, $output, $returnCode);
-			
-			if ($returnCode != '0'){
+
+			if ($returnCode != '0') {
 				throw new Exception("Błąd polecenia: '{$cmd}' Wynik: {$output}");
 			}
 
-			if(!empty($this->output)){
+			if (!empty($this->output)) {
 				$output = file_get_contents(str_replace('-out ', '', $this->output));
 			}
 			else {
@@ -141,7 +144,7 @@ class MK_Crypt_Sign {
 			}
 
 		}
-		catch (Exception $e){
+		catch (Exception $e) {
 			throw new Exception("Nie można podpisać pliku. " . (MK_DEBUG) ? MK_EOL . $e->getMessage() : '');
 		}
 
@@ -152,9 +155,11 @@ class MK_Crypt_Sign {
 	 * Sprawdza czy podany typ jest prawidłowy
 	 *
 	 * @param String $val
+	 *
 	 * @return bool
 	 */
-	private function isValidType($val){
+	private function isValidType($val)
+	{
 		return in_array($val, array('dsig', 'xades', 'xadest'));
 	}
 
@@ -166,7 +171,8 @@ class MK_Crypt_Sign {
 	 *
 	 * @return string - scieżka do utworzonego pliku
 	 */
-	private function createTempFile($fileName, $content){
+	private function createTempFile($fileName, $content)
+	{
 		$fileName = $this->tempDir . DIRECTORY_SEPARATOR . $fileName;
 		file_put_contents($fileName, $content);
 		$this->tempFileList[] = $fileName;
@@ -181,8 +187,9 @@ class MK_Crypt_Sign {
 	 * @throws Exception
 	 * @return MK_Crypt_Sign
 	 */
-	public function setType($val){
-		if(!$this->isValidType($val)){
+	public function setType($val)
+	{
+		if (!$this->isValidType($val)) {
 			throw new Exception('Podano nieprawidłowy typ podpisu');
 		}
 		$this->type = "-{$val}";
@@ -193,9 +200,11 @@ class MK_Crypt_Sign {
 	 * Ustawia hasło dostępu do miejsa w którym jest przechowywany klucz
 	 *
 	 * @param String $val
+	 *
 	 * @return MK_Crypt_Sign
 	 */
-	public function setKeyStorePassword($val){
+	public function setKeyStorePassword($val)
+	{
 		$this->kspass = "-kspass {$val}";
 		return $this;
 	}
@@ -204,9 +213,11 @@ class MK_Crypt_Sign {
 	 * Ustawia nazwe klucza
 	 *
 	 * @param String $val
+	 *
 	 * @return MK_Crypt_Sign
 	 */
-	public function setKeyStoreAlias($val){
+	public function setKeyStoreAlias($val)
+	{
 		$this->keyalias = "-keyalias {$val}";
 		return $this;
 	}
@@ -215,9 +226,11 @@ class MK_Crypt_Sign {
 	 * Ustawia miejsce przetrzymywania podpisów na HSM, oraz ustawia nr slotu HSM w którym się znajduje
 	 *
 	 * @param integer $slot
+	 *
 	 * @return MK_Crypt_Sign
 	 */
-	public function useHSM($slot){
+	public function useHSM($slot)
+	{
 		$this->hsmslot = "-hsm -slot {$slot}";
 		$this->pkcs12 = '';
 		return $this;
@@ -227,9 +240,11 @@ class MK_Crypt_Sign {
 	 * Ustawia żródło do pliku pksc12
 	 *
 	 * @param String $val
+	 *
 	 * @return MK_Crypt_Sign
 	 */
-	public function usePKCS12($val){
+	public function usePKCS12($val)
+	{
 		$this->pkcs12 = "-pkcs12 {$val}";
 		$this->hsmslot = '';
 		return $this;
@@ -243,9 +258,10 @@ class MK_Crypt_Sign {
 	 * @throws Exception
 	 * @return MK_Crypt_Sign
 	 */
-	public function useTimeStampServer($val){
+	public function useTimeStampServer($val)
+	{
 
-		if(!MK_Validator::urlOrIp($val)){
+		if (!MK_Validator::urlOrIp($val)) {
 			throw new Exception("Niepoprawny adres serwera znacznika czasu. {$val}");
 		}
 		$this->timeserver = "-tsaurl {$val}";
@@ -261,12 +277,13 @@ class MK_Crypt_Sign {
 	 * @throws Exception
 	 * @return MK_Crypt_Sign
 	 */
-	public function setInput($val, $fromFile=false){
+	public function setInput($val, $fromFile = false)
+	{
 
-		if($fromFile === false){
+		if ($fromFile === false) {
 			$val = $this->createTempFile(uniqid() . '.tosig', $val);
 		}
-		else if(!file_exists($val)){
+		else if (!file_exists($val)) {
 			throw new Exception("Plik do podpisania ({$val}) nie istnieje.");
 		}
 
@@ -279,9 +296,11 @@ class MK_Crypt_Sign {
 	 * Ustawia scieżke do pliku w którym ma zostać zapisany podpis
 	 *
 	 * @param String $val
+	 *
 	 * @return MK_Crypt_Sign
 	 */
-	public function setOutput($val){
+	public function setOutput($val)
+	{
 		$this->output = '-out ' . $this->tempDir . DIRECTORY_SEPARATOR . $val;
 		return $this;
 	}
@@ -290,19 +309,21 @@ class MK_Crypt_Sign {
 	 * Ustawia liste plików dołączanych do podpisu
 	 *
 	 * @param Mixed $val - sciezka do pliku \ sciezki do plików oddzielone przecinkami \ scieżki do plików w tablicy \ nazwy plików w kluczach i treść w wartościach tablicy
+	 *
 	 * @return MK_Crypt_Sign
 	 */
-	public function setRefList($val){
-		if(empty($val)){
+	public function setRefList($val)
+	{
+		if (empty($val)) {
 			return $this;
 		}
-		if(is_array($val)){
-			if(count(array_filter(array_keys($val), 'is_string')) == count($val)){
+		if (is_array($val)) {
+			if (count(array_filter(array_keys($val), 'is_string')) == count($val)) {
 				$tmp = array();
 				foreach ($val as $fileName => $content) {
 					$tmp[] = $this->createTempFile($fileName, $content);
 				}
-				$val = $tmp;				
+				$val = $tmp;
 			}
 			$val = implode(",", $val);
 		}
@@ -317,7 +338,8 @@ class MK_Crypt_Sign {
 	 *
 	 * @throws Exception
 	 */
-	public function __destruct(){
+	public function __destruct()
+	{
 
 		$this->type = '-dsig';
 		$this->kspass = '';
@@ -330,13 +352,13 @@ class MK_Crypt_Sign {
 		$this->reflist = '';
 
 		try {
-			foreach($this->tempFileList as $fileName){
+			foreach ($this->tempFileList as $fileName) {
 				unlink($fileName);
 			}
 			unset($fileName);
 			rmdir($this->tempDir);
 		}
-		catch(Exception $e){
+		catch (Exception $e) {
 			throw new Exception("Nie udało się usunąć plików tymczasowych podpisu");
 		}
 	}

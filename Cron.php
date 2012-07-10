@@ -9,7 +9,8 @@ require_once (MK_DIR_VENDORS . DIRECTORY_SEPARATOR . 'CronParser' . DIRECTORY_SE
  * @category MK
  * @package MK_Cron
  */
-class MK_Cron {
+class MK_Cron
+{
 
 	/**
 	 * Połączenie z bazą danych i dostęp do tabeli crona
@@ -44,7 +45,8 @@ class MK_Cron {
 	/**
 	 * Konstruktor
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->model = new MK_System_Cron();
 		$this->parser = new CronParser();
 	}
@@ -54,7 +56,8 @@ class MK_Cron {
 	 *
 	 * @param $seconds
 	 */
-	public function setExecLockTimeout($seconds) {
+	public function setExecLockTimeout($seconds)
+	{
 		$this->execLockTimeout = $seconds;
 	}
 
@@ -63,7 +66,8 @@ class MK_Cron {
 	 *
 	 * @param $seconds
 	 */
-	public function setErrorLockTimeout($seconds) {
+	public function setErrorLockTimeout($seconds)
+	{
 		$this->errorLockTimeout = $seconds;
 	}
 
@@ -72,8 +76,9 @@ class MK_Cron {
 	 *
 	 * @param $errorMsg
 	 */
-	private function saveLog($errorMsg) {
-		if(!($this->logs instanceof MK_Logs)) {
+	private function saveLog($errorMsg)
+	{
+		if (!($this->logs instanceof MK_Logs)) {
 			$this->logs = new MK_Logs(APP_PATH);
 		}
 		$this->logs->saveToFile('cron', $errorMsg);
@@ -88,10 +93,11 @@ class MK_Cron {
 	 *
 	 * @return mixed
 	 */
-	private function runTask($phpClass, $phpMethod, $phpArgv) {
-		if(class_exists($phpClass)) {
+	private function runTask($phpClass, $phpMethod, $phpArgv)
+	{
+		if (class_exists($phpClass)) {
 			$obj = new $phpClass();
-			if(is_callable(array($obj, $phpMethod)) === true) {
+			if (is_callable(array($obj, $phpMethod)) === true) {
 				$args = explode(' ', $phpArgv);
 				$obj->{$phpMethod}($args);
 				return true;
@@ -107,34 +113,35 @@ class MK_Cron {
 	/**
 	 * Uruchomienie zadań z listy znajdującej się w bazie danych
 	 */
-	public function cronTabList() {
+	public function cronTabList()
+	{
 		$cronTasks = $this->model->getActiveList();
-		foreach($cronTasks as $cronTask) {
+		foreach ($cronTasks as $cronTask) {
 			$currentTime = time();
 
 			// Pomijamy zadanie, które spowodowało błąd - oczekujemy pewien czas i ponawiamy próbę uruchomienia
 			$errorLockTime = strtotime($cronTask['error_lock']);
-			if(!empty($cronTask['error_lock']) && ($errorLockTime + $this->errorLockTimeout) > $currentTime) {
+			if (!empty($cronTask['error_lock']) && ($errorLockTime + $this->errorLockTimeout) > $currentTime) {
 				continue;
 			}
 
 			// Pomijamy zadanie, które jeszcze się wykonuje - oczekujemy pewien czas i ponawiamy próbę uruchomienia
 			$execLockTime = strtotime($cronTask['exec_lock']);
-			if(!empty($cronTask['exec_lock']) && ($execLockTime + $this->execLockTimeout) > $currentTime) {
+			if (!empty($cronTask['exec_lock']) && ($execLockTime + $this->execLockTimeout) > $currentTime) {
 				continue;
 			}
 
 			// Sprawdzamy czy możemy uruchomić zadanie
-			if($this->parser->calcLastRan($cronTask['expression'])) {
+			if ($this->parser->calcLastRan($cronTask['expression'])) {
 				$lastExecTime = strtotime($cronTask['last_exec']);
 				// Zadanie będzie można uruchomić
-				if($this->parser->getLastRanUnix() > $lastExecTime) {
+				if ($this->parser->getLastRanUnix() > $lastExecTime) {
 					$currentTimeStamp = date("Y-m-d H:i:s", $currentTime);
 					// Oznaczanie zadania jako wykonywane
 					$this->model->setTaskExecuted($cronTask['id'], false, $currentTime);
 					$this->saveLog("Wykonywanie zadania '{$cronTask['task_name']}' ({$cronTask['id']}) o godzinie {$currentTimeStamp}");
 					// Czy zadanie się wykonało poprawnie?
-					if($this->runTask($cronTask['php_class'], $cronTask['php_method'], $cronTask['php_argv'])) {
+					if ($this->runTask($cronTask['php_class'], $cronTask['php_method'], $cronTask['php_argv'])) {
 						$currentTime = time();
 						$currentTimeStamp = date("Y-m-d H:i:s", $currentTime);
 						$this->model->setTaskExecuted($cronTask['id'], true, $currentTime);

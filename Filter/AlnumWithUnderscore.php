@@ -3,10 +3,11 @@
 /**
  * MK_Filter_AlnumWithUnderscore
  *
- * @category	MK_Filter
- * @package		MK_Filter_AlnumWithUnderscore
+ * @category    MK_Filter
+ * @package        MK_Filter_AlnumWithUnderscore
  */
-class MK_Filter_AlnumWithUnderscore {
+class MK_Filter_AlnumWithUnderscore
+{
 
 	/**
 	 * Returns the string $value, removing all but alphabetic and digit characters
@@ -14,13 +15,15 @@ class MK_Filter_AlnumWithUnderscore {
 	 * @param string $value
 	 * @param boolean $allowWhiteSpace
 	 * @param boolean $unicodeEnabled
+	 *
 	 * @return string
 	 */
-	public static function filter($value, $allowWhiteSpace=false, $unicodeEnabled=true) {
-        $allowWhiteSpace = (boolean) $allowWhiteSpace;
-        if (null === $unicodeEnabled) {
-            $unicodeEnabled = (@preg_match('/\pL/u', 'a')) ? true : false;
-        }
+	public static function filter($value, $allowWhiteSpace = false, $unicodeEnabled = true)
+	{
+		$allowWhiteSpace = (boolean)$allowWhiteSpace;
+		if (null === $unicodeEnabled) {
+			$unicodeEnabled = (@preg_match('/\pL/u', 'a')) ? true : false;
+		}
 		$_meansEnglishAlphabet = false;
 
 		$whiteSpace = $allowWhiteSpace ? '\s' : '';
@@ -35,7 +38,7 @@ class MK_Filter_AlnumWithUnderscore {
 			$pattern = '/[^\p{L}\p{N}_' . $whiteSpace . ']/u';
 		}
 
-		return preg_replace($pattern, '', (string) $value);
+		return preg_replace($pattern, '', (string)$value);
 	}
 
 }

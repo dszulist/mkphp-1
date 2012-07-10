@@ -6,18 +6,21 @@
  * Obsługa odczytywania informacji o aplikacji (appinfo)
  *
  * @category MK
- * @package	MK_AppInfo
+ * @package    MK_AppInfo
  * @author jkonefal
  */
-class MK_AppInfo {
+class MK_AppInfo
+{
 
 	/**
 	 * Odczytywanie informacji o aplikacji (appinfo)
 	 *
 	 * @param string $dirPath
+	 *
 	 * @return array
 	 */
-	public static function load($dirPath) {
+	public static function load($dirPath)
+	{
 		$currentDir = getcwd();
 		$changeDir = $dirPath !== $currentDir;
 		if (!file_exists($dirPath . DIRECTORY_SEPARATOR . 'index.php')) {
@@ -47,9 +50,11 @@ class MK_AppInfo {
 	 * Po aktualizacji do PHP5 można usunąć i wykorzystać parse_ini_string()
 	 *
 	 * @param string $string
+	 *
 	 * @return array
 	 */
-	private static function parseIni($string) {
+	private static function parseIni($string)
+	{
 		$array = array();
 		$lines = explode("\n", $string);
 		foreach ($lines as $line) {

@@ -56,7 +56,7 @@ Class MK_Upgrade extends MK_Db_PDO
 			self::writeToLog('Przywracanie backupu');
 			$this->restoreBackup();
 			// Debugowanie w przypadku błędu (tylko dla developera)
-			if($this->isDeveloper) {
+			if ($this->isDeveloper) {
 				echo '<pre>';
 				readfile(APP_STATUS_LOG);
 			}
@@ -118,7 +118,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function changeApplicationState($state)
 	{
-		switch($state) {
+		switch ($state) {
 			case 'running':
 				removeDir(APP_FILE_LOCK);
 				break;
@@ -144,8 +144,9 @@ Class MK_Upgrade extends MK_Db_PDO
 	 * @throws Exception
 	 * @return
 	 */
-	private function clearDbComments() {
-		if($this->isDeveloper === true) {
+	private function clearDbComments()
+	{
+		if ($this->isDeveloper === true) {
 			self::writeToLog('Pomijanie usuwania komentarzy (developer)');
 			self::writeToLog('Nadanie uprawnień dla schematu, tabeli/widoku, sekwencji oraz funkcji/triggera (user:spirb)');
 			$this->Execute("SELECT grant_user_all('spirb', 'public'), grant_user_all('spirb', 'public_logs');");
@@ -154,10 +155,10 @@ Class MK_Upgrade extends MK_Db_PDO
 		self::writeToLog('Usuwanie komentarzy w bazie danych');
 
 		$metaTables = $this->MetaTables('TABLES', true);
-		foreach($metaTables as $table) {
+		foreach ($metaTables as $table) {
 			$this->Execute("COMMENT ON TABLE {$table} IS 'brak'");
 			$metaColumns = $this->MetaColumnNames($table, true, true);
-			foreach($metaColumns as $columnName) {
+			foreach ($metaColumns as $columnName) {
 				$this->Execute("COMMENT ON COLUMN {$columnName} IS 'brak'");
 			}
 		}
@@ -289,7 +290,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	public static function prepareLogFile()
 	{
-		if (MK_Registry::isRegistered("logFile") == false){
+		if (MK_Registry::isRegistered("logFile") == false) {
 			MK_Registry::set("logFile", MK_Registry::get("upgradeLogFolder") . DIRECTORY_SEPARATOR . "status.log");
 		}
 	}
@@ -304,7 +305,7 @@ Class MK_Upgrade extends MK_Db_PDO
 	function copyDirectory($source, $destination, $replaceDestinationFile = true)
 	{
 		if (is_dir($source)) {
-			if (!is_dir($destination)){
+			if (!is_dir($destination)) {
 				@mkdir($destination, MK_CHMOD_DIR, true);
 			}
 			$directory = dir($source);
@@ -347,7 +348,7 @@ Class MK_Upgrade extends MK_Db_PDO
 			}
 		}
 		else {
-		    throw new Exception("BŁĄD PODZCZAS KOPIOWANIA: {$source} NIE ISTNIEJE");
+			throw new Exception("BŁĄD PODZCZAS KOPIOWANIA: {$source} NIE ISTNIEJE");
 		}
 
 
@@ -405,21 +406,27 @@ Class MK_Upgrade extends MK_Db_PDO
 	private function checkLicence()
 	{
 
-        //nie sprawdzamy poprawnosci licencji
-        return;
+		//nie sprawdzamy poprawnosci licencji
+		return;
 
 		/** @noinspection PhpUnreachableStatementInspection */
-		if($this->isDeveloper === true) {
+		if ($this->isDeveloper === true) {
 			self::writeToLog('Pomijanie weryfikacji licencji (developer)');
 			return;
 		}
 		self::writeToLog('Weryfikacja licencji');
 
 		// Myk, dopóki nie będzie jednej tablicy konfiguracyjnej dla wszystkich aplikacji
-		switch(strtolower(APP_NAME)) {
-			default: $licence = $this->GetOne('SELECT conf_value FROM system_config WHERE conf_key = ?', array('licence')); break;
-			case 'broker': $licence = $this->GetOne('SELECT conf_value FROM config WHERE conf_key = ?', array('bip_licence')); break;
-			case 'spirb': $licence = $this->GetOne('SELECT config_value FROM swpirb_config WHERE symbol = ?', array('spirb_licence')); break;
+		switch (strtolower(APP_NAME)) {
+			default:
+				$licence = $this->GetOne('SELECT conf_value FROM system_config WHERE conf_key = ?', array('licence'));
+				break;
+			case 'broker':
+				$licence = $this->GetOne('SELECT conf_value FROM config WHERE conf_key = ?', array('bip_licence'));
+				break;
+			case 'spirb':
+				$licence = $this->GetOne('SELECT config_value FROM swpirb_config WHERE symbol = ?', array('spirb_licence'));
+				break;
 			// (...)
 		}
 		// MYK
@@ -440,15 +447,15 @@ Class MK_Upgrade extends MK_Db_PDO
 	 */
 	private function proceed()
 	{
-		if(MK_Registry::get("upgradeSourceFolder")) {
+		if (MK_Registry::get("upgradeSourceFolder")) {
 			//pobranie folderów wersji
 			$foldersVersion = scandir(MK_Registry::get("upgradeSourceFolder"));
-			if(count($foldersVersion) < 3) {
+			if (count($foldersVersion) < 3) {
 				self::writeToLog("BRAK SQLi i PARSERÓW DO WYKONANIA");
 				return;
 			}
-			foreach($foldersVersion as $folderVersion) {
-				if(in_array($folderVersion, $this->ignoreDir)) {
+			foreach ($foldersVersion as $folderVersion) {
+				if (in_array($folderVersion, $this->ignoreDir)) {
 					continue;
 				}
 				self::writeToLog("Bieżąca wersja: " . $folderVersion);
@@ -457,24 +464,24 @@ Class MK_Upgrade extends MK_Db_PDO
 				MK_Registry::set("currentVersion", str_replace("_", "", $folderVersion));
 				//pobranie folderów z datami w wersji
 				$foldersInVersion = scandir(MK_Registry::get("upgradeSourceFolder") . DIRECTORY_SEPARATOR . $folderVersion);
-				if(empty($foldersInVersion)) {
+				if (empty($foldersInVersion)) {
 					continue;
 				}
-				foreach($foldersInVersion as $folderDate) {
-					if(in_array($folderDate, $this->ignoreDir)) {
+				foreach ($foldersInVersion as $folderDate) {
+					if (in_array($folderDate, $this->ignoreDir)) {
 						continue;
 					}
 					//pobranie plikow z folderów z datami w wersji
 					$filesInfolderDatePath = MK_Registry::get("upgradeSourceFolder") . DIRECTORY_SEPARATOR . $folderVersion . DIRECTORY_SEPARATOR . $folderDate;
 					$filesInfolderDate = scandir($filesInfolderDatePath);
-					if(empty($filesInfolderDate)) {
+					if (empty($filesInfolderDate)) {
 						continue;
 					}
-					foreach($filesInfolderDate as $file) {
+					foreach ($filesInfolderDate as $file) {
 						$pathToFile = $filesInfolderDatePath . DIRECTORY_SEPARATOR . $file;
 						// zadanie bylo juz wykonane
 						$completedUpgradeTaks = $this->getCompletedUpgradeTaks($folderVersion, $folderDate . DIRECTORY_SEPARATOR . $file);
-						if(!empty($completedUpgradeTaks) || !is_file($pathToFile)) {
+						if (!empty($completedUpgradeTaks) || !is_file($pathToFile)) {
 							continue;
 						}
 						$fileName = explode(".", $file);
@@ -483,11 +490,11 @@ Class MK_Upgrade extends MK_Db_PDO
 						$setCompletedUpgradeTask = false;
 						self::writeToLog("BEGIN ({$extension}): {$pathToFile}");
 						// rozpoznawanie po typie
-						switch($extension) {
+						switch ($extension) {
 							default :
 							case 'sql':
 								$zawartosc = file_get_contents($pathToFile);
-								if(!empty($zawartosc)) {
+								if (!empty($zawartosc)) {
 									$affectedRows = $this->Execute($zawartosc);
 								} else {
 									self::writeToLog("PUSTA ZAWARTOŚĆ PLIKU {$pathToFile}");
@@ -507,7 +514,7 @@ Class MK_Upgrade extends MK_Db_PDO
 								break;
 						}
 						self::writeToLog("END ({$extension}): {$pathToFile}");
-						if($setCompletedUpgradeTask) {
+						if ($setCompletedUpgradeTask) {
 							$this->setCompletedUpgradeTask($folderVersion, $folderDate . DIRECTORY_SEPARATOR . $file);
 						}
 					}

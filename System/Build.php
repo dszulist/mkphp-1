@@ -5,12 +5,13 @@
  *
  * Model dla tabeli system_build
  *
- * @category	MK_System
- * @package		MK_System_Build
+ * @category    MK_System
+ * @package        MK_System_Build
  *
- * @throws		MK_Db_Exception
+ * @throws        MK_Db_Exception
  */
-class MK_System_Build extends MK_Db_PDO {
+class MK_System_Build extends MK_Db_PDO
+{
 
 	/**
 	 * @var string
@@ -22,7 +23,8 @@ class MK_System_Build extends MK_Db_PDO {
 	 *
 	 * @return array
 	 */
-	public function getList() {
+	public function getList()
+	{
 		$sql = 'SELECT * FROM ' . $this->tableName
 			. ' ORDER BY id DESC';
 		return $this->GetRows($sql);

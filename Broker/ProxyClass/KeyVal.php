@@ -2,7 +2,8 @@
 /**
  * Pomocnicza klasa dla sendClientSystemInformations
  */
-class KeyVal {
+class KeyVal
+{
 
 	/**
 	 * Klucz, np. 'count_tables_row'

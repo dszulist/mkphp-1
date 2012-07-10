@@ -6,22 +6,25 @@
  * Filtrowanie danych
  *
  * @category MK
- * @package	MK_Filter
+ * @package    MK_Filter
  */
-class MK_Filter {
+class MK_Filter
+{
 
-    /**
-     * Przeksztalca wybrane wartosci pól w tablicy na wielkie litery
-     *
-     * @param $fields
-     * @param $field
-     * @param $word
-     * @internal param \field $string
-     * @internal param \word $string
-     *
-     * @return string
-     */
-	public static function convertToUcWord($fields, $field, $word) {
+	/**
+	 * Przeksztalca wybrane wartosci pól w tablicy na wielkie litery
+	 *
+	 * @param $fields
+	 * @param $field
+	 * @param $word
+	 *
+	 * @internal param \field $string
+	 * @internal param \word $string
+	 *
+	 * @return string
+	 */
+	public static function convertToUcWord($fields, $field, $word)
+	{
 		if (in_array($field, $fields)) {
 			if (function_exists('mb_convert_case')) {
 				$word = mb_convert_case($word, MB_CASE_TITLE, 'UTF-8');
@@ -42,9 +45,10 @@ class MK_Filter {
 	 *
 	 * @return float
 	 */
-	public static function getFloatFromStringArgument($argName, array $args) {
+	public static function getFloatFromStringArgument($argName, array $args)
+	{
 		if (array_key_exists($argName, $args)) {
-			return (float) str_replace(array(' ', '.', ',', ',-'), array('', '', '.', ''), $args[$argName]);
+			return (float)str_replace(array(' ', '.', ',', ',-'), array('', '', '.', ''), $args[$argName]);
 		} else {
 			return null;
 		}
@@ -54,23 +58,24 @@ class MK_Filter {
 	 * Zamienia kwotę/wskaźnik zapisany w formie urzędowej do postaci typu 'numeric'
 	 * z określoną dokładnością po przecinku, np:
 	 *
-	 * 1.234.567 		=> 1234567.0000
-	 * 1.234.567,02		=> 1234567.0200
-	 *   1234567 		=> 1234567.0000
-	 * 	       1.0101   =>		 1.0101
-	 * 	       1.23		=>		 1.2300
-	 *	   1.010   		=> 	  1010.0000
+	 * 1.234.567         => 1234567.0000
+	 * 1.234.567,02        => 1234567.0200
+	 *   1234567         => 1234567.0000
+	 *            1.0101   =>         1.0101
+	 *            1.23        =>         1.2300
+	 *       1.010           =>       1010.0000
 	 *
 	 * @param String $string Kwota / wskaźnik
 	 * @param Integer $precision Precyzja
+	 *
 	 * @return mixed Przeformatowana kwota/wskaźnik
 	 */
-	public static function getInNumericFormat( $string, $precision = 4 )
+	public static function getInNumericFormat($string, $precision = 4)
 	{
-		$numeric = preg_replace( '/([^0-9\,\.]+)/', '', $string );
-		$numeric = preg_replace( '/^([\d]+)\.([\d]{4}|[\d]{2}|[\d]{1})$/', '$1,$2', $numeric );  // wskaźniki
-		$numeric = strtr( $numeric, array( '.' => '', ',' => '.' ) );
-		$numeric = number_format( floatval($numeric), $precision, '.', '' );
+		$numeric = preg_replace('/([^0-9\,\.]+)/', '', $string);
+		$numeric = preg_replace('/^([\d]+)\.([\d]{4}|[\d]{2}|[\d]{1})$/', '$1,$2', $numeric); // wskaźniki
+		$numeric = strtr($numeric, array('.' => '', ',' => '.'));
+		$numeric = number_format(floatval($numeric), $precision, '.', '');
 		return $numeric;
 	}
 
@@ -83,7 +88,8 @@ class MK_Filter {
 	 *
 	 * @return string
 	 */
-	public static function removeUnwantedChars($string) {
+	public static function removeUnwantedChars($string)
+	{
 		return str_replace(html_entity_decode('&#8203;', ENT_NOQUOTES, 'UTF-8'), '', $string);
 	}
 
@@ -95,7 +101,8 @@ class MK_Filter {
 	 *
 	 * @return string
 	 */
-	public static function getCurrency($amount, $withCurrency=true) {
+	public static function getCurrency($amount, $withCurrency = true)
+	{
 		if (empty($amount)) {
 			$amount = 0;
 		}
@@ -119,7 +126,8 @@ class MK_Filter {
 	 *
 	 * @return string
 	 */
-	public static function getMoneyAmount($amount, $withCurrency=true) {
+	public static function getMoneyAmount($amount, $withCurrency = true)
+	{
 		if (!is_numeric($amount)) {
 			return $amount;
 		}
@@ -140,9 +148,11 @@ class MK_Filter {
 	 * @param string $argName
 	 * @param array $args
 	 * @param mixed $defaultValue = ''
+	 *
 	 * @return string
 	 */
-	public static function stringValue($argName, array $args, $defaultValue='') {
+	public static function stringValue($argName, array $args, $defaultValue = '')
+	{
 		return MK_Validator::stringArgument($argName, $args) ? $args[$argName] : $defaultValue;
 	}
 
@@ -154,9 +164,11 @@ class MK_Filter {
 	 * @param array $args
 	 * @param mixed $defaultValue = 0
 	 * @param boolean $canBeZero = false
+	 *
 	 * @return integer
 	 */
-	public static function integerValue($argName, array $args, $defaultValue=0, $canBeZero=false) {
+	public static function integerValue($argName, array $args, $defaultValue = 0, $canBeZero = false)
+	{
 		return MK_Validator::integerArgument($argName, $args, $canBeZero) ? intval($args[$argName]) : $defaultValue;
 	}
 
@@ -167,9 +179,11 @@ class MK_Filter {
 	 * @param string $argName
 	 * @param array $args
 	 * @param mixed $defaultValue = 0
+	 *
 	 * @return float
 	 */
-	public static function floatValue($argName, array $args, $defaultValue=0) {
+	public static function floatValue($argName, array $args, $defaultValue = 0)
+	{
 		$value = MK_Validator::isDefined($argName, $args) ? $args[$argName] : $defaultValue;
 		return floatval(is_string($value) ? str_replace('.', '', $value) : $value);
 	}
@@ -181,10 +195,12 @@ class MK_Filter {
 	 * @param string $argName
 	 * @param array $args
 	 * @param mixed $defaultValue = array()
+	 *
 	 * @return array
 	 */
-	public static function jsonValue($argName, array $args, $defaultValue=array()) {
-		return MK_Validator::isDefined($argName, $args) ? ( ($args[$argName][0] == '{') ? json_decode($args[$argName], true) : $args[$argName] ) : $defaultValue;
+	public static function jsonValue($argName, array $args, $defaultValue = array())
+	{
+		return MK_Validator::isDefined($argName, $args) ? (($args[$argName][0] == '{') ? json_decode($args[$argName], true) : $args[$argName]) : $defaultValue;
 	}
 
 	/**
@@ -192,9 +208,11 @@ class MK_Filter {
 	 * Jako wartość należy podać współczynnik, np. 1 = 100%, 0.5 = 50%, 0.1234 = 12,34%
 	 *
 	 * @param float $value
+	 *
 	 * @return string
 	 */
-	public static function getPercentage($value) {
+	public static function getPercentage($value)
+	{
 		if (!is_numeric($value)) {
 			return $value;
 		}

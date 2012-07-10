@@ -10,7 +10,8 @@
  *
  * @throws        MK_Db_Exception
  */
-class MK_System_Changelog extends MK_Db_PDO {
+class MK_System_Changelog extends MK_Db_PDO
+{
 
 	/**
 	 * @var string
@@ -22,7 +23,8 @@ class MK_System_Changelog extends MK_Db_PDO {
 	 *
 	 * @return array
 	 */
-	public function getList() {
+	public function getList()
+	{
 		$sql = 'SELECT c.* FROM ' . $this->tableName . ' c'
 			. ' ORDER BY c.id DESC';
 		return $this->GetRows($sql);
@@ -36,7 +38,8 @@ class MK_System_Changelog extends MK_Db_PDO {
 	 *
 	 * @return array
 	 */
-	public function getListByNotificationIds(array $notificationIds) {
+	public function getListByNotificationIds(array $notificationIds)
+	{
 		$sql = 'SELECT c.* FROM ' . $this->tableName . ' c'
 			. ' WHERE c.notification_id IN (' . $this->arrayToQueryIn($notificationIds) . ') ORDER BY c.id ASC';
 		return $this->GetRows($sql, $notificationIds);

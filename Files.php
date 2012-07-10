@@ -6,58 +6,65 @@
  * Klasa do obsługi plików/katalogów
  *
  * @category MK
- * @package	MK_Files
+ * @package    MK_Files
  */
-class MK_Files {
+class MK_Files
+{
 
 	/**
 	 * Standaryzuje nazwę - wyrzuca specjalne znaki i polskie znaki
 	 *
 	 * @static
+	 *
 	 * @param String $name
 	 * @param bool $removePLCharacters
+	 *
 	 * @return string
 	 */
-	static public function unifyName($name, $removePLCharacters = true) {
+	static public function unifyName($name, $removePLCharacters = true)
+	{
 
 		$characterMap = array(
-			"?"  => "",
-			"/"  => "_",
-			":"  => "_",
+			"?" => "",
+			"/" => "_",
+			":" => "_",
 			"\\" => "",
-			"*"  => "",
-			"|"  => "",
-			"<"  => "",
-			">"  => "",
-			"'"  => "",
-			" "  => "_",
+			"*" => "",
+			"|" => "",
+			"<" => "",
+			">" => "",
+			"'" => "",
+			" " => "_",
 			"\"" => "",
-			"("  => "",
-			")"  => ""
+			"(" => "",
+			")" => ""
 		);
 
 		if ($removePLCharacters === true) {
-			$characterMap = array_merge($characterMap,  array(
-			    "ą" => "a", "ę" => "e", "ó" => "o", "ł" => "l", "ś" => "s", "ż" => "z", "ź" => "z",
-			    "ć" => "c", "ń" => "n", "Ą" => "A", "Ę" => "E", "Ó" => "O", "Ł" => "L", "Ś" => "S",
-			    "Ż" => "Z", "Ź" => "Z", "Ć" => "C", "Ń" => "N"
+			$characterMap = array_merge($characterMap, array(
+				"ą" => "a", "ę" => "e", "ó" => "o", "ł" => "l", "ś" => "s", "ż" => "z", "ź" => "z",
+				"ć" => "c", "ń" => "n", "Ą" => "A", "Ę" => "E", "Ó" => "O", "Ł" => "L", "Ś" => "S",
+				"Ż" => "Z", "Ź" => "Z", "Ć" => "C", "Ń" => "N"
 			));
 		}
 
 		return strtr($name, $characterMap);
 	}
 
-    /**
-     * Metoda, ktora zwraca dzien, miesiac lub rok
-     * z daty wg wzoru YYYY-mm-dd hh:mm:ss
-     *
-     * metoda wykorzystywana przy tworzeniu sciezki dostepu
-     * do zalacznikow
-     * @param $attachment_date
-     * @param $format_date
-     * @return string
-     */
-	public function splitDate($attachment_date, $format_date) {
+	/**
+	 * Metoda, ktora zwraca dzien, miesiac lub rok
+	 * z daty wg wzoru YYYY-mm-dd hh:mm:ss
+	 *
+	 * metoda wykorzystywana przy tworzeniu sciezki dostepu
+	 * do zalacznikow
+	 *
+	 * @param $attachment_date
+	 * @param $format_date
+	 *
+	 * @return string
+	 */
+	public function splitDate($attachment_date, $format_date)
+	{
 
 		$subdate = explode('-', $attachment_date, 3);
 		unset($attachment_date);
@@ -75,19 +82,21 @@ class MK_Files {
 				return $subdate[0];
 				break;
 		}
-        return null;
+		return null;
 	}
 
-    /**
-     * zamienia date utworzenia zalacznika
-     * na odpowiednia sciezke dostepu
-     * wg schematu
-     *
-     * '/' .$rok .'/' . $miesiac. '/' .$dzien .'/'
-     * @param $data_utworzenia_zal
-     * @return string
-     */
-	public function parseCreatedateToPath($data_utworzenia_zal) {
+	/**
+	 * zamienia date utworzenia zalacznika
+	 * na odpowiednia sciezke dostepu
+	 * wg schematu
+	 *
+	 * '/' .$rok .'/' . $miesiac. '/' .$dzien .'/'
+	 * @param $data_utworzenia_zal
+	 *
+	 * @return string
+	 */
+	public function parseCreatedateToPath($data_utworzenia_zal)
+	{
 		//dodane ze wzgledu na mozliwosc przekazania DBTimeStamp
 		//zwracanego z apostrofami na poczatku i koncu ciagu daty
 		$data_utworzenia_zal = str_replace("'", "", $data_utworzenia_zal);
@@ -101,13 +110,15 @@ class MK_Files {
 		//koniec obslugi daty utworzenia zalacznika jako elementu sciezki dostepu
 	}
 
-    /**
-     * metoda tworzy katalogi dla zalacznikow lub plikow tymczasowych
-     * wedlug podanych sciezek
-     * @param $glowny_kat
-     * @param $data_utworzenia_zal
-     */
-	public function createDirsByCreatedate($glowny_kat, $data_utworzenia_zal) {
+	/**
+	 * metoda tworzy katalogi dla zalacznikow lub plikow tymczasowych
+	 * wedlug podanych sciezek
+	 *
+	 * @param $glowny_kat
+	 * @param $data_utworzenia_zal
+	 */
+	public function createDirsByCreatedate($glowny_kat, $data_utworzenia_zal)
+	{
 
 		//dodane ze wzgledu na mozliwosc przekazania DBTimeStamp
 		//zwracanego z apostrofami na poczatku i koncu ciagu daty
@@ -138,16 +149,17 @@ class MK_Files {
 	}
 
 	/**
-	 * 	Wykrywa kodowanie zawartości plików tekstowych
-	 * 	z wykorzystaniem polecenia uniksowego file
-	 * 	TODO - w PHP 5.3 lub PHP 5.2 wykorzystać rozszerzenie FileInfo
-	 * 	w PHP 5.2 jest instalowane z PECLa, w PHP 5.3 jest standardowym rozszerzeniem
-	 * 	@var string filePath
+	 *     Wykrywa kodowanie zawartości plików tekstowych
+	 *     z wykorzystaniem polecenia uniksowego file
+	 *     TODO - w PHP 5.3 lub PHP 5.2 wykorzystać rozszerzenie FileInfo
+	 *     w PHP 5.2 jest instalowane z PECLa, w PHP 5.3 jest standardowym rozszerzeniem
+	 * @var string filePath
 	 *
-	 * 	$return string
-     * @return string
-     */
-	public function detectTextFileContentEncoding($filePath) {
+	 *     $return string
+	 * @return string
+	 */
+	public function detectTextFileContentEncoding($filePath)
+	{
 		$detectedCharset = null;
 		ob_start();
 		@passthru('file -bi ' . $filePath);
@@ -176,15 +188,17 @@ class MK_Files {
 
 	/**
 	 * czy nazwa danego zalacznika juz istnieje(czy nie jest zdublowana)
-	 * 
+	 *
 	 * @param string name (nazwa zalacznika)
-	 * @param date create_date	(data utworzenia zalacznika)
+	 * @param date create_date    (data utworzenia zalacznika)
 	 * @param string directory (glowny katalog)
 	 * @param array $sfile_array (tablica z plikami - sesyjna)
 	 * @param string form_uid (uid formularza)
-     * @return bool
-     */
-	public function isFileNameDuplicated($name, $create_date, $directory, array $sfile_array, $form_uid) {
+	 *
+	 * @return bool
+	 */
+	public function isFileNameDuplicated($name, $create_date, $directory, array $sfile_array, $form_uid)
+	{
 
 		$file = $directory . $this->parseCreatedateToPath($create_date) . $form_uid . DIRECTORY_SEPARATOR . $name;
 		if (is_file($file)) {
@@ -197,9 +211,11 @@ class MK_Files {
 	/**
 	 * @param $search_value
 	 * @param $the_array
+	 *
 	 * @return bool
 	 */
-	public function multi_array_search($search_value, $the_array) {
+	public function multi_array_search($search_value, $the_array)
+	{
 		if (is_array($the_array)) {
 			foreach ($the_array as $value) {
 				$result = $this->multi_array_search($search_value, $value);
@@ -217,17 +233,20 @@ class MK_Files {
 		}
 	}
 
-    /**
-     * konwert zalacznika do JPG
-     *
-     * @param $path
-     * @param $type
-     * @internal param \typ $string
-     * @return bool
-     */
-	public function convertFileToJPG($path, $type) {
+	/**
+	 * konwert zalacznika do JPG
+	 *
+	 * @param $path
+	 * @param $type
+	 *
+	 * @internal param \typ $string
+	 * @return bool
+	 */
+	public function convertFileToJPG($path, $type)
+	{
 		switch ($type) {
-			case 'tiff': case 'tif':
+			case 'tiff':
+			case 'tif':
 				if (strpos($_SERVER["SERVER_SOFTWARE"], 'Win')) {
 					define('CONVERT_IMG_BIN_DIR', 'C:\\usr\\ImageMagick\\');
 				}
@@ -239,7 +258,8 @@ class MK_Files {
 				}
 				if (file_exists(getcwd() . DIRECTORY_SEPARATOR . $path)) {
 					if (system(CONVERT_IMG_BIN_DIR . "convert " . getcwd() . DIRECTORY_SEPARATOR . $path . " " . getcwd() . DIRECTORY_SEPARATOR . $path . ".jpg") === false
-							|| system(!CONVERT_IMG_BIN_DIR . "convert " . getcwd() . DIRECTORY_SEPARATOR . $path . ".jpg " . getcwd() . DIRECTORY_SEPARATOR . $path) === false) {
+						|| system(!CONVERT_IMG_BIN_DIR . "convert " . getcwd() . DIRECTORY_SEPARATOR . $path . ".jpg " . getcwd() . DIRECTORY_SEPARATOR . $path) === false
+					) {
 						return false;
 					} else {
 						unlink($path . ".jpg");
@@ -290,7 +310,8 @@ class MK_Files {
 	 * @internal param array $arrayPdf - lista wraz z zawartoscia plikow dokumentow
 	 * @return string - sciezka to tymczasowego pliku
 	 */
-	public static function packAllContents(array $arrayDocs) {
+	public static function packAllContents(array $arrayDocs)
+	{
 
 		if (empty($arrayDocs)) {
 			return false;
@@ -328,16 +349,17 @@ class MK_Files {
 	 * @throws Exception
 	 * @return string
 	 */
-	public static function saveTempXMLFile($fileNameToSave, $dataToSave) {
+	public static function saveTempXMLFile($fileNameToSave, $dataToSave)
+	{
 
-        //utworzenie ścieżki wg schematu : temp/webservice/adres_ip_klienta/'DocflowWebServiceService.wsdl'
-        $tempWebServiceDefinitionFolder = DIR_TEMP . DIRECTORY_SEPARATOR . 'webservice' . DIRECTORY_SEPARATOR . uniqid('', TRUE);
+		//utworzenie ścieżki wg schematu : temp/webservice/adres_ip_klienta/'DocflowWebServiceService.wsdl'
+		$tempWebServiceDefinitionFolder = DIR_TEMP . DIRECTORY_SEPARATOR . 'webservice' . DIRECTORY_SEPARATOR . uniqid('', TRUE);
 
-        if (!file_exists($tempWebServiceDefinitionFolder)) {
-            mkdir($tempWebServiceDefinitionFolder, 0775, TRUE);
-        }
+		if (!file_exists($tempWebServiceDefinitionFolder)) {
+			mkdir($tempWebServiceDefinitionFolder, 0775, TRUE);
+		}
 
-        $tempPath = $tempWebServiceDefinitionFolder . DIRECTORY_SEPARATOR . $fileNameToSave;
+		$tempPath = $tempWebServiceDefinitionFolder . DIRECTORY_SEPARATOR . $fileNameToSave;
 
 		try {
 
@@ -370,7 +392,8 @@ class MK_Files {
 	 *
 	 * @throws Exception
 	 */
-	public static function removeTemporaryFileWithParentDirectory($pathToTemporaryPath) {
+	public static function removeTemporaryFileWithParentDirectory($pathToTemporaryPath)
+	{
 		try {
 			$tempWebServiceDefinitionPathFileInfo = new SplFileInfo($pathToTemporaryPath);
 			$temporaryFileParentDirectory = $tempWebServiceDefinitionPathFileInfo->getPath();

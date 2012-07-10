@@ -6,26 +6,28 @@
  * Obsługa wyjątków dla JSON-a
  *
  * @category MK
- * @package	MK_Exception
+ * @package    MK_Exception
  */
-class MK_Exception extends Exception {
+class MK_Exception extends Exception
+{
 
 	/**
 	 * Rozbudowany raport błędu dla MK_Exception i MK_Db_Exception.
 	 * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
 	 *
 	 * try {
-	 *	// code
+	 *    // code
 	 * } catch (MK_Db_Exception $e) {
-	 *	//MK_Error::setMoreTraceIgnorePath(array('Spirb->loadModule'));
-	 *	die($e->getExtendedMessage());
+	 *    //MK_Error::setMoreTraceIgnorePath(array('Spirb->loadModule'));
+	 *    die($e->getExtendedMessage());
 	 * } catch (MK_Exception $e) {
-	 *	die($e->getExtendedMessage());
+	 *    die($e->getExtendedMessage());
 	 * }
 	 *
 	 * @return string
 	 */
-	public function getExtendedMessage() {
+	public function getExtendedMessage()
+	{
 		$retArray = array(
 			'success' => false,
 			'message' => $this->getMessage()
@@ -34,7 +36,7 @@ class MK_Exception extends Exception {
 		$_file = $this->getFile();
 		$_line = strval($this->getLine());
 		$_trace = MK_Error::getExtendedTrace($this);
-        $debugMsg = '';
+		$debugMsg = '';
 
 		$mkDb = new MK_Db_PDO();
 		if (is_object($mkDb)) {
