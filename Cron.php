@@ -20,13 +20,13 @@ class MK_Cron
 
 	/**
 	 * Parser dla CRON-a => CronParser()
-	 * @var
+	 * @var CronParser
 	 */
 	private $parser;
 
 	/**
 	 * Miejsce zapisywania logów systemowych
-	 * @var
+	 * @var MK_Logs
 	 */
 	private $logs;
 
@@ -41,6 +41,12 @@ class MK_Cron
 	 * @var int
 	 */
 	private $errorLockTimeout = 3600; // 1 h
+
+	/**
+	 * @todo Kuba (jkonefal) da opis i ustawi odpowiednią hermetyzację :)
+	 * @var MK_System_Cron
+	 */
+	public $model;
 
 	/**
 	 * Konstruktor
