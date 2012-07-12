@@ -1,40 +1,81 @@
 <?php
 
 /**
- * @todo opisy
+ * MK_Stream_CouchDB
+ *
+ * Klasa do obsłgi couchdb
+ *
+ * @category MK
+ * @package MK_CouchDB
  */
 class MK_CouchDB
 {
+	/**
+	 * Ip/nazwa serwera bazy danych
+	 * @var string
+	 */
 	private $host = 'localhost';
-	private $port = '5984';
+
+	/**
+	 * Port serwera bazy dandych
+	 * @var int
+	 */
+	private $port = 5984;
+
+	/**
+	 * Nazwa użytkownika bazy
+	 * @var string
+	 */
 	private $user;
+
+	/**
+	 * Hasło użytkownika
+	 * @var string
+	 */
 	private $pass;
-	private $headers;
-	private $body;
 
 	/**
 	 * Nazwa aktualnej bazy danych
 	 * @var string
 	 */
-	private $db;
+	private $dbname;
 
 	/**
-	 * @param $options
+	 * Ustawia parametry połączenia
+	 *
+	 * @param array|string $options
+	 *
+	 * @throws MK_CouchDB_Exception
 	 */
 	public function __construct($options)
 	{
-		foreach ($options AS $key => $value) {
-			$this->$key = $value;
+		if(is_string($options)){
+			$options = parse_url($options);
+			$options['dbname'] = $options['path'];
+		    unset($options['scheme']);
+		    unset($options['path']);
+		}
+
+		if(is_array($options)){
+			foreach ($options AS $key => $value) {
+				$this->$key = $value;
+			}
+		}
+
+		if(empty($this->dbname)){
+			throw new MK_CouchDB_Exception('Nie ustawiono bazy danych.');
 		}
 	}
 
 	/**
-	 * @param $method
-	 * @param $url
-	 * @param null $post_data
-	 * @return bool
+	 * Otwiera połączenie wysyła zapytanie i zwraca odpowiedź
+	 *
+	 * @param string $method PUT/GET/DELETE
+	 * @param string $url
+	 * @param string\null $postData
+	 * @return mixed
 	 */
-	private function send($method, $url, $post_data = NULL)
+	private function send($method, $url, $postData = NULL)
 	{
 		$s = fsockopen($this->host, $this->port, $errno, $errstr);
 		if (!$s) {
@@ -44,13 +85,13 @@ class MK_CouchDB
 
 		$request = "$method $url HTTP/1.0\r\nHost: $this->host\r\n";
 
-		if ($this->user) {
+		if ($this->user && $this->pass) {
 			$request .= "Authorization: Basic " . base64_encode("$this->user:$this->pass") . "\r\n";
 		}
 
-		if ($post_data) {
-			$request .= "Content-Length: " . strlen($post_data) . "\r\n\r\n";
-			$request .= "$post_data\r\n";
+		if ($postData) {
+			$request .= "Content-Length: " . strlen($postData) . "\r\n\r\n";
+			$request .= "$postData\r\n";
 		}
 		else {
 			$request .= "\r\n";
@@ -63,15 +104,16 @@ class MK_CouchDB
 			$response .= fgets($s);
 		}
 
-		list($this->headers, $this->body) = explode("\r\n\r\n", $response);
-		return $this->body;
+		list($headers, $body) = explode("\r\n\r\n", $response);
+		return $body;
 	}
 
 	/**
-	 * @param $resp
+	 * Sprawdza czy odpowiedz jest pozytywna
+	 * @param string $resp JSON z odpowiedzią z serwera
 	 * @return bool
 	 */
-	private function getResponse($resp){
+	private function isResponseOk($resp){
 		$resp = json_decode($resp, true);
 		return (isset($resp['ok']) && $resp['ok'] == 'true');
 	}
@@ -85,17 +127,7 @@ class MK_CouchDB
 	 * @return bool
 	 */
 	public function createDB($name){
-		return $this->getResponse($this->send("PUT", "/$name"));
-	}
-
-	/**
-	 * Ustawia nazwe bazy danych na której ma operować
-	 * @param $dbName
-	 * @return MK_CouchDB
-	 */
-	public function setDb($dbName){
-		$this->db = $dbName;
-		return $this;
+		return $this->isResponseOk($this->send("PUT", "/$name"));
 	}
 
 	/**
@@ -115,52 +147,54 @@ class MK_CouchDB
 	}
 
 	/**
+	 * Zwraca wszystkie rekordy z bazy
 	 * @return mixed
 	 * @throws MK_CouchDB_Exception
 	 */
 	public function getAllDocs(){
-		if(empty($this->db)){
-			throw new MK_CouchDB_Exception('Nie ustawiono bazy danych');
-		}
-		return $this->send("GET", "/{$this->db}/_all_docs");
+		return $this->send("GET", "/{$this->dbname}/_all_docs");
 	}
 
 	/**
-	 * @param array $data
-	 * @param string $idKey
+	 * Dodaje wpis do bazy
+	 * @param array $data tablica z informacjami do wprowadzenia
+	 * @param string $idKey klucz w tablicy zawierający identyfikator dla bazy
 	 *
 	 * @throws MK_CouchDB_Exception
 	 */
 	public function add(array $data, $idKey='id'){
 
 		if(empty($data[$idKey])){
-			throw new MK_CouchDB_Exception('Nie podano id');
+			throw new MK_CouchDB_Exception('Nie podano identyfikatora wpisu');
 		}
 
-		$id = $data[$idKey];
+		$data["_$idKey"] = $data[$idKey];
 		unset($data[$idKey]);
-		$data["_$idKey"] = $id;
 
-		$this->send("PUT", "/{$this->db}/$id", json_encode($data));
+		$this->send("PUT", "/{$this->dbname}/{$data["_$idKey"]}", json_encode($data));
 	}
 
 	/**
-	 * @param $id
+	 * Zwraca rekord o podanym id
+	 * @param string $id
 	 * @return mixed
 	 */
 	public function get($id){
-		return json_decode($this->send('GET', "/{$this->db}/{$id}"));
+		return json_decode($this->send('GET', "/{$this->dbname}/{$id}"));
 	}
 
 	/**
-	 * @param $id
+	 * Usuwa rekord o podanym id
+	 * @param string $id
 	 * @return mixed
 	 */
 	public function delete($id){
-		return $this->getResponse($this->send('DELETE', "/{$this->db}/{$id}"));
+		return $this->isResponseOk($this->send('DELETE', "/{$this->dbname}/{$id}"));
 	}
 
 	/**
+	 * @todo funkcja do wyszukiwania
+	 *
 	 * @return bool
 	 */
 	public function find(){
