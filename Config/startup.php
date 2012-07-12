@@ -36,6 +36,7 @@ setlocale(LC_NUMERIC, MK_LOCALE_NUMERIC);
 
 // rejestracja wrapperów
 stream_wrapper_register("tcp", "MK_Stream_Tcp");
+stream_wrapper_register("couchdb", "MK_Stream_Couchdb");
 
 if (MK_DEBUG || MK_IS_CLI) {
 	error_reporting(E_ALL | E_STRICT);
