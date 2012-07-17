@@ -84,6 +84,7 @@ if (defined('APP_INI_FILE')) {
 	define('SESSION_SAVE_HANDLER', $config->getString('system', 'session'));
 
 	define('APP_DEBUG', $config->getString('system', 'debug'));
+	define('DB_DEBUG', APP_DEBUG);
 	define('APP_ERROR_JS_ENABLED', $config->getString('system', 'error_raporting_js'));
 	define('APP_NAME', $config->getString('system', 'name'));
 }
