@@ -989,6 +989,25 @@ class MK_Db_PDO
 		return $sql;
 	}
 
+    /**
+     * Tworzenie WHERE na podstawie przekazanej tablicy
+     * @param array $where
+     * @param string $relation
+     * @return string
+     */
+    public function arrayToWhereQuery(array $where, $relation = 'AND'){
+
+        $conditions = array();
+
+        if (count($where) > 0) {
+            foreach ($where as $colName) {
+                $conditions[] = "{$colName} = ?";
+            }
+        }
+
+        return " " . implode($relation, $conditions);
+    }
+
 	/**
 	 * Metoda przygotowująca warunki wyszukiwania
 	 *
