@@ -59,6 +59,25 @@ class MK_System_Notification extends MK_Db_PDO
 
 /*
 
+CREATE OR REPLACE FUNCTION add_notification(text, text, text)
+  RETURNS integer AS
+$BODY$
+DECLARE
+  notification_id integer;
+  desc_exists text;
+BEGIN
+	SELECT INTO notification_id id FROM system_notification WHERE subject = $1;
+	IF NOT FOUND THEN
+		EXECUTE 'INSERT INTO system_notification(subject, description, notification_date) VALUES ('||quote_literal($1)||','||quote_literal($2)||', '||quote_literal($3)||');';
+	ELSE
+		RAISE NOTICE 'ISTNIEJE POWIADOMIENIE O TEMACIE: %',$1;
+		RETURN 0;
+	END IF;
+	RETURN 1;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
 CREATE SEQUENCE system_notification_id_seq
   INCREMENT 1
   MINVALUE 1
