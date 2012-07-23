@@ -30,9 +30,9 @@ class MK_Loader
         if ($lastNsPos = strripos($className, '\\')) {
             $namespace = substr($className, 0, $lastNsPos);
             $className = substr($className, $lastNsPos + 1);
-            if (!empty(static::$changeRootNamespace)){
+            /*if (!empty(static::$changeRootNamespace)){
                 $namespace = str_replace(static::$changeRootNamespace['namespace'], static::$changeRootNamespace['directory'], $namespace); //myk niezgodny z PSR-0, bo klasy z namespace /bip są w katalogu app
-            }
+            }*/
             $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
         }
 
