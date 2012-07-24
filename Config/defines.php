@@ -25,8 +25,8 @@
 
 // Konfiguracja startowa aplikacji
 define('MK_LANG', 'pl_PL');
-define('MK_LOCALE_TIME', MK_LANG . '.UTF-8');
-define('MK_LOCALE_NUMERIC', MK_LANG);
+define('MK_LOCALE_TIME', MK_LANG . '.utf8'); // polski format daty
+define('MK_LOCALE_NUMERIC', 'POSIX'); // "." w cyfrach zamiast ","
 define('MK_TIMEZONE', 'Europe/Warsaw');
 define('MK_HTML_HEADER', 'Content-Type: text/html; charset=utf-8');
 define('MK_COOKIES_PATH', dirname(((isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : 'localhost') . '?'));
