@@ -28,7 +28,11 @@ class MK_Stream_CouchDB
 	 */
 	function stream_open($path, $mode, $options, &$opened_path)
 	{
-		$this->db = new \MK_CouchDB($path);
+		$class = 'MK_CouchDB';
+		if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+			$class = '\MK_CouchDB';
+		}
+		$this->db = new $class($path);
 		return true;
 	}
 

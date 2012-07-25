@@ -11,6 +11,11 @@
  */
 class MK_Error
 {
+	/**
+	 * Dane użytkownika z sesji
+	 * @var array
+	 */
+	private static $userData = array();
 
 	/**
 	 * @var string
@@ -119,30 +124,22 @@ class MK_Error
 	 */
 	private static function _prepareMessage($file = '(null)', $line = '(null)')
 	{
-		//@TODO - ugryźć jako parametruyzacja czy cos :)
-		//	if(!UserSingleton::getInstance()->isLogged()) {
-		//		$userLogin = 'Brak informacji';
-		//		$userId = 'Brak informacji';
-		//	}
-		//	else {
-		//		$userLogin = UserSingleton::getInstance()->getCurrentUserLogin();
-		//		$userId = UserSingleton::getInstance()->getCurrentUserCellId(false);
-		//	}
-		$userSid = 'Brak informacji';
-		$userId = 'Brak informacji';
-		$userLogin = 'Brak informacji';
+		$userDataMsg = '';
+		if (!empty(self::$userData)) {
+			$userDataMsg = "\nUżytkownik:\n";
+			foreach (self::$userData as $key => $val) {
+				$userDataMsg .= " " . $key . ": " . $val . "\n";
+			}
+		}
 
 		$devMessage = " Host:\t" . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'brak danych') . "\n"
 			. " Plik:\t{$file}\n"
 			. " Linia:\t{$line}\n"
-			. "Baza danych:\n"
+			. "\nBaza danych:\n"
 			. " Host:\t" . DB_HOST . "\n"
 			. " Nazwa:\t" . DB_NAME . "\n"
-			. "Użytkownik:\n"
-			. " Sid:\t{$userSid}\n"
-			. " Id:\t{$userId}\n"
-			. " Login:\t{$userLogin}\n"
-			. "Informacje dodatkowe:\n"
+			. $userDataMsg
+			. "\nInformacje dodatkowe:\n"
 			. " REMOTE_ADDR:\t" . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'brak danych') . "\n"
 			. " SERVER_ADDR:\t" . (isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'brak danych') . "\n"
 			. " REQUEST_URI:\t" . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'brak danych') . "\n"
@@ -170,6 +167,9 @@ class MK_Error
 	 */
 	public static function handler($type, $message = "", $file = "", $line = "", $errContext = array(), $debugBacktrace = "")
 	{
+		if (!($type & error_reporting())) {
+			return true;
+		}
 		// W przypadku tego błędu nie logujemy ponieważ nie ma on się pojawiać
 		if (preg_match('#pg_fetch_array\(\)( \[[^]]+\])*: Unable to jump to row [0-9]+ on PostgreSQL result index [0-9]+#i', $message)) {
 			return true;
@@ -177,6 +177,8 @@ class MK_Error
 
 		$devMessage = self::_prepareMessage($file, $line) . "Komunikat błędu:\n " . $message . "\n\n";
 		$md5 = md5($message . $file . $line);
+		$devMessage .= "ERROR CODE: " . $type . "\n";
+		$devMessage .= "ERROR TYPE: " . self::getErrorType($type) . "\n";
 		if (count($errContext) > 0) {
 			$devMessage .= "Informacje szczegółowe:\n " . substr(print_r($errContext, true), 0, 10240) . "\n\n";
 		}
@@ -188,15 +190,37 @@ class MK_Error
 		if (!class_exists('MK_Logs')) {
 			include_once('Logs.php');
 		}
-		$logs = new MK_Logs(APP_PATH);
-		$logs->saveToFile('php', $devMessage, $md5);
-
 		// Tutaj zwracamy informacje dla uzytkownika - w tym przypadku wyrzucamy wyjatek ktory zwróci jsona z informacja o obedzie ktora zostanie wyswietlana uzytkownikowi w postaci okna z błędem
 		if (($type !== E_NOTICE) && ($type < 2048)) {
 			return 'Nieoczekiwany błąd! ' . self::$mailAdmin;
 		}
 
+		$logs = new MK_Logs(APP_PATH);
+		$logs->saveToFile('php', $devMessage, $md5);
+
 		return false;
+	}
+
+	public static function getErrorType($errno)
+	{
+		switch ($errno) {
+			case E_NOTICE:
+			case E_USER_NOTICE:
+				return 'Notice';
+				break;
+			case E_WARNING:
+			case E_USER_WARNING:
+			case E_STRICT:
+				return 'Warning';
+				break;
+			case E_ERROR:
+			case E_USER_ERROR:
+				return 'Fatal Error';
+				break;
+			default:
+				return 'Unknown Error';
+				break;
+		}
 	}
 
 	/**
@@ -275,6 +299,14 @@ class MK_Error
 			return 'Błąd JavaScript. ' . self::$mailAdmin;
 		}
 		return null;
+	}
+
+	/**
+	 * Ustawia dane użytkownika z sesji
+	 * @param array $userData
+	 */
+	public static function setUserData(array $userData) {
+		self::$userData = $userData;
 	}
 
 }

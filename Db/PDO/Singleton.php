@@ -52,6 +52,16 @@ class MK_Db_PDO_Singleton
 	private static $_debug = false;
 
 	/**
+	 * Sprawdzenie czy obiekt singletona został utworzony
+	 *
+	 * @static
+	 * @return bool
+	 */
+	public static function isInstance() {
+		return is_object(self::$_singleton);
+	}
+
+	/**
 	 *
 	 * Singleton pattern for database connection
 	 *
@@ -61,7 +71,7 @@ class MK_Db_PDO_Singleton
 	 */
 	public static function getInstance()
 	{
-		if (!is_object(self::$_singleton)) {
+		if (!self::isInstance()) {
 			$dsn = 'pgsql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME;
 			try {
 				self::$_singleton = new PDO($dsn, DB_USER, DB_PASS);

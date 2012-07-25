@@ -83,6 +83,7 @@ class MK_Logs
 
 		$this->debug('Ustawienie ścieżki do aplikacji: ' . $appPath);
 		$this->appPath = realpath($appPath);
+		//TODO - należałoby przekazywać do konstruktora odrazu ścieżkę do katalogu tempowego
 		$this->dirErrors = $this->appPath . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . 'errors';
 		$this->dirErrorsUpload = $this->dirErrors . DIRECTORY_SEPARATOR . 'upload';
 		$this->fileReportLock = $this->dirErrors . DIRECTORY_SEPARATOR . 'report.lock';

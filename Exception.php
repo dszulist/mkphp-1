@@ -11,6 +11,7 @@
 class MK_Exception extends Exception
 {
 
+
 	/**
 	 * Rozbudowany raport błędu dla MK_Exception i MK_Db_Exception.
 	 * Zapisanie zdarzenia w pliku tekstowym i wysłanie do logs.madkom.pl (dla developer:false)
@@ -38,15 +39,15 @@ class MK_Exception extends Exception
 		$_trace = MK_Error::getExtendedTrace($this);
 		$debugMsg = '';
 
-		$mkDb = new MK_Db_PDO();
-		if (is_object($mkDb)) {
+		if (MK_Db_PDO_Singleton::isInstance()) {
+			$mkDb = MK_Db_PDO_Singleton::getInstance();
 			$mkDb->transFail();
 			$dbError = $mkDb->getErrorMsg();
-			if (empty($dbError)) {
-				$debugMsg = MK_Error::fromException($retArray['message'], $_file, $_line, $_trace);
-			} else {
-				$debugMsg = MK_Error::fromDataBase($dbError, $_file, $_line, $_trace);
-			}
+		}
+		if (empty($dbError)) {
+			$debugMsg = MK_Error::fromException($retArray['message'], $_file, $_line, $_trace);
+		} else {
+			$debugMsg = MK_Error::fromDataBase($dbError, $_file, $_line, $_trace);
 		}
 
 		$retArray['debug'] = (MK_DEBUG === true) ? '<pre>' . $debugMsg . '</pre>' : '';

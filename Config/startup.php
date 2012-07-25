@@ -34,10 +34,6 @@ setlocale(LC_TIME, MK_LOCALE_TIME);
 // do "." w liczbach, a nie ","
 setlocale(LC_NUMERIC, MK_LOCALE_NUMERIC);
 
-// rejestracja wrapperów
-stream_wrapper_register("tcp", "MK_Stream_Tcp");
-stream_wrapper_register("couchdb", "MK_Stream_CouchDB");
-
 if (MK_DEBUG || MK_IS_CLI) {
 	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', 'on');
@@ -45,10 +41,10 @@ if (MK_DEBUG || MK_IS_CLI) {
 	umask(0); // Resetowanie maski uprawnien
 } else {
 	// #ErrorHandling
-	error_reporting(E_ALL);
+	error_reporting(E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
 	ini_set('display_errors', 'off');
 	// Ustawiamy własną funkcję do obsługi błędów, jeżeli nie wywołujemy aplikacji z konsoli
-	set_error_handler('MK_Error::handler');
+	set_error_handler('MK_Error::handler', error_reporting());
 	register_shutdown_function('MK::shutdownFunction');
 }
 
@@ -74,6 +70,11 @@ ini_set('session.cache_expire', 480);
 
 session_save_path(MK_DIR_SESSION);
 session_set_cookie_params(0, MK_COOKIES_PATH);
+
+// rejestracja wrapperów
+if (SESSION_SAVE_HANDLER == 'memcache') {
+	stream_wrapper_register("tcp", "MK_Stream_Tcp");
+}
 
 //myk na swfUpload który sessid podaje w gecie
 if (!empty($_GET['PHPSESSID'])) {

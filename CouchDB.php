@@ -49,6 +49,7 @@ class MK_CouchDB
 	 */
 	public function __construct($options)
 	{
+		stream_wrapper_register("couchdb", "MK_Stream_CouchDB");
 		if(is_string($options)){
 			$options = parse_url($options);
 			$options['dbname'] = $options['path'];
