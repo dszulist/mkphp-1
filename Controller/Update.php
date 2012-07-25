@@ -183,9 +183,6 @@ class MK_Controller_Update
 	 * Tworzy i zwraca stora do comboboxa z mozliwosciami aktualizacji
 	 * W przypadku podania parametru jako true zwróci tablice z opcjami zamiast stora
 	 *
-	 * @ruleDescription Tworzy i zwraca stora do comboboxa z mozliwosciami aktualizacji
-	 * @ruleTextName Tworzy i zwraca stora do comboboxa z mozliwosciami aktualizacji
-	 *
 	 * @param $args
 	 *
 	 * @return Array
