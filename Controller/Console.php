@@ -84,8 +84,10 @@ class MK_Controller_Console
 	}
 
 	/**
-	 * Zwraca najważniejsze informacje dotyczace aplikacji (DLA Admina)
+	 * Wysyłanie raportów błędów do logs.madkom.pl (DLA Admina)
 	 *     php index.php -mapplogs
+     * Włączenie debugowania (podgląd szczegółowych komunikatów)
+     *     php index.php -mapplogs true
 	 *
 	 * @param array $argv
 	 */
