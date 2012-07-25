@@ -4,24 +4,30 @@
  * Stałe wymagane, aby niektóre części MK(php) działały:
  *
  * JEZELI APLIKACJA KORZYSTA Z PLIKÓW KONFIGURACYJNYCH INI - patrz koniec tego pliku!!!
- *
- *    define('SESSION_SAVE_HANDLER,    'files');        // Sesje zapisywane w plikach
- *    //define('SESSION_SAVE_HANDLER,    'memcache');    // Sesje zapisywane w pamięci
- *    define('DIR_SESSION',            APP_PATH.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.'session');            // dla SESSION_SAVE_HANDLER = 'files'
- *    //define('DIR_SESSION',            'tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15');    // dla SESSION_SAVE_HANDLER = 'memcache'
- *    define('APP_NAME',        '');    // Nazwa aplikacji
- *    define('DB_HOST',        '');    // Baza danych: hostname
- *    define('DB_PORT',        '');    // Baza danych: port
- *    define('DB_USER',        '');    // Baza danych: użytkownik
- *    define('DB_PASS',        '');    // Baza danych: hasło
- *    define('DB_NAME',        '');    // Baza danych: nazwa
- *    define('DB_DEBUG',        '');    // Baza danych: Czy debugować zapytania SQL?
- *
+
+define('SESSION_SAVE_HANDLER',    'files');     // Sesje zapisywane w plikach
+//define('SESSION_SAVE_HANDLER',  'memcache');  // Sesje zapisywane w pamięci
+define('DIR_SESSION',    APP_PATH.DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR.'session');            // dla SESSION_SAVE_HANDLER = 'files'
+//define('DIR_SESSION',  'tcp://127.0.0.1:11211?persistent=1&weight=1&timeout=1&retry_interval=15');    // dla SESSION_SAVE_HANDLER = 'memcache'
+define('APP_NAME',       '');    // Nazwa aplikacji
+define('DB_HOST',        '');    // Baza danych: hostname
+define('DB_PORT',        '');    // Baza danych: port
+define('DB_USER',        '');    // Baza danych: użytkownik
+define('DB_PASS',        '');    // Baza danych: hasło
+define('DB_NAME',        '');    // Baza danych: nazwa
+define('DB_DEBUG',       '');    // Baza danych: Czy debugować zapytania SQL?
+
  * Stałe pomocnicze:
- *    define('MK_DEBUG',            false);
- *    define('APP_ERROR_JS_ENABLED',    true);
- *
+define('MK_DEBUG',            false);
+define('APP_ERROR_JS_ENABLED',    true);
+
  */
+
+// Ścieżka do biblioteki MK(php)
+define('MK_PATH', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
+
+// Ścieżka główna do aplikacji (jeśli zdefiniowana)
+define('MK_APP_PATH', defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '');
 
 // Konfiguracja startowa aplikacji
 define('MK_LANG', 'pl_PL');
@@ -34,18 +40,15 @@ define('MK_IS_CLI', defined('STDIN'));
 define('MK_CHMOD_DIR', 0775);
 define('MK_EOL', (!empty($_SERVER['SERVER_SOFTWARE'])) ? '<br/>' : PHP_EOL);
 
-// Ścieżka do biblioteki MK(php)
-define('MK_PATH', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR));
-
 // Ścieżki do katalogów wykorzystywanych przez bibliotekę
 define('MK_DIR_TEMP', defined('DIR_TEMP') ? DIR_TEMP : realpath(sys_get_temp_dir()));
 define('MK_DIR_SESSION', defined('DIR_SESSION') ? DIR_SESSION : realpath(session_save_path()));
-define('MK_DIR_UPDATE_LOGS', (defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . 'upgrade' . DIRECTORY_SEPARATOR . 'log');
+define('MK_DIR_UPDATE_LOGS', MK_APP_PATH . 'upgrade' . DIRECTORY_SEPARATOR . 'log');
 define('MK_DIR_VENDORS', MK_PATH . DIRECTORY_SEPARATOR . 'Vendors');
 
 // Ścieżki do plików wykorzystywanych przez aplikację
-define('APP_FILE_LOCK', (defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . 'under_construction.txt');
-define('APP_STATUS_LOG', (defined('APP_PATH') ? APP_PATH . DIRECTORY_SEPARATOR : '') . 'upgrade/log/status.log');
+define('APP_FILE_LOCK', MK_APP_PATH . 'under_construction.txt');
+define('APP_STATUS_LOG', MK_APP_PATH . 'upgrade/log/status.log');
 define('MTM_FILE_LIST', '/var/lib/mtm/task.list');
 define('MTM_FILE_LOG', '/var/log/mtm/mtm.log');
 define('MTM_FILE_LOCK', '/tmp/mtm_task.lock');
@@ -71,22 +74,22 @@ define('MK_PRECISION_FRACTION', 4); // wartość ułamkowa
 
 
 // Jeżeli aplikacja ma konfiguracje w pliku ini i został wskazany plik ini w postaci stałej APP_INI_FILE to brakujace wymagane definesy są pobierane z tego pliku
-if (defined('APP_INI_FILE')) {
-	require_once (MK_PATH . DIRECTORY_SEPARATOR . 'Config.php');
-	$config = new MK_Config(APP_INI_FILE);
+if(defined('APP_INI_FILE')) {
+    require_once (MK_PATH . DIRECTORY_SEPARATOR . 'Config.php');
+    $config = new MK_Config(APP_INI_FILE);
 
-	define('DB_HOST', $config->getString('database', 'host'));
-	define('DB_PORT', $config->getString('database', 'port'));
-	define('DB_USER', $config->getString('database', 'user'));
-	define('DB_PASS', $config->getString('database', 'password'));
-	define('DB_NAME', $config->getString('database', 'name'));
+    define('DB_HOST', $config->getString('database', 'host'));
+    define('DB_PORT', $config->getString('database', 'port'));
+    define('DB_USER', $config->getString('database', 'user'));
+    define('DB_PASS', $config->getString('database', 'password'));
+    define('DB_NAME', $config->getString('database', 'name'));
 
-	define('SESSION_SAVE_HANDLER', $config->getString('system', 'session'));
+    define('SESSION_SAVE_HANDLER', $config->getString('system', 'session'));
 
-	define('APP_DEBUG', $config->getString('system', 'debug'));
-	define('DB_DEBUG', APP_DEBUG);
-	define('APP_ERROR_JS_ENABLED', $config->getString('system', 'error_raporting_js'));
-	define('APP_NAME', $config->getString('system', 'name'));
+    define('APP_DEBUG', $config->getString('system', 'debug'));
+    define('DB_DEBUG', APP_DEBUG);
+    define('APP_ERROR_JS_ENABLED', $config->getString('system', 'error_raporting_js'));
+    define('APP_NAME', $config->getString('system', 'name'));
 }
 
 // Konfigruacja zgłaszania i zapisywania błędów
