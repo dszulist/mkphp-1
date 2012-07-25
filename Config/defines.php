@@ -45,6 +45,8 @@ define('MK_DIR_TEMP', defined('DIR_TEMP') ? DIR_TEMP : realpath(sys_get_temp_dir
 define('MK_DIR_SESSION', defined('DIR_SESSION') ? DIR_SESSION : realpath(session_save_path()));
 define('MK_DIR_UPDATE_LOGS', MK_APP_PATH . 'upgrade' . DIRECTORY_SEPARATOR . 'log');
 define('MK_DIR_VENDORS', MK_PATH . DIRECTORY_SEPARATOR . 'Vendors');
+define('MK_DIR_VIEW', MK_APP_PATH . 'app' . DIRECTORY_SEPARATOR . 'view');
+define('MK_DIR_VIEW_ERRORS', MK_DIR_VIEW . DIRECTORY_SEPARATOR . 'errors');
 
 // Ścieżki do plików wykorzystywanych przez aplikację
 define('APP_FILE_LOCK', MK_APP_PATH . 'under_construction.txt');
