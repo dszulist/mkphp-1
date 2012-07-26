@@ -89,6 +89,7 @@ class MK_Db_PDO
 
 		// Zwrócenie szczegółowego komunikatu w konsoli FireBug-a
 		if (MK_DEBUG_FIREPHP) {
+	        $_SESSION['sql_last_time'] = microtime(true);
 			$this->fireBugSqlDump("MK_Db_PDO_Singleton::getInstance()", '', array(), microtime(true) - $timeStart);
 		}
 
