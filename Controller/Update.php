@@ -127,7 +127,7 @@ class MK_Controller_Update
 	 */
 	protected function setAllowedVersion($v)
 	{
-		$this->allowVersion = str_replace('.', '_', $v);
+		$this->allowVersion = $v;
 		return $this;
 	}
 
