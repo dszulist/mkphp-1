@@ -37,10 +37,10 @@ class MK_Exception extends Exception
 		$_file = $this->getFile();
 		$_line = strval($this->getLine());
 		$_trace = MK_Error::getExtendedTrace($this);
-		$debugMsg = '';
+		$debugMsg = $dbError = '';
 
 		if (MK_Db_PDO_Singleton::isInstance()) {
-			$mkDb = MK_Db_PDO_Singleton::getInstance();
+			$mkDb = new MK_Db_PDO();
 			$mkDb->transFail();
 			$dbError = $mkDb->getErrorMsg();
 		}
