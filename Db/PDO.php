@@ -160,14 +160,20 @@ class MK_Db_PDO
     /**
      * Pobiera aktualną wersję aplikacji z bazy danych
      *
+     * @param bool $fullVersion (true/false) Odczytanie czy jest to wersja RC/DEV
      * @param bool $forceRefresh (true/false) Wymusza odczytanie nowych danych zamiast z cache-u
      *
      * @return string
      */
-    public function getAppVersion($forceRefresh = false)
+    public function getAppVersion($fullVersion = false, $forceRefresh = false)
     {
         if($forceRefresh === true || !isset($this->propertyCache[__METHOD__])) {
             $this->propertyCache[__METHOD__] = $this->GetOne('SELECT get_app_version()');
+            if($fullVersion === true) {
+                $currentVersion = (int)str_replace('.', '', $this->propertyCache[__METHOD__]);
+                $releasedVersion = (int)str_replace('.', '', $this->getReleasedVersion());
+                return $this->propertyCache[__METHOD__] . (($currentVersion == $releasedVersion + 1) ? ' (RC)' : ' (STABLE)');
+            }
         }
         return $this->propertyCache[__METHOD__];
     }
