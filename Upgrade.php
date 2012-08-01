@@ -139,11 +139,11 @@ Class MK_Upgrade extends MK_Db_PDO
 		@mkdir(MK_DIR_SESSION, MK_CHMOD_DIR, true);
 	}
 
-	/**
-	 * Usunięcie komentarzy z kolumn i tabel
-	 * @throws Exception
-	 * @return
-	 */
+    /**
+     * Usunięcie komentarzy z kolumn i tabel
+     *
+     * @return void
+     */
 	private function clearDbComments()
 	{
 		if ($this->isDeveloper === true) {
@@ -156,10 +156,10 @@ Class MK_Upgrade extends MK_Db_PDO
 
 		$metaTables = $this->MetaTables('TABLES', true);
 		foreach ($metaTables as $table) {
-			$this->Execute("COMMENT ON TABLE {$table} IS 'brak'");
+			$this->Execute("COMMENT ON TABLE {$table} IS 'brak'", array(), false);
 			$metaColumns = $this->MetaColumnNames($table, true, true);
 			foreach ($metaColumns as $columnName) {
-				$this->Execute("COMMENT ON COLUMN {$columnName} IS 'brak'");
+				$this->Execute("COMMENT ON COLUMN {$columnName} IS 'brak'", array(), false);
 			}
 		}
 	}

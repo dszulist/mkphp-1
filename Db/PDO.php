@@ -363,11 +363,12 @@ class MK_Db_PDO
      *
      * @param String     $sql - zapytanie sql'owe
      * @param Array      $params (default: array()) - parametry zapytania
+     * @param bool $throwException
      *
      * @throws MK_Db_Exception
      * @return integer
      */
-    protected function Execute($sql, array $params = array ())
+    protected function Execute($sql, array $params = array (), $throwException=true)
     {
         // Bez array_values wywala błąd - nie ma być kluczy w tablicy!
         $params = array_values($params);
@@ -379,13 +380,13 @@ class MK_Db_PDO
         // W przeciwnym wypadku uruchiamy zapytanie poprzez exec(), które umożliwia wykonanie wielu zapytań SQL
         if(count($params) > 0) {
             $pdoObj = $this->db->prepare($sql);
-            if($pdoObj->execute($params) === false) {
+            if($pdoObj->execute($params) === false && $throwException === true) {
                 throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
             }
             $affectedRows = $pdoObj->rowCount();
         } else {
             $results = $this->db->exec($sql);
-            if($results === false) {
+            if($results === false && $throwException === true) {
                 throw new MK_Db_Exception(MK_Db_PDO_Singleton::MESSAGE_ERROR_RESULTS);
             }
             $affectedRows = $results;
