@@ -225,7 +225,7 @@ class MK_Filter
 	 * o nazwach takich jak występujące elementy
 	 *
 	 * Użycie:
-	 *		MK_Filter::assignElement( "<forename> <surname>) <symbol>", $workstation, ' - ' );
+	 *		MK_Filter::assignElement( "<forename> <surname> (<symbol>)", $workstation, ' - ' );
 	 * gdzie tablica
 	 * 		$workstation
 	 * powinna zawierać elementy: 'forename', 'surname' i 'symbol'
