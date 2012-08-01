@@ -220,4 +220,28 @@ class MK_Filter
 		return number_format(round($value * 100, MK_PRECISION_PERCENT), MK_PRECISION_PERCENT, ',', '') . '%';
 	}
 
+	/**
+	 * Wyszukije elementy szablonu w znacznikach < > i podmienia je wartościami z talicy dla kluczy
+	 * o nazwach takich jak występujące elementy
+	 *
+	 * Użycie:
+	 *		MK_Filter::assignElement( "<forename> <surname>) <symbol>", $workstation, ' - ' );
+	 * gdzie tablica
+	 * 		$workstation
+	 * powinna zawierać elementy: 'forename', 'surname' i 'symbol'
+	 *
+	 * @param String Struktura (wraz z elementami)
+	 * @param Array Tablica z które bedą pobierane wartości
+	 * @param String Domyślna wartość wstawiana do szablonu w przypadku braku elementu w tablicy
+	 * @return String Przetworzony szablon
+	 */
+	public static function assignElement( $template, $data, $default = "" )
+	{
+		return preg_replace_callback( '/<([^>]+)>/',
+			function($element) use ($default, $data) {
+				return (isset($data[$element[1]]))? $data[$element[1]] : $default;
+			}
+			, $template);
+	}
+
 }
