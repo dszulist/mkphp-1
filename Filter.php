@@ -237,11 +237,20 @@ class MK_Filter
 	 */
 	public static function assignElement( $template, $data, $default = "" )
 	{
-		return preg_replace_callback( '/<([^>]+)>/',
-			function($element) use ($default, $data) {
-				return (isset($data[$element[1]]))? $data[$element[1]] : $default;
-			}
-			, $template);
+		preg_match_all( '/<([^>]+)>/', $template, $elements );
+
+		foreach( $elements[1] as $el ) {
+			$template = str_replace( "<$el>", (isset($data[$el]))? $data[$el]:$default, $template );
+		}
+		return $template;
+
+		// PHP >= 5.3
+		// TODO: podmienić dla PHP od v5.3
+		//return preg_replace_callback( '/<([^>]+)>/',
+		//	function($element) use ($default, $data) {
+		//		return (isset($data[$element[1]]))? $data[$element[1]] : $default;
+		//	}
+		//	, $template);
 	}
 
 }
