@@ -133,11 +133,10 @@ class MK_Error
             }
         }
 
-        $requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
         $requestMethodMsg = '';
-        if(!is_null($requestMethod) && isset($GLOBALS['_' . $requestMethod]) && count($GLOBALS['_' . $requestMethod]) > 0) {
-            $requestMethodMsg = " REQUEST_METHOD: {$requestMethod}\n";
-            foreach ($GLOBALS['_' . $requestMethod] as $key => $val) {
+        if(isset($_REQUEST) && count($_REQUEST) > 0) {
+            $requestMethodMsg = " \$_REQUEST:\n";
+            foreach ($_REQUEST as $key => $val) {
                 $requestMethodMsg .= "  * " . $key . ": " . $val . "\n";
             }
         }
