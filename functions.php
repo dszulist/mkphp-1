@@ -10,14 +10,14 @@
  */
 function bcceil($number)
 {
-	$number = rtrim($number, '.0');
-	if (strpos($number, '.') !== false) {
-		if ($number[0] != '-') {
-			return bcadd($number, 1, 0);
-		}
-		return bcsub($number, 0, 0);
-	}
-	return $number;
+    $number = rtrim($number, '.0');
+    if(strpos($number, '.') !== false) {
+        if($number[0] != '-') {
+            return bcadd($number, 1, 0);
+        }
+        return bcsub($number, 0, 0);
+    }
+    return $number;
 }
 
 /**
@@ -30,14 +30,14 @@ function bcceil($number)
  */
 function bcfloor($number)
 {
-	$number = rtrim($number, '.0');
-	if (strpos($number, '.') !== false) {
-		if ($number[0] != '-') {
-			return bcadd($number, 0, 0);
-		}
-		return bcsub($number, 1, 0);
-	}
-	return $number;
+    $number = rtrim($number, '.0');
+    if(strpos($number, '.') !== false) {
+        if($number[0] != '-') {
+            return bcadd($number, 0, 0);
+        }
+        return bcsub($number, 1, 0);
+    }
+    return $number;
 }
 
 /**
@@ -54,15 +54,15 @@ function bcfloor($number)
  */
 function bcround($number, $precision = 0)
 {
-	if (strpos($number, ',') !== false) {
-		$number = str_replace(array('.', ','), array('', '.'), $number);
-	}
-	if (false !== ($pos = strpos($number, '.')) && (strlen($number) - $pos - 1) > $precision) {
-		$zeros = str_repeat("0", $precision);
-		return bcadd($number, "0.{$zeros}5", $precision);
-	} else {
-		return $number;
-	}
+    if(strpos($number, ',') !== false) {
+        $number = str_replace(array ('.', ','), array ('', '.'), $number);
+    }
+    if(false !== ($pos = strpos($number, '.')) && (strlen($number) - $pos - 1) > $precision) {
+        $zeros = str_repeat("0", $precision);
+        return bcadd($number, "0.{$zeros}5", $precision);
+    } else {
+        return $number;
+    }
 }
 
 /**
@@ -75,13 +75,13 @@ function bcround($number, $precision = 0)
  */
 function file_exists_in_app($filePath, $appPath = '')
 {
-	if (empty($appPath)) {
-		if (!defined('APP_PATH')) {
-			trigger_error('Undefined argument $appPath in function ' . __FUNCTION__ . '() OR constant APP_PATH', E_USER_ERROR);
-		}
-		$appPath = APP_PATH;
-	}
-	return strcmp($appPath, substr(realpath($filePath), 0, strlen($appPath))) === 0;
+    if(empty($appPath)) {
+        if(!defined('APP_PATH')) {
+            trigger_error('Undefined argument $appPath in function ' . __FUNCTION__ . '() OR constant APP_PATH', E_USER_ERROR);
+        }
+        $appPath = APP_PATH;
+    }
+    return strcmp($appPath, substr(realpath($filePath), 0, strlen($appPath))) === 0;
 }
 
 /**
@@ -91,13 +91,13 @@ function file_exists_in_app($filePath, $appPath = '')
  */
 function validate_directory($dirPath)
 {
-	if (!empty($dirPath) && $dirPath !== '..' && $dirPath !== '.') {
-		if (!file_exists($dirPath) || !is_dir($dirPath)) {
-			if (!mkdir($dirPath, MK_CHMOD_DIR, true)) {
-				exit("Nie można utworzyć katalogu {$dirPath}");
-			}
-		}
-	}
+    if(!empty($dirPath) && $dirPath !== '..' && $dirPath !== '.') {
+        if(!file_exists($dirPath) || !is_dir($dirPath)) {
+            if(!mkdir($dirPath, MK_CHMOD_DIR, true)) {
+                exit("Nie można utworzyć katalogu {$dirPath}");
+            }
+        }
+    }
 }
 
 /**
@@ -113,13 +113,13 @@ function validate_directory($dirPath)
  */
 function block_directory_htaccess($dirPath)
 {
-	$file = $dirPath . DIRECTORY_SEPARATOR . '.htaccess';
-	if (!file_exists($file)) {
-		validate_directory($dirPath);
-		file_put_contents($file, "Order Deny,Allow " . PHP_EOL . "Deny from all " . PHP_EOL . "Allow from 127.0.0.1 " . PHP_EOL);
-		return true;
-	}
-	return false;
+    $file = $dirPath . DIRECTORY_SEPARATOR . '.htaccess';
+    if(!file_exists($file)) {
+        validate_directory($dirPath);
+        file_put_contents($file, "Order Deny,Allow " . PHP_EOL . "Deny from all " . PHP_EOL . "Allow from 127.0.0.1 " . PHP_EOL);
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -133,32 +133,29 @@ function block_directory_htaccess($dirPath)
  */
 function printr($data, $throwException = true, $method = 'print_r')
 {
+    switch ($method) {
+        case 'var_dump':
+            ob_start();
+            var_dump($data);
+            $output = ob_get_contents();
+            ob_end_clean();
+            break;
+        case 'var_export':
+            ob_start();
+            var_export($data);
+            $output = ob_get_contents();
+            ob_end_clean();
+            break;
+        default:
+            $output = '<pre>' . print_r($data, true) . '</pre>';
+            break;
+    }
 
-	switch ($method) {
-		case 'var_dump':
-			ob_start();
-			var_dump($data);
-			$dump = ob_get_contents();
-			ob_end_clean();
-			break;
-		case 'var_export':
-			ob_start();
-			var_export($data);
-			$dump = ob_get_contents();
-			ob_end_clean();
-			break;
-		default:
-			$dump = print_r($data, true);
-			break;
-	}
-
-	$output = "<pre>{$dump}</pre>";
-
-	if ($throwException) {
-		throw new MK_Exception($output);
-	} else {
-		echo $output;
-	}
+    if($throwException) {
+        throw new MK_Exception($output);
+    } else {
+        echo $output;
+    }
 }
 
 /**
@@ -170,39 +167,45 @@ function printr($data, $throwException = true, $method = 'print_r')
  */
 function removeDir($dir)
 {
-	if (!file_exists($dir)) {
-		return true;
-	}
+    if(!file_exists($dir)) {
+        return true;
+    }
 
-	if (!is_dir($dir)) {
-		return unlink($dir);
-	}
+    if(!is_dir($dir)) {
+        return unlink($dir);
+    }
 
-	foreach (scandir($dir) as $item) {
-		if ($item == '.' || $item == '..') {
-			continue;
-		}
-		if (!removeDir($dir . DIRECTORY_SEPARATOR . $item)) {
-			return false;
-		}
-	}
-	return @rmdir($dir);
+    foreach (scandir($dir) as $item) {
+        if($item == '.' || $item == '..') {
+            continue;
+        }
+        if(!removeDir($dir . DIRECTORY_SEPARATOR . $item)) {
+            return false;
+        }
+    }
+    return @rmdir($dir);
 }
 
 /**
  * Alternatywna definicja funkcji z PHP >= 5.2.6
  */
-if (!function_exists('sys_get_temp_dir')) {
-	function sys_get_temp_dir()
-	{
-		if ($temp = getenv('TMP')) return $temp;
-		if ($temp = getenv('TEMP')) return $temp;
-		if ($temp = getenv('TMPDIR')) return $temp;
-		$temp = tempnam(__FILE__, '');
-		if (file_exists($temp)) {
-			unlink($temp);
-			return dirname($temp);
-		}
-		return null;
-	}
+if(!function_exists('sys_get_temp_dir')) {
+    function sys_get_temp_dir()
+    {
+        if($temp = getenv('TMP')) {
+            return $temp;
+        }
+        if($temp = getenv('TEMP')) {
+            return $temp;
+        }
+        if($temp = getenv('TMPDIR')) {
+            return $temp;
+        }
+        $temp = tempnam(__FILE__, '');
+        if(file_exists($temp)) {
+            unlink($temp);
+            return dirname($temp);
+        }
+        return null;
+    }
 }
