@@ -71,7 +71,7 @@ CREATE TABLE sys_notification_user
   createdate timestamp without time zone DEFAULT now(),
   CONSTRAINT sys_notification_user_pk PRIMARY KEY (id ),
   CONSTRAINT sys_notification_user_fk1 FOREIGN KEY (notification_id)
-      REFERENCES system_notification (id) MATCH SIMPLE
+      REFERENCES sys_notification (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 

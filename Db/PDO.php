@@ -188,7 +188,7 @@ class MK_Db_PDO
     public function getReleasedVersion($forceRefresh = false)
     {
         if($forceRefresh === true || !isset($this->propertyCache[__METHOD__])) {
-            $this->propertyCache[__METHOD__] = $this->GetOne('SELECT subject FROM system_version ORDER BY subject DESC LIMIT 1');
+            $this->propertyCache[__METHOD__] = $this->GetOne('SELECT subject FROM sys_version ORDER BY subject DESC LIMIT 1');
         }
         return $this->propertyCache[__METHOD__];
     }
@@ -250,11 +250,11 @@ class MK_Db_PDO
      * Listę można filtrować przy pomocy `LIKE $mask`
      *
      * Przykłady:
-     * // Wszystkie tabele, np. system_notification
+     * // Wszystkie tabele, np. sys_notification
      * $this->MetaTables('TABLE', false);
-     * // Wszystkie tabele (pełna ścieżka), np. public.system_notification
+     * // Wszystkie tabele (pełna ścieżka), np. public.sys_notification
      * $this->MetaTables('TABLE', true);
-     * // Wszystkie tabele (pełna ścieżka, przefiltrowane), np. public.system_notification
+     * // Wszystkie tabele (pełna ścieżka, przefiltrowane), np. public.sys_notification
      * $this->MetaTables('TABLE', true, 'system_%');
      * // Wszystkie widoki, np. view_users_1
      * $this->MetaTables('VIEW', false);
@@ -262,9 +262,9 @@ class MK_Db_PDO
      * $this->MetaTables('VIEW', true);
      * // Wszystkie widoki (pełna ścieżka, przefiltrowane), np. public.view_users_1
      * $this->MetaTables('VIEW', true, 'view_%');
-     * // Wszystkie tabele i widoki, np. system_notification, view_users_1
+     * // Wszystkie tabele i widoki, np. sys_notification, view_users_1
      * $this->MetaTables(false);
-     * // Wszystkie tabele (pełna ścieżka), np. public.system_notification, public.view_users_1
+     * // Wszystkie tabele (pełna ścieżka), np. public.sys_notification, public.view_users_1
      * $this->MetaTables(false, true);
      *
      * @param mixed          $tableType
@@ -368,7 +368,7 @@ class MK_Db_PDO
      * @throws MK_Db_Exception
      * @return integer
      */
-    protected function Execute($sql, array $params = array (), $throwException=true)
+    protected function Execute($sql, array $params = array (), $throwException = true)
     {
         // Bez array_values wywala błąd - nie ma być kluczy w tablicy!
         $params = array_values($params);

@@ -56,13 +56,13 @@ DECLARE
   version_id integer;
   desc_exists text;
 BEGIN
-	SELECT INTO version_id id FROM system_version WHERE subject = $1;
+	SELECT INTO version_id id FROM sys_version WHERE subject = $1;
 	IF version_id IS NOT NULL THEN
-		SELECT INTO desc_exists description FROM sys_changelog WHERE description = $2 AND system_version_id = version_id;
+		SELECT INTO desc_exists description FROM sys_changelog WHERE description = $2 AND sys_version_id = version_id;
 		IF NOT FOUND THEN
-			EXECUTE 'INSERT INTO sys_changelog(system_version_id, description, description_more, patch_type, bt_id) VALUES ('||version_id||','|| quote_literal($2) ||', '|| quote_literal($3) ||', '''|| $4 ||''','|| quote_literal($5) ||');';
+			EXECUTE 'INSERT INTO sys_changelog(sys_version_id, description, description_more, patch_type, bt_id) VALUES ('||version_id||','|| quote_literal($2) ||', '|| quote_literal($3) ||', '''|| $4 ||''','|| quote_literal($5) ||');';
 		ELSE
-			EXECUTE 'UPDATE sys_changelog SET description_more = '|| quote_literal($3) || ' WHERE description = '|| quote_literal($2) || ' AND system_version_id = '||version_id;
+			EXECUTE 'UPDATE sys_changelog SET description_more = '|| quote_literal($3) || ' WHERE description = '|| quote_literal($2) || ' AND sys_version_id = '||version_id;
 		END IF;
 	ELSE
 		RAISE NOTICE 'NIE ZNALEZIONO WYDANEJ WERSJI %',$1;
@@ -77,7 +77,7 @@ CREATE TABLE sys_changelog
 (
   id serial NOT NULL,
   notification_id integer DEFAULT 0,
-  system_version_id integer,
+  sys_version_id integer,
   branch_id integer NOT NULL DEFAULT 0,
   patch_type character(1) NOT NULL DEFAULT 'b'::bpchar,
   bt_id character varying(1024),
