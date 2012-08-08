@@ -1,34 +1,34 @@
 <?php
 
 /**
- * MK_System_Build
+ * MK_Sys_Build
  *
- * Model dla tabeli system_build
+ * Model dla tabeli sys_build
  *
  * @category    MK_System
- * @package        MK_System_Build
+ * @package        MK_Sys_Build
  *
  * @throws        MK_Db_Exception
  */
-class MK_System_Build extends MK_Db_PDO
+class MK_Sys_Build extends MK_Db_PDO
 {
 
-	/**
-	 * @var string
-	 */
-	protected $tableName = 'system_build';
+    /**
+     * @var string
+     */
+    protected $tableName = 'sys_build';
 
-	/**
-	 * Odczytywanie wszystkich rekordów z tabeli
-	 *
-	 * @return array
-	 */
-	public function getList()
-	{
-		$sql = 'SELECT * FROM ' . $this->tableName
-			. ' ORDER BY id DESC';
-		return $this->GetRows($sql);
-	}
+    /**
+     * Odczytywanie wszystkich rekordów z tabeli
+     *
+     * @return array
+     */
+    public function getList()
+    {
+        $sql = 'SELECT * FROM ' . $this->tableName
+            . ' ORDER BY id DESC';
+        return $this->GetRows($sql);
+    }
 
 }
 
@@ -49,16 +49,16 @@ BEGIN
 	IF version_id IS NOT NULL THEN
 		SELECT INTO patch_exist count(id) FROM system_changelog WHERE system_version_id = version_id AND branch_id = 0;
 		IF patch_exist > 0 THEN
-			SELECT INTO id_build nextval('system_build_id_seq');
-			SELECT INTO version_build MAX(build_version) FROM system_build WHERE system_version_id = version_id;
+			SELECT INTO id_build nextval('sys_build_id_seq');
+			SELECT INTO version_build MAX(build_version) FROM sys_build WHERE system_version_id = version_id;
 			IF version_build IS NULL THEN
 				version_build := 0;
 			END IF;
 			version_build := version_build + 1;
 			IF $2 = '' THEN
-				EXECUTE 'INSERT INTO system_build(id, system_version_id, build_version, release_date) VALUES ('|| id_build ||','|| version_id ||','|| version_build ||', '''|| $1 ||''');';
+				EXECUTE 'INSERT INTO sys_build(id, system_version_id, build_version, release_date) VALUES ('|| id_build ||','|| version_id ||','|| version_build ||', '''|| $1 ||''');';
 			ELSE
-				EXECUTE 'INSERT INTO system_build(id, system_version_id, build_version, release_date, createdate) VALUES ('|| id_build ||','|| version_id ||','|| version_build ||', '''|| $1 ||''', '''|| $2 ||''');';
+				EXECUTE 'INSERT INTO sys_build(id, system_version_id, build_version, release_date, createdate) VALUES ('|| id_build ||','|| version_id ||','|| version_build ||', '''|| $1 ||''', '''|| $2 ||''');';
 			END IF;
 			EXECUTE 'UPDATE system_changelog SET branch_id = '|| id_build ||' WHERE system_version_id = '|| version_id ||' AND branch_id = 0;';
 			RAISE NOTICE 'DODANO PATCH DO WERSJI % O NUMERZE %', app_version, version_build;
@@ -72,15 +72,15 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE;
 
-CREATE TABLE system_build
+CREATE TABLE sys_build
 (
   id serial NOT NULL,
   system_version_id integer NOT NULL,
   build_version integer NOT NULL,
   release_date timestamp without time zone,
   createdate timestamp without time zone DEFAULT now(),
-  CONSTRAINT system_build_pk PRIMARY KEY (id ),
-  CONSTRAINT system_build_fk1 FOREIGN KEY (system_version_id)
+  CONSTRAINT sys_build_pk PRIMARY KEY (id ),
+  CONSTRAINT sys_build_fk1 FOREIGN KEY (system_version_id)
       REFERENCES system_version (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE CASCADE
 );
