@@ -1035,7 +1035,7 @@ class MK_Db_PDO
      *
      * @return string
      */
-    public function arrayToWhereQuery(array $where, $relation = 'AND')
+    public function arrayToWhereQuery(array $where, $relation = ' AND ')
     {
 
         $conditions = array ();
