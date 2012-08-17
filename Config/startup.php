@@ -11,7 +11,7 @@ require_once (MK_PATH . DIRECTORY_SEPARATOR . 'functions.php');
 require_once (MK_PATH . DIRECTORY_SEPARATOR . 'MK.php');
 
 validate_directory(MK_DIR_TEMP);
-if(SESSION_SAVE_HANDLER == 'files') {
+if(!defined('SESSION_SAVE_HANDLER') || SESSION_SAVE_HANDLER == 'files') {
     validate_directory(MK_DIR_SESSION);
     block_directory_htaccess(MK_DIR_SESSION);
 }
