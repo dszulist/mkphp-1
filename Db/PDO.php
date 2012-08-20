@@ -781,8 +781,10 @@ class MK_Db_PDO
      */
     public function transFail()
     {
+        if(MK_Db_PDO_Singleton::transOk()) {
+            $this->transComplete(false);
+        }
         MK_Db_PDO_Singleton::transOk(false);
-        $this->transComplete(false);
     }
 
     /**
