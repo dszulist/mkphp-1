@@ -5,7 +5,7 @@
  *
  * Model dla tabeli sys_version
  *
- * @category    MK_System
+ * @category    MK_Sys
  * @package        MK_Sys_Version
  *
  * @throws        MK_Db_Exception

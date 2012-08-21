@@ -5,7 +5,7 @@
  *
  * Model dla tabeli sys_changelog
  *
- * @category    MK_System
+ * @category    MK_Sys
  * @package        MK_Sys_Changelog
  *
  * @throws        MK_Db_Exception

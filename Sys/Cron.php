@@ -5,7 +5,7 @@
  *
  * Model dla tabeli sys_cron
  *
- * @category    MK_System
+ * @category    MK_Sys
  * @package        MK_Sys_Cron
  *
  * @throws        MK_Db_Exception

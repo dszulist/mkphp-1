@@ -5,7 +5,7 @@
  *
  * Model dla tabeli sys_build
  *
- * @category    MK_System
+ * @category    MK_Sys
  * @package        MK_Sys_Build
  *
  * @throws        MK_Db_Exception

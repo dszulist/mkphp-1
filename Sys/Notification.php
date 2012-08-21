@@ -5,7 +5,7 @@
  *
  * Model dla tabeli sys_notification
  *
- * @category    MK_System
+ * @category    MK_Sys
  * @package        MK_Sys_Notification
  *
  * @throws        MK_Db_Exception
